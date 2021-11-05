@@ -1,0 +1,6 @@
+isort
+flake8
+pytest
+freezegun
+pytest-mock
+retry
