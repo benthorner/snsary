@@ -12,15 +12,14 @@ class MockOutput(Output):
         fail=False,
         hang=False,
     ):
-        self.__hang = hang
         self.__fail = fail
+        self.__hang = hang
         self.__failures = 0
 
-    def flush(self):
+    def publish(self, reading):
         if self.__hang:
             Event().wait()
 
-    def send(self, reading):
         if self.__fail:
             self.__failures += 1
             raise RuntimeError(f'problem-{self.__failures}')

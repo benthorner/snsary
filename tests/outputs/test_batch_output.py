@@ -9,34 +9,48 @@ from snsary.outputs import BatchOutput
 @pytest.fixture()
 def output():
     class Output(BatchOutput):
-        def send_batch(self, readings):
+        def publish_batch(self, readings):
             pass
 
     return Output()
 
 
 @pytest.fixture()
-def mock_send_batch(output, mocker):
-    return mocker.patch.object(output, 'send_batch')
+def mock_publish_batch(output, mocker):
+    return mocker.patch.object(output, 'publish_batch')
 
 
-def test_send_forwards_large_batches(
+def test_stop(
     output,
-    mock_send_batch
+    mock_publish_batch,
+):
+    output.stop()
+    mock_publish_batch.assert_not_called()
+
+    output.publish('reading')
+    mock_publish_batch.assert_not_called()
+
+    output.stop()
+    mock_publish_batch.assert_called_with(['reading'])
+
+
+def test_publish_forwards_large_batches(
+    output,
+    mock_publish_batch
 ):
     for _ in range(1, 101):
-        output.send('reading')
+        output.publish('reading')
 
-    mock_send_batch.assert_called_with(['reading'] * 100)
+    mock_publish_batch.assert_called_with(['reading'] * 100)
 
 
-def test_send_forwards_old_batches(
+def test_publish_forwards_old_batches(
     output,
-    mock_send_batch,
+    mock_publish_batch,
 ):
-    output.send('reading')
+    output.publish('reading')
 
     with freeze_time(datetime.now() + timedelta(seconds=10)):
-        output.send('reading')
+        output.publish('reading')
 
-    mock_send_batch.assert_called_with(['reading'] * 2)
+    mock_publish_batch.assert_called_with(['reading'] * 2)

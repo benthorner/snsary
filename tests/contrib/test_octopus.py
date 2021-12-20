@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 import re
 from datetime import datetime
 
@@ -16,6 +17,29 @@ def sensor():
         mpan='mpan',
         serial_number='serial_number',
         token='token-123'
+    )
+
+
+def test_from_env(mocker):
+    mocker.patch.dict(os.environ, {
+        'OCTOPUS_MPAN': 'mpan',
+        'OCTOPUS_SERIAL': 'serial',
+        'OCTOPUS_TOKEN': 'token'
+    })
+
+    mock_init = mocker.patch.object(
+        OctopusSensor, '__init__',
+        return_value=None  # required to mock __init__
+    )
+
+    assert isinstance(
+        OctopusSensor.from_env(), OctopusSensor
+    )
+
+    mock_init.assert_called_with(
+        mpan='mpan',
+        serial_number='serial',
+        token='token'
     )
 
 

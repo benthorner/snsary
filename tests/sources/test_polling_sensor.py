@@ -1,6 +1,6 @@
 import logging
 
-from snsary.sensors import PollingSensor
+from snsary.sources import PollingSensor
 
 
 def test_tick_copes_with_generators(

@@ -1,3 +1,4 @@
+import os
 import platform
 
 from influxdb_client import InfluxDBClient, Point
@@ -8,13 +9,22 @@ from snsary.utils import logger
 
 
 class InfluxDBOutput(BatchOutput):
+    @classmethod
+    def from_env(cls):
+        return cls(
+            url=os.environ['INFLUXDB_URL'],
+            token=os.environ['INFLUXDB_TOKEN'],
+            org=os.environ['INFLUXDB_ORG'],
+            bucket=os.environ['INFLUXDB_BUCKET']
+        )
+
     def __init__(self, *, url, token, org, bucket):
         BatchOutput.__init__(self)
         client = InfluxDBClient(url=url, token=token, org=org)
         self.__bucket = bucket
         self.__write_api = client.write_api(write_options=SYNCHRONOUS)
 
-    def send_batch(self, readings):
+    def publish_batch(self, readings):
         points = [
             Point(reading.name)
             .tag('sensor', reading.sensor.name)

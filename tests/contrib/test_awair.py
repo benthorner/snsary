@@ -1,4 +1,5 @@
 import json
+import os
 import re
 from datetime import datetime
 
@@ -16,6 +17,19 @@ def sensor():
         device_id='1234',
         token='token-123'
     )
+
+
+def test_discover_from_env(mocker):
+    mocker.patch.dict(os.environ, {
+        'AWAIR_TOKEN': 'token'
+    })
+
+    mock_discover = mocker.patch.object(
+        AwairSensor, 'discover', return_value='instances'
+    )
+
+    assert AwairSensor.discover_from_env() == 'instances'
+    mock_discover.assert_called_with(token='token')
 
 
 @httpretty.activate(allow_net_connect=False)

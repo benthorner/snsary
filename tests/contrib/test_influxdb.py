@@ -1,9 +1,11 @@
+import os
+
 import httpretty
 import pytest
 
 from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.models import Reading
-from snsary.sensors import Sensor
+from snsary.sources import Sensor
 
 
 @pytest.fixture()
@@ -23,8 +25,33 @@ def sensor():
     return Sensor(name='sensor')
 
 
+def test_from_env(mocker):
+    mocker.patch.dict(os.environ, {
+        'INFLUXDB_URL': 'url',
+        'INFLUXDB_TOKEN': 'token',
+        'INFLUXDB_ORG': 'org',
+        'INFLUXDB_BUCKET': 'bucket'
+    })
+
+    mock_init = mocker.patch.object(
+        InfluxDBOutput, '__init__',
+        return_value=None  # required to mock __init__
+    )
+
+    assert isinstance(
+        InfluxDBOutput.from_env(), InfluxDBOutput
+    )
+
+    mock_init.assert_called_with(
+        url='url',
+        token='token',
+        org='org',
+        bucket='bucket'
+    )
+
+
 @httpretty.activate(allow_net_connect=False)
-def test_send_batch(
+def test_publish_batch(
     influxdb,
     sensor
 ):
@@ -33,7 +60,7 @@ def test_send_batch(
         'http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s'
     )
 
-    influxdb.send_batch([
+    influxdb.publish_batch([
         Reading(
             sensor=sensor,
             name='metric',

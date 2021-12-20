@@ -61,18 +61,15 @@ def sensor(mock_sensor):
     )
 
 
+def test_init(sensor):
+    assert sensor.name == 'PMSx003'
+
+
 def test_init_sensor_not_found():
     with pytest.raises(Exception) as einfo:
         PyPMSSensor(sensor_name='something', port='any')
 
     assert 'KeyError' in str(einfo)
-
-
-def test_init_sensor_not_supported():
-    with pytest.raises(TypeError) as einfo:
-        PyPMSSensor(sensor_name='MHZ19B', port='any')
-
-    assert str(einfo.value) == "Pre-heat sensors not supported."
 
 
 def test_start(

@@ -4,7 +4,7 @@ from pms.core import Sensor
 from serial import Serial
 
 from snsary.models import Reading
-from snsary.sensors import PollingSensor
+from snsary.sources import PollingSensor
 from snsary.utils import logger
 
 
@@ -13,15 +13,12 @@ class PyPMSSensor(PollingSensor):
         self,
         *,
         sensor_name,
-        port,
+        port='/dev/ttyS0',
         warm_up_seconds=10,
         timeout=5
     ):
         self.__sensor = Sensor[sensor_name]
         self.warm_up_seconds = warm_up_seconds
-
-        if self.__sensor.pre_heat:
-            raise TypeError("Pre-heat sensors not supported.")
 
         self.__serial = Serial(
             port,

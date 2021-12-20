@@ -22,8 +22,8 @@ sudo apt install git
 
 pip3 install git+https://github.com/benthorner/snsary#egg=snsary
 
-# or python3 snsary
 ./snsary
+# or "python3 snsary"
 ```
 
 At this point you should see some INFO logs e.g.
@@ -31,36 +31,11 @@ At this point you should see some INFO logs e.g.
 ```bash
 2021-11-13 19:07:17,144 - INFO - [mocksensor-4382645216] Collected 1 readings.
 2021-11-13 19:07:17,144 - INFO - [mockoutput-4383959840] Reading: <zero 1636830437 0>
-2021-11-13 19:07:22,148 - INFO - [mocksensor-4382645216] Collected 1 readings.
-2021-11-13 19:07:22,148 - INFO - [mockoutput-4383959840] Reading: <zero 1636830442 0>
 ```
 
 ## Make the app a service
 
-Run the following (replace `<YOUR_USERNAME>`):
-
-```bash
-echo "
-[Unit]
-Description=Snsary
-Requires=time-sync.target
-After=time-sync.target
-
-[Service]
-User=ben
-Type=simple
-Restart=always
-RestartSec=60
-ExecStart=/home/<YOUR_USERNAME>/snsary
-
-[Install]
-WantedBy=multi-user.target
-" | sudo tee -a /etc/systemd/system/snsary.service > /dev/null
-
-sudo systemctl daemon-reload
-sudo systemctl enable snsary
-sudo service snsary start
-```
+Run [examples/install/service.sh](../../examples/install/service.sh) (replace `<YOUR_USERNAME>`).
 
 Check to see if the service starts and tail its logs:
 
@@ -72,26 +47,11 @@ sudo journalctl -f -u snsary
 
 _For long term and more convenient analysis, it's worth exporting the logs to an external service, such as [GrafanaCloud Loki](logging.md), which is free at the time of writing._
 
-## Customising the snsary app
+## Customising your app
 
-Try installing optional, pre-built sensors / outputs:
+Snsary makes it easy to build large sensing apps:
 
-```bash
-pip3 install git+https://github.com/benthorner/snsary#egg=snsary[all]
-```
+- [In-built processing tools e.g. filters](tools.md).
+- [Extra pre-built sensors and outputs](extras.md).
 
-See [examples/contrib.py](../../examples/contrib.py) for how to use them e.g.
-
-```bash
-    ...
-
-    outputs=[
-        GraphiteOutput(url=os.environ['GRAPHITE_URL']),
-    ]
-
-    ...
-```
-
-_Tip: use a `.env` file and `python-dotenv` to inject environment variables like `GRAPHITE_URL`._
-
-The [rest of the tutorial](README.md) covers some of these in detail.
+[examples/contrib.py](../../examples/contrib.py) shows many of them working together. See [the rest of the tutorial](../README.md) for more details on types of Sensors and Outputs featured in this example file.

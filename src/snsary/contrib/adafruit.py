@@ -1,5 +1,5 @@
 from snsary.models import Reading
-from snsary.sensors import PollingSensor
+from snsary.sources import PollingSensor
 from snsary.utils import property_scraper
 
 
