@@ -1,4 +1,5 @@
 import json
+import os
 import platform
 
 import requests
@@ -8,12 +9,19 @@ from snsary.utils import logger
 
 
 class GraphiteOutput(BatchOutput):
-    def __init__(self, *, url, prefix=None):
+    @classmethod
+    def from_env(cls):
+        return cls(
+            url=os.environ['GRAPHITE_URL'],
+            prefix=platform.node()
+        )
+
+    def __init__(self, *, url, prefix):
         BatchOutput.__init__(self)
         self.__url = url
-        self.__prefix = prefix or platform.node()
+        self.__prefix = prefix
 
-    def send_batch(self, readings):
+    def publish_batch(self, readings):
         data = self.__format(readings)
         logger.debug(f"Sending {data}")
 

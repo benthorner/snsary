@@ -11,23 +11,17 @@ class MockSensor(PollingSensor):
         *,
         fail=False,
         hang=False,
-        stop=True,
         period_seconds=5
     ):
         PollingSensor.__init__(
             self,
-            name='mock-sensor',
+            name='mocksensor',
             period_seconds=period_seconds
         )
 
         self.__hang = hang
         self.__fail = fail
-        self.__stop = stop
         self.__failures = 0
-
-    def stop(self):
-        if self.__stop:
-            PollingSensor.stop(self)
 
     def sample(
         self,

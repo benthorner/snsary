@@ -2,10 +2,12 @@ from datetime import datetime
 from threading import Event, Thread
 
 from .logger import logger
+from .service import Service
 
 
-class Poller:
+class Poller(Service):
     def __init__(self, *, period_seconds):
+        Service.__init__(self)
         self.__period = period_seconds
         self.__stop = Event()
 
@@ -25,10 +27,7 @@ class Poller:
 
     def stop(self):
         self.__stop.set()
-        self.__thread.join(timeout=1)
-
-        if self.__thread.is_alive():
-            logger.error(f'Failed to stop {str(self)}.')
+        self.__thread.join()
 
     def __loop(self):
         while not self.__stop.is_set():

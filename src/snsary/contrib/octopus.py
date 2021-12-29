@@ -1,10 +1,11 @@
+import os
 from datetime import timedelta
 
 import pyrfc3339
 import requests
 
 from snsary.models import Reading
-from snsary.sensors import PollingSensor
+from snsary.sources import PollingSensor
 from snsary.utils import logger
 
 ONE_DAY = 24 * 60 * 60
@@ -12,6 +13,14 @@ ONE_DAY = 24 * 60 * 60
 
 class OctopusSensor(PollingSensor):
     CONSUMPTION_URL = "https://api.octopus.energy/v1/electricity-meter-points/{mpan}/meters/{serial_number}/consumption/?period_from={period_from}&order_by=period"
+
+    @classmethod
+    def from_env(cls):
+        return cls(
+            mpan=os.environ['OCTOPUS_MPAN'],
+            serial_number=os.environ['OCTOPUS_SERIAL'],
+            token=os.environ['OCTOPUS_TOKEN']
+        )
 
     def __init__(self, *, mpan, serial_number, token):
         PollingSensor.__init__(

@@ -8,7 +8,7 @@ Snsary has an adapter ([`contrib/pypms.py`](../../../src/snsary/contrib/pypms.py
 
 Install the PyPMS library / CLI to test the PMS works.
 
-```sh
+```bash
 # you can install it standalone
 pip3 install pypms
 
@@ -27,28 +27,16 @@ It's worth noting the `DEBUG` output: it takes several seconds for the device to
 
 ## Add PyPMSSensor to your app
 
-```python
-from snsary.contrib.pypms import PyPMSSensor
-
-...
-
-    sensors=[
-        ...
-        PyPMSSensor(sensor_name='PMSx003', port='/dev/ttyS0'),
-        ...
-    ],
-
-...
-```
+See [examples/serial/pypms.py](../../examples/serial/pypms.py).
 
 You should see something like the following at startup:
 
 ```
-2021-12-12 11:34:59,401 - INFO - [pypmssensor-1968873328] Still warming up, no data yet.
-2021-12-12 11:34:59,401 - INFO - [pypmssensor-1968873328] Collected 0 readings.
-2021-12-12 11:35:04,402 - INFO - [pypmssensor-1968873328] Still warming up, no data yet.
-2021-12-12 11:35:04,403 - INFO - [pypmssensor-1968873328] Collected 0 readings.
-2021-12-12 11:35:09,446 - INFO - [pypmssensor-1968873328] Collected 12 readings.
+2021-12-12 11:34:59,401 - INFO - [pmsx003-1968873328] Still warming up, no data yet.
+2021-12-12 11:34:59,401 - INFO - [pmsx003-1968873328] Collected 0 readings.
+2021-12-12 11:35:04,402 - INFO - [pmsx003-1968873328] Still warming up, no data yet.
+2021-12-12 11:35:04,403 - INFO - [pmsx003-1968873328] Collected 0 readings.
+2021-12-12 11:35:09,446 - INFO - [pmsx003-1968873328] Collected 12 readings.
 ```
 
 The "warm up" is necessary as the first two samples always [raise an InconsistentObservation exception](https://github.com/avaldebe/PyPMS/blob/04ff8edede7d780018cd00a7fcf78ffed43c0de4/src/pms/sensors/plantower/pmsx003.py#L63). The fault is probably the library not following the device protocol, but it only affects the first two readings.

@@ -1,27 +1,10 @@
 #! /usr/bin/python3
 
-import logging
-import sys
-
-from snsary import App
+from snsary import system
 from snsary.outputs import MockOutput
-from snsary.sensors import MockSensor
+from snsary.sources import MockSensor
+from snsary.utils import configure_logging
 
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - [%(threadName)s] %(message)s"
-)
-
-app = App(
-    sensors=[
-        MockSensor(),
-    ],
-    outputs=[
-        MockOutput(),
-    ]
-)
-
-app.handle_signals()
-app.start()
-app.wait()
+MockSensor().subscribe(MockOutput())
+configure_logging()
+system.start_and_wait()

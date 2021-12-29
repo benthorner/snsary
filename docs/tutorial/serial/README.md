@@ -6,7 +6,7 @@ _Note: "serial" is ambiguous. It can refer to e.g. UART, I2C, SPI, USB, etc. Her
 
 ## First enable serial comms
 
-Follow [these instructions](https://github.com/sbcshop/Air-Monitoring-HAT#enable-i2c-and-serial-interface) to enable serial comms. You don't need to enable I2C to use the PMS, but you will need to restart the Pi as prompted.
+Follow [these instructions](https://github.com/sbcshop/Air-Monitoring-HAT#enable-i2c-and-serial-interface) to enable serial comms. You don't need to enable I2C to use this particular sensor, but you will need to restart the Pi as prompted.
 
 ```sh
 # check the serial port exists

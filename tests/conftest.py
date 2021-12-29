@@ -1,7 +1,7 @@
 import pytest
 
 from snsary.models import Reading
-from snsary.sensors import Sensor
+from snsary.sources import Sensor
 
 
 @pytest.fixture

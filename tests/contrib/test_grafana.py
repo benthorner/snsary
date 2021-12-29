@@ -1,17 +1,19 @@
 import json
+import os
 
 import httpretty
 import pytest
 
-from snsary.contrib.graphite import GraphiteOutput
+from snsary.contrib.grafana import GraphiteOutput
 from snsary.models import Reading
-from snsary.sensors import Sensor
+from snsary.sources import Sensor
 
 
 @pytest.fixture()
-def graphite(mocker):
-    mocker.patch('platform.node', return_value='snsary')
-    return GraphiteOutput(url='http://graphite')
+def graphite():
+    return GraphiteOutput(
+        url='http://graphite', prefix='snsary'
+    )
 
 
 @pytest.fixture()
@@ -19,8 +21,21 @@ def sensor():
     return Sensor(name='sensor')
 
 
+def test_from_env(mocker):
+    mocker.patch.dict(os.environ, {'GRAPHITE_URL': 'url'})
+    mocker.patch('platform.node', return_value='snsary')
+
+    mock_init = mocker.patch.object(
+        GraphiteOutput, '__init__',
+        return_value=None  # required to mock __init__
+    )
+
+    assert isinstance(GraphiteOutput.from_env(), GraphiteOutput)
+    mock_init.assert_called_with(url='url', prefix='snsary')
+
+
 @httpretty.activate(allow_net_connect=False)
-def test_send_batch(
+def test_publish_batch(
     graphite,
     sensor
 ):
@@ -29,7 +44,7 @@ def test_send_batch(
         'http://graphite/'
     )
 
-    graphite.send_batch([
+    graphite.publish_batch([
         Reading(
             sensor=sensor,
             name='metric',
@@ -49,7 +64,7 @@ def test_send_batch(
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_send_batch_error(
+def test_publish_batch_error(
     graphite,
     sensor
 ):
@@ -60,6 +75,6 @@ def test_send_batch_error(
     )
 
     with pytest.raises(Exception) as excinfo:
-        graphite.send_batch([])
+        graphite.publish_batch([])
 
     assert '500 Server Error' in str(excinfo.value)

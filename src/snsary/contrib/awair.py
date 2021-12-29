@@ -1,10 +1,11 @@
+import os
 from datetime import timedelta
 
 import pyrfc3339
 import requests
 
 from snsary.models import Reading
-from snsary.sensors import PollingSensor
+from snsary.sources import PollingSensor
 from snsary.utils import logger
 
 
@@ -12,6 +13,12 @@ class AwairSensor(PollingSensor):
     DEVICES_URL = "https://developer-apis.awair.is/v1/users/self/devices"
     DATA_URL = "https://developer-apis.awair.is/v1/users/self/devices/{deviceType}/{deviceId}/air-data/raw?from={from}&desc=False"
     PERIOD = 5 * 60  # 5 mins
+
+    @classmethod
+    def discover_from_env(cls):
+        return cls.discover(
+            token=os.environ['AWAIR_TOKEN']
+        )
 
     @classmethod
     def discover(cls, *, token):
