@@ -5,6 +5,13 @@ from .scraper import property_scraper, scraper
 from .service import Service
 from .strbase import StrBase
 
-
-def __all__():
-    return [Poller, logger, configure_logging, scraper, property_scraper, Filter, StrBase, Service]
+__all__ = [
+    "Poller",
+    "logger",
+    "configure_logging",
+    "scraper",
+    "property_scraper",
+    "Filter",
+    "StrBase",
+    "Service",
+]
