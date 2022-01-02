@@ -1,3 +1,9 @@
+"""
+Manually subscribing each :mod:`Source <snsary.sources.source>` to each :mod:`Output <snsary.outputs.output>` is repetitive, especially when there are multiple Outputs. MultiSource combines multiple Sources as one. Just like a :mod:`Sensor <snsary.sources.sensor>`, a MultiSource also exposes a stream to make it easier to work with: ::
+
+    MultiSource(MockSensor(), MockSensor()).stream.into(MockOutput())
+"""
+
 from .source import Source
 
 

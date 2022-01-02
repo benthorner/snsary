@@ -43,3 +43,9 @@ make bootstrap-all
 
 make test-all
 ```
+
+## Documentation
+
+Most of this should be in the form of docstrings. Run `make docs` to continuously build the docs. Preview at `localhost:8000` or via the output files in `tmp/docs`.
+
+In [docs/extras](docs/extras) there is also a higher-level guide with setup instructions, shopping links and examples for different types of hardware e.g. serial, I2C.

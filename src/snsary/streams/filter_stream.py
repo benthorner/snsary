@@ -1,3 +1,7 @@
+"""
+Only publishes a :mod:`Reading <snsary.models.reading>` if it returns ``True`` when passed through a *filter function*.
+"""
+
 from .simple_stream import SimpleStream
 
 

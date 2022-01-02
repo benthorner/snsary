@@ -21,4 +21,4 @@ class PollingSensor(Sensor, Poller):
             logger.exception(e)
 
     def sample(self, **kwargs):
-        return []
+        raise NotImplementedError()
