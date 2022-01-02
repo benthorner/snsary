@@ -20,3 +20,7 @@ test-contrib-%:
 
 test-all: test
 	pytest tests/contrib
+
+.PHONY: docs
+docs:
+	sphinx-build -M html docs/sphinx tmp/docs
