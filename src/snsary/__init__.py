@@ -1,5 +1,5 @@
 from . import system
 
-
-def __all__():
-    return [system]
+__all__ = [
+    "system",
+]
