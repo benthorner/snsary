@@ -1,17 +1,17 @@
-from .logger import logger
+from .logging import logger
 
 
-def scraper(value, name=''):
+def simple_scraper(value, name=''):
     if isinstance(value, dict):
         for key, item in value.items():
-            yield from scraper(item, name=f'{name}-{key}')
+            yield from simple_scraper(item, name=f'{name}-{key}')
 
     elif hasattr(value, '_asdict'):
-        yield from scraper(value._asdict(), name=name)
+        yield from simple_scraper(value._asdict(), name=name)
 
     elif isinstance(value, (tuple, list)):
         for index, item in enumerate(value):
-            yield from scraper(item, name=f'{name}-{index}')
+            yield from simple_scraper(item, name=f'{name}-{index}')
 
     elif isinstance(value, int):
         yield (name, int(value))
@@ -34,4 +34,4 @@ class property_scraper:
     def __call__(self, instance):
         for prop in self.__props:
             value = getattr(instance, prop)
-            yield from scraper(value, prop)
+            yield from simple_scraper(value, prop)

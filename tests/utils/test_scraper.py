@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import pytest
 
-from snsary.utils import property_scraper, scraper
+from snsary.utils import property_scraper, simple_scraper
 
 test_namedtuple = namedtuple(
     'test', ['string', 'int', 'float']
@@ -47,8 +47,8 @@ test_namedtuple = namedtuple(
         ]
     )
 ])
-def test_scraper(value, expected):
-    assert list(scraper(value, 'prefix')) == expected
+def test_simple_scraper(value, expected):
+    assert list(simple_scraper(value, 'prefix')) == expected
 
 
 def test_property_scraper():

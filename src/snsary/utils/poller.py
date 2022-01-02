@@ -1,7 +1,7 @@
 from datetime import datetime
 from threading import Event, Thread
 
-from .logger import logger
+from .logging import logger
 from .service import Service
 
 

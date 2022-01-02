@@ -2,7 +2,7 @@ import psutil
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import logger, scraper
+from snsary.utils import logger, simple_scraper
 
 
 class PSUtilSensor(PollingSensor):
@@ -50,4 +50,4 @@ class PSUtilSensor(PollingSensor):
 
         value = getattr(psutil, fname)(**kwargs)
         logger.debug(f'Scraping {fname} => {value}')
-        return scraper(value, fname)
+        return simple_scraper(value, fname)
