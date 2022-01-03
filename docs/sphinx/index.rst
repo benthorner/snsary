@@ -31,6 +31,9 @@ An app in Snsary is made up of :mod:`Sources <snsary.sources.source>` and :mod:`
 - :mod:`Streams <snsary.streams>` and :mod:`MultiSource <snsary.sources.multi_source>` make it easier to connect :mod:`Sources <snsary.sources.source>` to :mod:`Outputs <snsary.outputs.output>`.
 - :mod:`BatchOutput <snsary.outputs.batch_output>` makes it easier to build efficient :mod:`Outputs <snsary.outputs.output>` for Web APIs.
 
+Table of contents
+=================
+
 .. toctree::
    :titlesonly:
 
