@@ -1,3 +1,11 @@
+"""
+Outputs raw (unaveraged) data from all sensors of a specified device every 5 minutes. The long period is necessary due to the severe rate limiting Awair have on `their API <https://docs.developer.getawair.com/#local-api>`_.
+
+Calling ``.discover()`` will auto-discover and return a list of AwairSensors associated with an account, which is more convenient than having to manually find and specify the details of each device. You can also call ``.discover_from_env``, which expects:
+
+- AWAIR_TOKEN
+"""
+
 import os
 from datetime import timedelta
 

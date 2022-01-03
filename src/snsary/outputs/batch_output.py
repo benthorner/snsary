@@ -1,3 +1,7 @@
+"""
+Depending on the output, it may be more efficient to dispatch multiple :mod:`Readings<snsary.models.reading>` together. This can be done by inheriting from BatchOutput, which requires a ``publish_batch`` method. BatchOutput is also a :mod:`Service <snsary.utils.service>` and will try to publish any remaining Readings when told to ``stop()``.
+"""
+
 from datetime import datetime
 
 from snsary.utils import Service, logger
@@ -26,6 +30,9 @@ class BatchOutput(Output, Service):
         self.__readings += [reading]
         self.__try_publish_large_batch()
         self.__try_publish_old_batch()
+
+    def publish_batch(self, readings):
+        raise NotImplementedError()
 
     def __try_publish_large_batch(self):
         if len(self.__readings) < self.__max_size:

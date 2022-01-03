@@ -1,3 +1,10 @@
+"""
+An adapter for `the PyPMS library <https://github.com/avaldebe/PyPMS>`_.
+
+Example of creating an instance::
+
+    PyPMSSensor(sensor_name='PMSx003')
+"""
 import dataclasses
 
 from pms.core import Sensor
@@ -9,6 +16,9 @@ from snsary.utils import logger
 
 
 class PyPMSSensor(PollingSensor):
+    """
+    ``warm_up_seconds`` is necessary for some sensors e.g. for the PMSA003 the first two samples always `raise an InconsistentObservation exception <https://github.com/avaldebe/PyPMS/blob/04ff8edede7d780018cd00a7fcf78ffed43c0de4/src/pms/sensors/plantower/pmsx003.py#L63>`_.
+    """
     def __init__(
         self,
         *,

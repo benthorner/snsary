@@ -1,3 +1,14 @@
+"""
+Sends batches of :mod:`Readings <snsary.models.reading>` as "points" to a specified InfluxDB bucket at a specified endpoint e.g. `InfluxDB Cloud <https://www.influxdata.com/products/influxdb-cloud>`_. Each point is named after the Reading and tagged by **sensor** and **host**.
+
+Create an instance with ``.from_env()``, which expects:
+
+- INFLUXDB_URL
+- INFLUXDB_TOKEN
+- INFLUXDB_ORG
+- INFLUXDB_BUCKET
+"""
+
 import os
 import platform
 

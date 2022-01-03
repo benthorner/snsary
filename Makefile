@@ -23,4 +23,4 @@ test-all: test
 
 .PHONY: docs
 docs:
-	sphinx-build -M html docs/sphinx tmp/docs
+	sphinx-autobuild --watch src docs/sphinx tmp/docs

@@ -1,3 +1,7 @@
+"""
+Creates a thread for each :mod:`Output <snsary.outputs.output>` that subscribes to. Any :mod:`Readings <snsary.models.reading>` are published to a separate queue for each :mod:`Output <snsary.outputs.output>`, with the thread logging any errors from relaying to it. Using AsyncStream helps avoid issues due to flakey or time-consuming :mod:`Outputs <snsary.outputs.output>`.
+"""
+
 from queue import Queue
 from threading import Thread
 

@@ -1,3 +1,9 @@
+"""
+A collection of tools to interact with a remote Grafana Cloud instance.
+
+`GraphiteOutput` sends batches of :mod:`Readings <snsary.models.reading>` to Grafana Cloud, who provide `a custom ingest endpoint for Graphite metrics <https://grafana.com/docs/grafana-cloud/metrics-graphite/http-api/>`_. Metric names are of the form ``<prefix>.<sensor name>.<reading name>``. Using ``.from_env()`` to create an instance sets the ``<prefix>`` to the hostname of the machine. ``.from_env()`` expects ``GRAPHITE_URL`` to be set as an environment variable.
+"""
+
 import json
 import os
 import platform

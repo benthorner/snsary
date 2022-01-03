@@ -1,3 +1,11 @@
+"""
+Outputs KWh consumption from a specified Smart Meter in `half hour intervals <https://developer.octopus.energy/docs/api/#consumption>`_. At the time of writing, data is only available for the previous day sometime on the following day (not sure exactly when). Create an instance with ``.from_env()``, which expects:
+
+- OCTOPUS_MPAN
+- OCTOPUS_SERIAL
+- OCTOPUS_TOKEN
+"""
+
 import os
 from datetime import timedelta
 
@@ -7,8 +15,6 @@ import requests
 from snsary.models import Reading
 from snsary.sources import PollingSensor
 from snsary.utils import logger
-
-ONE_DAY = 24 * 60 * 60
 
 
 class OctopusSensor(PollingSensor):

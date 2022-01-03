@@ -1,5 +1,15 @@
 #! /usr/bin/python3
 
+"""
+Shows a count of readings published.
+
+Prerequisites: ::
+
+    pip3 install adafruit-circuitpython-ssd1306
+
+    wget https://raw.githubusercontent.com/adafruit/Adafruit_CircuitPython_framebuf/main/examples/font5x8.bin
+"""
+
 import adafruit_ssd1306
 import board
 
