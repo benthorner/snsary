@@ -55,23 +55,25 @@ def test_extract_from(value, expected):
 
 def test_for_class():
     class MockClass:
-        @property
-        def prop_1(self):
-            return 1
+        __slots__ = ['slot_1']
+
+        def __init__(self):
+            self.slot_1 = (1.1, 2.2)
 
         @property
-        def prop_2(self):
+        def prop_1(self):
             return (1.1, 2.2)
 
         @property
-        def _prop_3(self):
+        def _prop_2(self):
             return 2
 
     class_scraper = scraper.for_class(MockClass)
     results = class_scraper(MockClass())
 
     assert list(results) == [
-        ('prop_1', 1),
-        ('prop_2-0', 1.1),
-        ('prop_2-1', 2.2),
+        ('prop_1-0', 1.1),
+        ('prop_1-1', 2.2),
+        ('slot_1-0', 1.1),
+        ('slot_1-1', 2.2),
     ]

@@ -1,3 +1,5 @@
+from types import MemberDescriptorType as member_descriptor
+
 from .logger import logger
 
 
@@ -27,7 +29,7 @@ class for_class:
     def __init__(self, klass):
         self.__props = [
             name for name, value in vars(klass).items()
-            if isinstance(value, property)
+            if isinstance(value, (property, member_descriptor))
             and not name.startswith('_')
         ]
 
