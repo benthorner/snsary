@@ -21,6 +21,9 @@ test-contrib-%:
 test-all: test
 	pytest tests/contrib
 
+lint-contrib:
+	scripts/lint-contrib.sh
+
 .PHONY: docs
 docs:
 	sphinx-autobuild --watch src docs/sphinx tmp/docs
