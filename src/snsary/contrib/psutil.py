@@ -50,4 +50,4 @@ class PSUtilSensor(PollingSensor):
 
         value = getattr(psutil, fname)(**kwargs)
         logger.debug(f'Scraping {fname} => {value}')
-        return scraper(value, fname)
+        return scraper.extract_from(value, prefix=fname)

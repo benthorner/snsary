@@ -1,29 +1,29 @@
 from .logger import logger
 
 
-def scraper(value, name=''):
+def extract_from(value, *, prefix):
     if isinstance(value, dict):
         for key, item in value.items():
-            yield from scraper(item, name=f'{name}-{key}')
+            yield from extract_from(item, prefix=f'{prefix}-{key}')
 
     elif hasattr(value, '_asdict'):
-        yield from scraper(value._asdict(), name=name)
+        yield from extract_from(value._asdict(), prefix=prefix)
 
     elif isinstance(value, (tuple, list)):
         for index, item in enumerate(value):
-            yield from scraper(item, name=f'{name}-{index}')
+            yield from extract_from(item, prefix=f'{prefix}-{index}')
 
     elif isinstance(value, int):
-        yield (name, int(value))
+        yield (prefix, int(value))
 
     elif isinstance(value, float):
-        yield (name, value)
+        yield (prefix, value)
 
     else:
         logger.debug(f"Ignoring {value} as not a number.")
 
 
-class property_scraper:
+class for_class:
     def __init__(self, klass):
         self.__props = [
             name for name, value in vars(klass).items()
@@ -34,4 +34,4 @@ class property_scraper:
     def __call__(self, instance):
         for prop in self.__props:
             value = getattr(instance, prop)
-            yield from scraper(value, prop)
+            yield from extract_from(value, prefix=prop)

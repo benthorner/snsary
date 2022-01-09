@@ -25,7 +25,7 @@ Warning: the Adafruit I2C library does have `a locking feature <https://github.c
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import property_scraper
+from snsary.utils import scraper
 
 
 class AdafruitSensor(PollingSensor):
@@ -43,7 +43,7 @@ class AdafruitSensor(PollingSensor):
 
         self.__ready_fn = ready_fn
         self.__device = device
-        self.__scraper = property_scraper(type(device))
+        self.__scraper = scraper.for_class(type(device))
 
     def sample(self, timestamp_seconds, **kwargs):
         if not self.__ready_fn(self.__device):
