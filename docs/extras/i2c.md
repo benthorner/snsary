@@ -30,7 +30,6 @@ i2cdetect -y 1
 
 Example usage: [see the API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/adafruit/index.html)
 
-
 #### BH1750 Light Sensor
 
 - [Datasheet](https://cdn-learn.adafruit.com/downloads/pdf/adafruit-bh1750-ambient-light-sensor.pdf)
@@ -43,7 +42,40 @@ This works out the box - the Adafruit library sets it up for [continuous reading
 - [Datasheet](https://cdn-learn.adafruit.com/assets/assets/000/098/461/original/Sensirion_CO2_Sensors_SCD30_Datasheet.pdf?1609871944)
 - [Shop link](https://thepihut.com/products/adafruit-scd-30-ndir-co2-temperature-and-humidity-sensor)
 
-TODO
+<details>
+<summary>Calibration example program for the SCD30</summary>
+
+```python
+import board
+import adafruit_scd30
+
+i2c = board.I2C()
+device = adafruit_scd30.SCD30(i2c, address=0x61)
+
+# Leave as-is (0). Changing the pressure had no
+# noticeable effect on the reported CO2 readings.
+# device.ambient_pressure = 0  # original was "0"
+
+# Disable auto calibration of CO2. This relies on
+# daily, prolongued exposure to fresh air, which
+# isn't a reliable assumption for a typical home.
+device.self_calibration_enabled = False
+
+# Run this after exposing the device to fresh air
+# for 30 minutes i.e. next to an open window. May
+# need to repeat to get "400" as the average.
+device.forced_recalibration_reference = 400
+
+# This is a negative offset to compensate for the
+# local heating of the circuit board. I use an
+# analogue, indoor thermometer for comparison.
+device.temperature_offset = 5  # original was "0"
+```
+</details>
+
+The temperature readings are highly sensitive to the position of the SCD30. Even with plenty of ventilation, changing where the sensor is mounted would affect the reported temperature by up to 1°C.
+
+Note: [the driver example makes use of a `data_available` property](https://github.com/adafruit/Adafruit_CircuitPython_SCD30/blob/b3d9bd141ae86ec4f871ae42a35d208003672c02/examples/scd30_simpletest.py#L17), but I've not found this necessary - probably because the poll interval (10 seconds) is greater than the measurement interval ([2 seconds](https://github.com/adafruit/Adafruit_CircuitPython_SCD30/blob/b3d9bd141ae86ec4f871ae42a35d208003672c02/adafruit_scd30.py#L98)).
 
 #### Adafruit MS8607 Pressure Humidity Temperature PHT Sensor
 
