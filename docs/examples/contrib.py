@@ -7,12 +7,12 @@ from adafruit_scd30 import SCD30
 from dotenv import load_dotenv
 
 from snsary import system
-from snsary.contrib.adafruit import AdafruitSensor
+from snsary.contrib.adafruit import GenericSensor as AdafruitSensor
 from snsary.contrib.awair import AwairSensor
 from snsary.contrib.grafana import GraphiteOutput
 from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.contrib.octopus import OctopusSensor
-from snsary.contrib.pimoroni import PimoroniSensor
+from snsary.contrib.pimoroni import GenericSensor as PimoroniSensor
 from snsary.contrib.psutil import PSUtilSensor
 from snsary.contrib.pypms import PyPMSSensor
 from snsary.sources import MultiSource

@@ -1,6 +1,6 @@
 from mics6814 import Mics6814Reading
 
-from snsary.contrib.pimoroni import PimoroniSensor
+from snsary.contrib.pimoroni import GenericSensor
 
 
 def test_mics6814_i2c(mocker):
@@ -12,7 +12,7 @@ def test_mics6814_i2c(mocker):
         ox=1, red=2, nh3=3, adc=4
     )
 
-    sensor = PimoroniSensor.mics6814_i2c()
+    sensor = GenericSensor.mics6814_i2c()
     assert sensor.name == 'MICS6814'
     mock_class().set_led.assert_called_with(0, 0, 0)
 
@@ -28,7 +28,7 @@ def test_mics6814_i2c(mocker):
 
 
 def test_sample():
-    sensor = PimoroniSensor(
+    sensor = GenericSensor(
         name='sensor',
         read_fn=lambda: [('name', 'value')]
     )

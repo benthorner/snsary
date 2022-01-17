@@ -1,6 +1,6 @@
 import pytest
 
-from snsary.contrib.adafruit import AdafruitSensor
+from snsary.contrib.adafruit import GenericSensor
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def mock_device(mocker):
 
 @pytest.fixture
 def sensor(mock_device):
-    return AdafruitSensor(
+    return GenericSensor(
         mock_device,
         ready_fn=lambda device: device.data_available,
     )

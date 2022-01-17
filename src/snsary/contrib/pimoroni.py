@@ -7,7 +7,7 @@ Example for `the MICS6814 3-in-1 Gas Sensor <https://thepihut.com/products/mics6
    pip3 install pimoroni-mics6814
 
    # create the sensor to poll
-   PimoroniSensor.mics6814_i2c()
+   GenericPimoroniSensor.mics6814_i2c()
 
 Warning: sensors like ``mics6814_i2c`` rely on `the Pimoroni IO Expander library <https://github.com/pimoroni/ioe-python>`_, which uses `smbus2 <https://github.com/kplindegaard/smbus2>`_ internally and doesn't implement any kind of locking. This means it's possible for multiple sensors to conflict if they poll for data around the exact same time.
 """
@@ -17,7 +17,7 @@ from snsary.sources import PollingSensor
 from snsary.utils import scraper
 
 
-class PimoroniSensor(PollingSensor):
+class GenericSensor(PollingSensor):
     @classmethod
     def mics6814_i2c(cls):
         """

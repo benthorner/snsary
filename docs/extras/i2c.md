@@ -26,7 +26,7 @@ i2cdetect -y 1
 
 ## Example Sensors
 
-### AdafruitSensor
+### Adafruit
 
 Example usage: [see the API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/adafruit/index.html)
 
@@ -86,7 +86,7 @@ This works for **pressure** out the box - the Adafruit library sets it up to [re
 
 Temperature / humidity can't be adjusted easily: the calibration values are documented in the datasheet but not in detail, and [aren't intended to be changed](https://github.com/adafruit/Adafruit_CircuitPython_MS8607/blob/1d08d0d09f0c556c71bb19c9816e6efb59aead65/adafruit_ms8607.py#L210). Not useful if the sensor is positioned near other heat sources.
 
-### PimoroniSensor
+### Pimoroni
 
 Example usage: [see the API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/pimoroni/index.html)
 
