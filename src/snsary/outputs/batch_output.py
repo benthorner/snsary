@@ -4,7 +4,7 @@ Depending on the output, it may be more efficient to dispatch multiple :mod:`Rea
 
 from datetime import datetime
 
-from snsary.utils import Service, logger
+from snsary.utils import Service
 
 from .output import Output
 
@@ -18,7 +18,7 @@ class BatchOutput(Output, Service):
         self.__last_publish = datetime.utcnow().timestamp()
 
     def flush(self):
-        logger.info(f"Sending {len(self.__readings)} readings.")
+        self.logger.info(f"Sending {len(self.__readings)} readings.")
         self.publish_batch(self.__readings)
         self.__readings = []
 

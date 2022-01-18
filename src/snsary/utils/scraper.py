@@ -1,6 +1,6 @@
 from types import MemberDescriptorType as member_descriptor
 
-from .logger import logger
+from .logger import get_logger
 
 
 def extract_from(value, *, prefix):
@@ -22,7 +22,7 @@ def extract_from(value, *, prefix):
         yield (prefix, value)
 
     else:
-        logger.debug(f"Ignoring {value} as not a number.")
+        get_logger().debug(f"Ignoring {value} as not a number.")
 
 
 class for_class:

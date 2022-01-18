@@ -14,7 +14,6 @@ import requests
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import logger
 
 
 class OctopusSensor(PollingSensor):
@@ -49,13 +48,13 @@ class OctopusSensor(PollingSensor):
             period_from=start.isoformat(),
         )
 
-        logger.debug('Request {url}')
+        self.logger.debug('Request {url}')
         response = requests.get(
             url, auth=(self.__token, '')
         )
         response.raise_for_status()
         samples = response.json()["results"]
-        logger.debug(f'Response {samples}')
+        self.logger.debug(f'Response {samples}')
 
         return [
             self.__sample_reading(sample) for sample in samples

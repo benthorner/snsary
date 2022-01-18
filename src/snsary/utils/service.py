@@ -1,7 +1,7 @@
-from .strbase import StrBase
+from .logger import HasLogger
 
 
-class Service(StrBase):
+class Service(HasLogger):
     instances = []
 
     def __init__(self):

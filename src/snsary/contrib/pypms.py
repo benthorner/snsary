@@ -12,7 +12,6 @@ from serial import Serial
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import logger
 
 
 class PyPMSSensor(PollingSensor):
@@ -44,7 +43,7 @@ class PyPMSSensor(PollingSensor):
 
     def __cmd(self, command):
         cmd = self.__sensor.command(command)
-        logger.debug(f"Sending {command} => {cmd}")
+        self.logger.debug(f"Sending {command} => {cmd}")
         # clear any stray inbound data
         self.__serial.reset_input_buffer()
         # no need to flush() - this can
@@ -52,7 +51,7 @@ class PyPMSSensor(PollingSensor):
         self.__serial.write(cmd.command)
         buffer = self.__serial.read(cmd.answer_length)
 
-        logger.debug(f"Received {buffer}")
+        self.logger.debug(f"Received {buffer}")
         return buffer
 
     def start(self):
@@ -71,11 +70,11 @@ class PyPMSSensor(PollingSensor):
             self.__cmd("sleep")
             self.__serial.close()
         except Exception as e:
-            logger.exception(e)
+            self.logger.exception(e)
 
     def sample(self, timestamp_seconds, elapsed_seconds, **kwargs):
         if elapsed_seconds < self.warm_up_seconds:
-            logger.info("Still warming up, no data yet.")
+            self.logger.info("Still warming up, no data yet.")
             return []
 
         buffer = self.__cmd("passive_read")

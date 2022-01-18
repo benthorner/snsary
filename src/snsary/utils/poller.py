@@ -1,7 +1,7 @@
 from datetime import datetime
 from threading import Event, Thread
 
-from .logger import logger
+from .logger import get_logger
 from .service import Service
 
 
@@ -10,12 +10,7 @@ class Poller(Service):
         Service.__init__(self)
         self.__period = period_seconds
         self.__stop = Event()
-
-        self.__thread = Thread(
-            target=self.__loop,
-            daemon=True,
-            name=str(self)
-        )
+        self.__thread = Thread(target=self.__loop, daemon=True)
 
     @property
     def period(self):
@@ -36,7 +31,7 @@ class Poller(Service):
             delay = int((datetime.utcnow() - now).total_seconds())
 
             if delay > self.period:
-                logger.warning(f"Took too long to get sample: {delay}s.")
+                get_logger().warning(f"Took too long to get sample: {delay}s.")
             else:
                 self.__stop.wait(timeout=(self.period - delay))
 

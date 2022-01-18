@@ -5,8 +5,6 @@ Creates a thread for each :mod:`Output <snsary.outputs.output>` that subscribes 
 from queue import Queue
 from threading import Thread
 
-from snsary.utils import logger
-
 from .stream import Stream
 
 
@@ -27,10 +25,6 @@ class AsyncStream(Stream):
                 try:
                     output.publish(queue.get())
                 except Exception as e:
-                    logger.exception(e)
+                    output.logger.exception(e)
 
-        Thread(
-            target=_relay,
-            daemon=True,
-            name=str(output),
-        ).start()
+        Thread(target=_relay, daemon=True).start()

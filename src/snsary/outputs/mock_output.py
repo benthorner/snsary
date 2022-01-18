@@ -1,7 +1,5 @@
 from threading import Event
 
-from snsary.utils import logger
-
 from .output import Output
 
 
@@ -24,4 +22,4 @@ class MockOutput(Output):
             self.__failures += 1
             raise RuntimeError(f'problem-{self.__failures}')
 
-        logger.info(f"Reading: {reading}")
+        self.logger.info(f"Reading: {reading}")

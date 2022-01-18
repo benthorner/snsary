@@ -1,7 +1,45 @@
 import logging
 import sys
+from threading import Thread
 
-from snsary.utils import configure_logging
+import pytest
+
+from snsary.utils import HasLogger, configure_logging, get_logger
+from tests.conftest import retry
+
+
+def test_HasLogger_logger():
+    assert HasLogger().logger.name.startswith('snsary.haslogger')
+
+
+def test_get_logger_main_thread():
+    assert get_logger().name == 'snsary'
+
+
+def test_get_logger_not_found(mocker):
+    mock_thread = mocker.patch('snsary.utils.logger.current_thread')
+    mock_thread().ident = 'rand'  # mock ident to avoid reuse issues
+
+    with pytest.raises(KeyError):
+        get_logger()
+
+
+def test_get_logger_child_thread(caplog):
+    caplog.set_level(logging.INFO)
+
+    def in_a_thread():
+        get_logger('foo').warning("testing")
+        get_logger().info("success")
+
+    def assertions():
+        assert 'WARNING - [snsary.foo] testing' in caplog.text
+        assert 'INFO - [snsary.foo] success' in caplog.text
+
+    thread = Thread(target=in_a_thread)
+    thread.start()
+
+    thread.join()
+    retry(assertions)
 
 
 def test_configure_logging(mocker):

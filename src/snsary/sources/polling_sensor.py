@@ -1,4 +1,4 @@
-from snsary.utils import Poller, logger
+from snsary.utils import Poller
 
 from .sensor import Sensor
 
@@ -13,12 +13,12 @@ class PollingSensor(Sensor, Poller):
     def _tick(self, **kwargs):
         try:
             readings = list(self.sample(**kwargs))
-            logger.info(f"Collected {len(readings)} readings.")
+            self.logger.info(f"Collected {len(readings)} readings.")
 
             for reading in readings:
                 self.stream.publish(reading)
         except Exception as e:
-            logger.exception(e)
+            self.logger.exception(e)
 
     def sample(self, **kwargs):
         raise NotImplementedError()

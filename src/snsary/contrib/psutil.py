@@ -2,7 +2,7 @@ import psutil
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import logger, scraper
+from snsary.utils import scraper
 
 
 class PSUtilSensor(PollingSensor):
@@ -45,9 +45,9 @@ class PSUtilSensor(PollingSensor):
 
     def __sample_fn(self, fname, kwargs):
         if not hasattr(psutil, fname):
-            logger.debug(f"Skipping {fname} as not available.")
+            self.logger.debug(f"Skipping {fname} as not available.")
             return []
 
         value = getattr(psutil, fname)(**kwargs)
-        logger.debug(f'Scraping {fname} => {value}')
+        self.logger.debug(f'Scraping {fname} => {value}')
         return scraper.extract_from(value, prefix=fname)

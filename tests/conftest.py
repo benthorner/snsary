@@ -1,7 +1,13 @@
 import pytest
+from retry import retry as retrier
 
 from snsary.models import Reading
 from snsary.sources import Sensor
+
+
+def retry(fn):
+    # logger=None stops failure logs causing a false positive
+    retrier(tries=5, delay=0.5, logger=None)(fn)()
 
 
 @pytest.fixture

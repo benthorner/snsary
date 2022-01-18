@@ -1,6 +1,6 @@
-from snsary.utils import StrBase
+from snsary.utils import HasLogger
 
 
-class Source(StrBase):
+class Source(HasLogger):
     def subscribe(self, output):
         raise NotImplementedError()

@@ -18,6 +18,3 @@ class Sensor(Source):
 
     def subscribe(self, output):
         self.stream.subscribe(output)
-
-    def __str__(self):
-        return f'{self.name.lower()}-{id(self)}'

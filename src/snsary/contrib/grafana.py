@@ -11,7 +11,6 @@ import platform
 import requests
 
 from snsary.outputs import BatchOutput
-from snsary.utils import logger
 
 
 class GraphiteOutput(BatchOutput):
@@ -29,7 +28,7 @@ class GraphiteOutput(BatchOutput):
 
     def publish_batch(self, readings):
         data = self.__format(readings)
-        logger.debug(f"Sending {data}")
+        self.logger.debug(f"Sending {data}")
 
         response = requests.post(
             self.__url,
@@ -37,7 +36,7 @@ class GraphiteOutput(BatchOutput):
             headers={'Content-Type': 'application/json'},
         )
 
-        logger.debug(response.text)
+        self.logger.debug(response.text)
         response.raise_for_status()
 
     def __format(self, readings):

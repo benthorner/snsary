@@ -16,7 +16,6 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from snsary.outputs import BatchOutput
-from snsary.utils import logger
 
 
 class InfluxDBOutput(BatchOutput):
@@ -45,7 +44,7 @@ class InfluxDBOutput(BatchOutput):
             for reading in readings
         ]
 
-        logger.debug('Sending ' + str(list(
+        self.logger.debug('Sending ' + str(list(
             point.to_line_protocol() for point in points
         )))
 

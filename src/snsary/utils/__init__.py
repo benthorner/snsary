@@ -1,9 +1,8 @@
 from . import scraper
 from .filter import Filter
-from .logger import configure_logging, logger
+from .logger import HasLogger, configure_logging, get_logger
 from .poller import Poller
 from .service import Service
-from .strbase import StrBase
 
 __all__ = [
     "Poller",
@@ -11,6 +10,7 @@ __all__ = [
     "configure_logging",
     "scraper",
     "Filter",
-    "StrBase",
     "Service",
+    "get_logger",
+    "HasLogger"
 ]
