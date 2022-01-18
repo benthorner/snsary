@@ -8,5 +8,5 @@ def configure_logging(level=logging.INFO):
     logging.basicConfig(
         stream=sys.stdout,
         level=level,
-        format="%(asctime)s - %(levelname)s - [%(threadName)s] %(message)s"
+        format="%(levelname)s - [%(threadName)s] %(message)s"
     )
