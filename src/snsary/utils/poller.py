@@ -27,7 +27,7 @@ class Poller(Service):
     def __loop(self):
         while not self.__stop.is_set():
             now = datetime.utcnow()
-            self._tick(**self.__tick_kwargs(now))
+            self.tick(**self.__tick_kwargs(now))
             delay = int((datetime.utcnow() - now).total_seconds())
 
             if delay > self.period:
@@ -35,7 +35,7 @@ class Poller(Service):
             else:
                 self.__stop.wait(timeout=(self.period - delay))
 
-    def _tick(self, **kwargs):
+    def tick(self, **kwargs):
         pass
 
     def __tick_kwargs(self, now):

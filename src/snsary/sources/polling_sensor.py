@@ -10,7 +10,7 @@ class PollingSensor(Sensor, Poller):
         Sensor.__init__(self, name=name)
         Poller.__init__(self, period_seconds=period_seconds)
 
-    def _tick(self, **kwargs):
+    def tick(self, **kwargs):
         try:
             readings = list(self.sample(**kwargs))
             self.logger.info(f"Collected {len(readings)} readings.")

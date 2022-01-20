@@ -14,5 +14,5 @@ def test_tick_copes_with_generators(
             yield 'reading'
 
     caplog.set_level(logging.INFO)
-    TestSensor()._tick()
+    TestSensor().tick()
     assert "Collected 1 readings" in caplog.text
