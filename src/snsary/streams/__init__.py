@@ -7,10 +7,18 @@ Any Stream can be wrapped in a filter e.g. ::
 
     stream.filter_names('a', 'b', 'c').subscribe(MockOutput())
 
-To help make filter functions there is a :mod:`Filter <snsary.utils.filter>` utility. Streams also make it easy to subscribe multiple :mod:`Outputs <snsary.outputs.output>` by passing them all to ``.into()``: ::
+To help make filter functions there is a :mod:`Filter <snsary.functions.filter>` class. Streams also make it easy to subscribe multiple :mod:`Outputs <snsary.outputs.output>` by passing them all to ``.into()``: ::
 
     # same as calling "subscribe" for each
     stream.into(MockOutput(), MockOutput())
+
+A stream can actually be used to ``apply`` any :mod:`function <snsary.functions>` to the readings that pass through it. For example, to average the distinct readings received in a window: ::
+
+    # output an average every 3 readings
+    # for each distinct sensor / reading name
+    stream.average(size=3).into(MockOutput())
+
+``average`` is just a convenience method for ``apply``.
 """
 
 

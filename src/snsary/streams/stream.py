@@ -1,6 +1,6 @@
+from snsary.functions import Filter, WindowAverage
 from snsary.outputs import Output
 from snsary.sources import Source
-from snsary.utils import Filter
 
 
 class Stream(Source, Output):
@@ -8,9 +8,19 @@ class Stream(Source, Output):
         for output in outputs:
             self.subscribe(output)
 
+    def apply(self, function):
+        from .func_stream import FuncStream
+        return FuncStream(self, function)
+
     def filter(self, filter):
-        from .filter_stream import FilterStream
-        return FilterStream(self, filter)
+        def _filter(reading):
+            if filter(reading):
+                return reading
+
+        return self.apply(_filter)
 
     def filter_names(self, *names):
-        return self.filter(Filter.names(*names))
+        return self.apply(Filter.names(*names))
+
+    def average(self, size=3):
+        return self.apply(WindowAverage(size=size))

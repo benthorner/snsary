@@ -22,6 +22,17 @@ def output():
     return FakeOutput()
 
 
+def test_apply(stream, output):
+    def _function(reading):
+        return create_reading(value=2)
+
+    stream.apply(_function).into(output)
+    stream.publish(create_reading(value=1))
+
+    assert len(output.readings) == 1
+    assert output.readings[0].value == 2
+
+
 def test_filter(stream, output):
     stream.filter(
         lambda reading: reading.name == 'pass'
@@ -41,3 +52,13 @@ def test_filter_names(stream, output):
 
     assert len(output.readings) == 1
     assert output.readings[0].name == 'pass'
+
+
+def test_average(stream, output):
+    stream.average(size=3).into(output)
+
+    for i in range(3):
+        stream.publish(create_reading(value=i+1))
+
+    assert len(output.readings) == 1
+    assert output.readings[0].value == 2

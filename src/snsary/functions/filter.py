@@ -3,7 +3,7 @@ class Filter:
         self.__allow_fn = allow_fn
 
     def __call__(self, reading):
-        return self.__allow_fn(reading)
+        return reading if self.__allow_fn(reading) else None
 
     @property
     def invert(self):

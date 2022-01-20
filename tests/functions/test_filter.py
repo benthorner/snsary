@@ -1,4 +1,4 @@
-from snsary.utils import Filter
+from snsary.functions import Filter
 
 
 def test_call():
