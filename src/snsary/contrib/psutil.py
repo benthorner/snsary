@@ -24,12 +24,11 @@ class PSUtilSensor(PollingSensor):
 
     def __init__(self, functions=FUNCTIONS):
         self.__functions = functions
+        PollingSensor.__init__(self, period_seconds=10)
 
-        PollingSensor.__init__(
-            self,
-            name='psutil',
-            period_seconds=10
-        )
+    @property
+    def name(self):
+        return 'psutil'
 
     def sample(self, timestamp_seconds, **kwargs):
         return [

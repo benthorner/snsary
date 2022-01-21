@@ -6,8 +6,8 @@ from .sensor import Sensor
 class PollingSensor(Sensor, Poller):
     start = Poller.start
 
-    def __init__(self, *, name, period_seconds):
-        Sensor.__init__(self, name=name)
+    def __init__(self, *, period_seconds):
+        Sensor.__init__(self)
         Poller.__init__(self, period_seconds=period_seconds)
 
     def tick(self, **kwargs):

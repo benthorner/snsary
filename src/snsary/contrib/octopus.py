@@ -30,13 +30,16 @@ class OctopusSensor(PollingSensor):
     def __init__(self, *, mpan, serial_number, token):
         PollingSensor.__init__(
             self,
-            name='octopus',
             period_seconds=30 * 60  # 30 mins
         )
 
         self.__token = token
         self.__mpan = mpan
         self.__serial_number = serial_number
+
+    @property
+    def name(self):
+        return 'octopus'
 
     def sample(self, now, **kwargs):
         start = now - timedelta(days=1)

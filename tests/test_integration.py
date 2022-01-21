@@ -26,19 +26,19 @@ def tmp_app(*, sensors=[], outputs=[]):
 def test_system(caplog):
     caplog.set_level(logging.INFO)
     sensors = [MockSensor(period_seconds=1)]
-    outputs = [MockOutput(), MockOutput()]
+    outputs = [MockOutput(), MockOutput(index=1)]
 
     def first_assertions():
         timestamp = int(datetime.utcnow().timestamp())
         assert 'INFO - [snsary] Started.' in caplog.text
-        assert f'INFO - [{sensors[0].logger.name}] Collected 1 readings.' in caplog.text
-        assert f'INFO - [{outputs[0].logger.name}] Reading: <zero {timestamp} 0>' in caplog.text
-        assert f'INFO - [{outputs[1].logger.name}] Reading: <zero {timestamp} 0>' in caplog.text
+        assert 'INFO - [snsary.mocksensor-0] Collected 1 readings.' in caplog.text
+        assert f'INFO - [snsary.mockoutput-0] Reading: <zero {timestamp} 0>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-1] Reading: <zero {timestamp} 0>' in caplog.text
 
     def second_assertions():
         timestamp = int(datetime.utcnow().timestamp())
-        assert f'INFO - [{outputs[0].logger.name}] Reading: <zero {timestamp} 1>' in caplog.text
-        assert f'INFO - [{outputs[1].logger.name}] Reading: <zero {timestamp} 1>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-0] Reading: <zero {timestamp} 1>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-1] Reading: <zero {timestamp} 1>' in caplog.text
 
     def end_assertions():
         assert 'INFO - [snsary] Stopping.' in caplog.text
@@ -58,8 +58,8 @@ def test_failing_sensor(caplog):
     sensors = [MockSensor(fail=True, period_seconds=1)]
 
     def assertions():
-        assert f'ERROR - [{sensors[0].logger.name}] problem-1' in caplog.text
-        assert f'ERROR - [{sensors[0].logger.name}] problem-2' in caplog.text
+        assert 'ERROR - [snsary.mocksensor-0] problem-1' in caplog.text
+        assert 'ERROR - [snsary.mocksensor-0] problem-2' in caplog.text
 
     with tmp_app(sensors=sensors):
         retry(assertions)
@@ -71,9 +71,9 @@ def test_failing_output(caplog):
     outputs = [MockOutput(fail=True)]
 
     def assertions():
-        assert f'INFO - [{sensors[0].logger.name}] Collected 1 readings.' in caplog.text
-        assert f'ERROR - [{outputs[0].logger.name}] problem-1' in caplog.text
-        assert f'ERROR - [{outputs[0].logger.name}] problem-2' in caplog.text
+        assert 'INFO - [snsary.mocksensor-0] Collected 1 readings.' in caplog.text
+        assert 'ERROR - [snsary.mockoutput-0] problem-1' in caplog.text
+        assert 'ERROR - [snsary.mockoutput-0] problem-2' in caplog.text
 
     with tmp_app(sensors=sensors, outputs=outputs):
         retry(assertions)
@@ -81,17 +81,17 @@ def test_failing_output(caplog):
 
 def test_stuck_sensor_service(caplog):
     caplog.set_level(logging.INFO)
-    sensors = [MockSensor(hang=True), MockSensor()]
+    sensors = [MockSensor(hang=True), MockSensor(index=1)]
 
     def assertions():
-        assert f'INFO - [{sensors[1].logger.name}] Collected 1 readings.' in caplog.text
-        assert f'INFO - [{sensors[0].logger.name}] Collected 1 readings.' not in caplog.text
+        assert 'INFO - [snsary.mocksensor-1] Collected 1 readings.' in caplog.text
+        assert 'INFO - [snsary.mocksensor-0] Collected 1 readings.' not in caplog.text
 
     with tmp_app(sensors=sensors):
         retry(assertions)
 
     def end_assertions():
-        assert f'ERROR - [{sensors[0].logger.name}] Failed to stop.' in caplog.text
+        assert 'ERROR - [snsary.mocksensor-0] Failed to stop.' in caplog.text
 
     retry(end_assertions)
 
@@ -99,11 +99,11 @@ def test_stuck_sensor_service(caplog):
 def test_stuck_output_async(caplog):
     caplog.set_level(logging.INFO)
     sensors = [MockSensor()]
-    outputs = [MockOutput(hang=True), MockOutput()]
+    outputs = [MockOutput(hang=True), MockOutput(index=1)]
 
     def assertions():
-        assert f'INFO - [{outputs[1].logger.name}] Reading' in caplog.text
-        assert f'INFO - [{outputs[0].logger.name}] Reading' not in caplog.text
+        assert 'INFO - [snsary.mockoutput-1] Reading' in caplog.text
+        assert 'INFO - [snsary.mockoutput-0] Reading' not in caplog.text
 
     with tmp_app(sensors=sensors, outputs=outputs):
         retry(assertions)

@@ -50,15 +50,14 @@ class AwairSensor(PollingSensor):
         ]
 
     def __init__(self, *, device_type, device_id, token):
-        PollingSensor.__init__(
-            self,
-            name=f'{device_type}-{device_id}',
-            period_seconds=self.PERIOD
-        )
-
+        PollingSensor.__init__(self, period_seconds=self.PERIOD)
         self.__token = token
         self.__device_type = device_type
         self.__device_id = device_id
+
+    @property
+    def name(self):
+        return f'{self.__device_type}-{self.__device_id}'
 
     def sample(self, now, **kwargs):
         # subtract double period in case of delayed readings

@@ -61,7 +61,7 @@ def sensor(mock_sensor):
     )
 
 
-def test_init(sensor):
+def test_name(sensor):
     assert sensor.name == 'PMSx003'
 
 

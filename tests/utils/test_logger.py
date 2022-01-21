@@ -8,8 +8,12 @@ from snsary.utils import HasLogger, configure_logging, get_logger
 from tests.conftest import retry
 
 
+def test_HasLogger_name():
+    assert HasLogger().name == 'HasLogger'
+
+
 def test_HasLogger_logger():
-    assert HasLogger().logger.name.startswith('snsary.haslogger')
+    assert HasLogger().logger.name == 'snsary.haslogger'
 
 
 def test_get_logger_main_thread():

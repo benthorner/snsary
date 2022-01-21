@@ -11,17 +11,22 @@ class MockSensor(PollingSensor):
         *,
         fail=False,
         hang=False,
-        period_seconds=5
+        period_seconds=5,
+        index=0
     ):
         PollingSensor.__init__(
             self,
-            name='mocksensor',
             period_seconds=period_seconds
         )
 
         self.__hang = hang
         self.__fail = fail
         self.__failures = 0
+        self.__index = index
+
+    @property
+    def name(self):
+        return f'mocksensor-{self.__index}'
 
     def sample(
         self,

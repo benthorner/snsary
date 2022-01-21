@@ -15,9 +15,23 @@ def reading():
     return create_reading()
 
 
+@pytest.fixture
+def sensor():
+    return create_sensor()
+
+
+def create_sensor(*, name='mysensor'):
+    class FakeSensor(Sensor):
+        @property
+        def name(self):
+            return name
+
+    return FakeSensor()
+
+
 def create_reading(
     *,
-    sensor=Sensor(name='mysensor'),
+    sensor=create_sensor(),
     timestamp_seconds=123,
     value=123,
     name='myreading'

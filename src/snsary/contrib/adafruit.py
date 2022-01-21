@@ -35,15 +35,14 @@ class GenericSensor(PollingSensor):
         ready_fn=lambda device: True,
         period_seconds=10
     ):
-        PollingSensor.__init__(
-            self,
-            name=type(device).__name__,
-            period_seconds=period_seconds
-        )
-
+        PollingSensor.__init__(self, period_seconds=period_seconds)
         self.__ready_fn = ready_fn
         self.__device = device
         self.__scraper = scraper.for_class(type(device))
+
+    @property
+    def name(self):
+        return type(self.__device).__name__
 
     def sample(self, timestamp_seconds, **kwargs):
         if not self.__ready_fn(self.__device):

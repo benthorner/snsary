@@ -24,12 +24,7 @@ from snsary.utils import configure_logging
 
 class ButtonSensor(PollingSensor):
     def __init__(self):
-        PollingSensor.__init__(
-            self,
-            name='button',
-            period_seconds=10
-        )
-
+        PollingSensor.__init__(self, period_seconds=10)
         self.__button = digitalio.DigitalInOut(board.D17)
         self.__button.direction = digitalio.Direction.INPUT
 

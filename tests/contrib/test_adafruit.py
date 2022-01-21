@@ -30,7 +30,7 @@ def test_sample_no_data(sensor, mock_device):
     assert str(excinfo.value) == 'Device has no data to read.'
 
 
-def test_init(sensor):
+def test_name(sensor):
     assert sensor.name == 'MockDevice'
 
 

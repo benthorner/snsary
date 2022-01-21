@@ -6,7 +6,6 @@ import pytest
 
 from snsary.contrib.grafana import GraphiteOutput
 from snsary.models import Reading
-from snsary.sources import Sensor
 
 
 @pytest.fixture()
@@ -14,11 +13,6 @@ def graphite():
     return GraphiteOutput(
         url='http://graphite', prefix='snsary'
     )
-
-
-@pytest.fixture()
-def sensor():
-    return Sensor(name='sensor')
 
 
 def test_from_env(mocker):
@@ -57,7 +51,7 @@ def test_publish_batch(
 
     assert json.loads(request.body) == [{
         'interval': 1,
-        'name': 'snsary.sensor.metric',
+        'name': 'snsary.mysensor.metric',
         'time': 1000,
         'value': 1
     }]

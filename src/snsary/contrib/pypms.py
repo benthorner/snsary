@@ -37,9 +37,12 @@ class PyPMSSensor(PollingSensor):
 
         PollingSensor.__init__(
             self,
-            name=self.__sensor.name,
             period_seconds=10
         )
+
+    @property
+    def name(self):
+        return self.__sensor.name
 
     def __cmd(self, command):
         cmd = self.__sensor.command(command)

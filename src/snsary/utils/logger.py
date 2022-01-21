@@ -8,9 +8,12 @@ loggers = dict()
 
 class HasLogger:
     @property
+    def name(self):
+        return type(self).__name__
+
+    @property
     def logger(self):
-        name = f"{type(self).__name__.lower()}.{id(self)}"
-        return get_logger(name)
+        return get_logger(self.name.lower())
 
 
 def get_logger(name=None):

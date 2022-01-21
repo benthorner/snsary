@@ -1,8 +1,7 @@
 import pytest
 
 from snsary.functions import Window
-from snsary.sources import Sensor
-from tests.conftest import create_reading
+from tests.conftest import create_reading, create_sensor
 
 
 @pytest.fixture
@@ -15,8 +14,8 @@ def window():
 
 
 def test_window(window):
-    sensor1 = Sensor(name='sensor1')
-    sensor2 = Sensor(name='sensor2')
+    sensor1 = create_sensor()
+    sensor2 = create_sensor()
 
     assert not window(create_reading(value=1, sensor=sensor1))
     assert not window(create_reading(value=2, sensor=sensor2))

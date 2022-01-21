@@ -1,5 +1,7 @@
 from threading import Event
 
+from snsary.utils import get_logger
+
 from .output import Output
 
 
@@ -9,10 +11,16 @@ class MockOutput(Output):
         *,
         fail=False,
         hang=False,
+        index=0
     ):
         self.__fail = fail
         self.__hang = hang
         self.__failures = 0
+        self.__index = index
+
+    @property
+    def logger(self):
+        return get_logger(f'mockoutput-{self.__index}')
 
     def publish(self, reading):
         if self.__hang:

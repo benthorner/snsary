@@ -5,7 +5,6 @@ import pytest
 
 from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.models import Reading
-from snsary.sources import Sensor
 
 
 @pytest.fixture()
@@ -18,11 +17,6 @@ def influxdb(mocker):
         org='org',
         bucket='bucket'
     )
-
-
-@pytest.fixture()
-def sensor():
-    return Sensor(name='sensor')
 
 
 def test_from_env(mocker):
@@ -71,4 +65,4 @@ def test_publish_batch(
 
     request = httpretty.last_request()
     assert request.headers['Authorization'] == 'Token token'
-    assert b'metric,host=snsary,sensor=sensor value=1i 1000' in request.body
+    assert b'metric,host=snsary,sensor=mysensor value=1i 1000' in request.body

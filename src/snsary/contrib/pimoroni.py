@@ -7,7 +7,7 @@ Example for `the MICS6814 3-in-1 Gas Sensor <https://thepihut.com/products/mics6
    pip3 install pimoroni-mics6814
 
    # create the sensor to poll
-   GenericPimoroniSensor.mics6814_i2c()
+   GenericSensor.mics6814_i2c()
 
 Warning: sensors like ``mics6814_i2c`` rely on `the Pimoroni IO Expander library <https://github.com/pimoroni/ioe-python>`_, which uses `smbus2 <https://github.com/kplindegaard/smbus2>`_ internally and doesn't implement any kind of locking. This means it's possible for multiple sensors to conflict if they poll for data around the exact same time.
 """
@@ -46,13 +46,13 @@ class GenericSensor(PollingSensor):
         )
 
     def __init__(self, *, name, read_fn):
-        PollingSensor.__init__(
-            self,
-            name=name,
-            period_seconds=10,
-        )
-
+        PollingSensor.__init__(self, period_seconds=10)
+        self.__name = name
         self.__read_fn = read_fn
+
+    @property
+    def name(self):
+        return self.__name
 
     def sample(self, timestamp_seconds, **kwargs):
         return [
