@@ -10,27 +10,35 @@ def window():
         def _aggregate(self, readings):
             return readings[0]
 
-    return TestWindow(size=2)
+    return TestWindow(period=2)
 
 
 def test_window(window):
     sensor1 = create_sensor()
     sensor2 = create_sensor()
 
-    assert not window(create_reading(value=1, sensor=sensor1))
-    assert not window(create_reading(value=2, sensor=sensor2))
+    # proves multiple readings are collected
+    assert not window(create_reading(value=1, sensor=sensor1, timestamp_seconds=1))
+    assert not window(create_reading(value=2, sensor=sensor2, timestamp_seconds=1))
+    assert not window(create_reading(value=3, sensor=sensor1, timestamp_seconds=2))
+    assert not window(create_reading(value=4, sensor=sensor2, timestamp_seconds=2))
 
-    reading = window(create_reading(value=3, sensor=sensor1))
+    reading = window(create_reading(value=5, sensor=sensor1, timestamp_seconds=3))
     assert reading.sensor == sensor1
     assert reading.value == 1
 
-    assert not window(create_reading(value=4, sensor=sensor1))
+    assert not window(create_reading(value=5, sensor=sensor1, timestamp_seconds=4))
 
-    reading = window(create_reading(value=5, sensor=sensor2))
+    reading = window(create_reading(value=6, sensor=sensor2, timestamp_seconds=3))
     assert reading.sensor == sensor2
     assert reading.value == 2
 
-    assert not window(create_reading(value=6, sensor=sensor2))
-    reading = window(create_reading(value=7, sensor=sensor2))
+    # proves any order of aggregations is OK
+    assert not window(create_reading(value=7, sensor=sensor2, timestamp_seconds=4))
+    reading = window(create_reading(value=8, sensor=sensor2, timestamp_seconds=5))
     assert reading.sensor == sensor2
     assert reading.value == 6
+
+    # proves aggregation is by period not size
+    assert not window(create_reading(value=8, sensor=sensor2, timestamp_seconds=5))
+    assert not window(create_reading(value=8, sensor=sensor2, timestamp_seconds=5))

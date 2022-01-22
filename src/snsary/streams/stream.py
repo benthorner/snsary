@@ -22,5 +22,5 @@ class Stream(Source, Output):
     def filter_names(self, *names):
         return self.apply(Filter.names(*names))
 
-    def average(self, size=3):
-        return self.apply(WindowAverage(size=size))
+    def average(self, period=10):
+        return self.apply(WindowAverage(period=period))
