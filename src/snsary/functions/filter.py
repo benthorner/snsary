@@ -1,4 +1,7 @@
-class Filter:
+from .function import Function
+
+
+class Filter(Function):
     def __init__(self, allow_fn=lambda _: True):
         self.__allow_fn = allow_fn
 

@@ -3,11 +3,13 @@ A function accepts a single :mod:`Reading <snsary.models.reading>` as an argumen
 """
 
 from .filter import Filter
+from .function import Function
 from .window import Window
 from .window_average import WindowAverage
 
 __all__ = [
     "Filter",
     "Window",
-    "WindowAverage"
+    "WindowAverage",
+    "Function"
 ]

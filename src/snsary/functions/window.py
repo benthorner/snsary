@@ -3,7 +3,10 @@ Base class for functions that aggregate :mod:`Readings <snsary.models.reading>` 
 """
 
 
-class Window:
+from .function import Function
+
+
+class Window(Function):
     def __init__(self, *, period=10):
         self.__period = period
         self.__windows = dict()
@@ -12,6 +15,7 @@ class Window:
         key = (reading.sensor, reading.name)
 
         if not self.__windows.get(key, []):
+            self.logger.debug(f"Starting window for {key}.")
             self.__windows[key] = [reading]
             return
 
@@ -20,6 +24,7 @@ class Window:
         age = reading.timestamp - start
 
         if age >= self.__period:
+            self.logger.debug(f"Closing window for {key}.")
             self.__windows[key] = [reading]
             return self._aggregate(readings)
 
@@ -27,4 +32,4 @@ class Window:
         self.__windows[key] = readings
 
     def aggregate(readings):
-        raise NotImplementedError
+        raise NotImplementedError()
