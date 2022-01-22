@@ -32,13 +32,13 @@ def test_system(caplog):
         timestamp = int(datetime.utcnow().timestamp())
         assert 'INFO - [snsary] Started.' in caplog.text
         assert 'INFO - [snsary.mocksensor-0] Collected 1 readings.' in caplog.text
-        assert f'INFO - [snsary.mockoutput-0] Reading: <zero {timestamp} 0>' in caplog.text
-        assert f'INFO - [snsary.mockoutput-1] Reading: <zero {timestamp} 0>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-0] Reading: <abc {timestamp} 0>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-1] Reading: <abc {timestamp} 0>' in caplog.text
 
     def second_assertions():
         timestamp = int(datetime.utcnow().timestamp())
-        assert f'INFO - [snsary.mockoutput-0] Reading: <zero {timestamp} 1>' in caplog.text
-        assert f'INFO - [snsary.mockoutput-1] Reading: <zero {timestamp} 1>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-0] Reading: <abc {timestamp} 1>' in caplog.text
+        assert f'INFO - [snsary.mockoutput-1] Reading: <abc {timestamp} 1>' in caplog.text
 
     def end_assertions():
         assert 'INFO - [snsary] Stopping.' in caplog.text

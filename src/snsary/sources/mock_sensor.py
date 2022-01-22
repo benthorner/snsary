@@ -45,7 +45,7 @@ class MockSensor(PollingSensor):
         return [
             Reading(
                 sensor=self,
-                name='zero',
+                name='abc',
                 timestamp_seconds=timestamp_seconds,
                 value=elapsed_seconds,
             )
