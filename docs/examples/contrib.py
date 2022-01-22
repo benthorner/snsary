@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from snsary import system
 from snsary.contrib.adafruit import GenericSensor as AdafruitSensor
 from snsary.contrib.awair import AwairSensor
+from snsary.contrib.datastax import GraphQLOutput
 from snsary.contrib.grafana import GraphiteOutput
 from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.contrib.octopus import OctopusSensor
@@ -16,11 +17,18 @@ from snsary.contrib.pimoroni import GenericSensor as PimoroniSensor
 from snsary.contrib.psutil import PSUtilSensor
 from snsary.contrib.pypms import PyPMSSensor
 from snsary.sources import MultiSource
+from snsary.streams import SimpleStream
 from snsary.utils import configure_logging
 
 i2c = board.I2C()
 load_dotenv()
 configure_logging()
+
+longterm_stream = SimpleStream()
+longterm_stream.into(GraphQLOutput.from_env())
+longterm_stream.summarize(minutes=1).rename(append="/minute").into(GraphQLOutput.from_env())
+longterm_stream.summarize(hours=1).rename(append="/hour").into(GraphQLOutput.from_env())
+longterm_stream.summarize(days=1).rename(append="/day").into(GraphQLOutput.from_env())
 
 MultiSource(
     OctopusSensor.from_env(),
@@ -32,7 +40,8 @@ MultiSource(
     PimoroniSensor.mics6814_i2c(),
 ).stream.into(
     GraphiteOutput.from_env(),
-    InfluxDBOutput.from_env()
+    InfluxDBOutput.from_env(),
+    longterm_stream,
 )
 
 PSUtilSensor().stream.into(

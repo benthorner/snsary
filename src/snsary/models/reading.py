@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class Reading:
     def __init__(self, *, sensor, name, timestamp_seconds, value):
         self.__sensor = sensor
@@ -20,6 +23,10 @@ class Reading:
     @property
     def timestamp(self):
         return self.__timestamp
+
+    @property
+    def datetime(self):
+        return datetime.utcfromtimestamp(self.timestamp)
 
     def __str__(self):
         return f'<{self.name} {self.timestamp} {self.value}>'
