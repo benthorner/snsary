@@ -13,7 +13,7 @@ def window():
     return TestWindow(seconds=2)
 
 
-def test_window(window):
+def test_call(window):
     sensor1 = create_sensor()
     sensor2 = create_sensor()
 

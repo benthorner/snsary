@@ -65,3 +65,10 @@ def test_summarize(stream, output):
     assert len(output.readings) == 4
     assert output.readings[0].name == 'myreading--mean'
     assert output.readings[0].value == 1.5
+
+
+def test_rename(stream, output):
+    stream.rename(append='foo').into(output)
+    stream.publish(create_reading())
+    assert len(output.readings) == 1
+    assert output.readings[0].name == 'myreadingfoo'

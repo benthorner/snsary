@@ -2,7 +2,7 @@ from snsary.functions import WindowSummary
 from tests.conftest import create_reading
 
 
-def test_window_summary():
+def test_call():
     window = WindowSummary(seconds=2)
 
     assert not window(create_reading(value=1, timestamp_seconds=1))

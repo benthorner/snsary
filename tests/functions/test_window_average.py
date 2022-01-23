@@ -2,7 +2,7 @@ from snsary.functions import WindowAverage
 from tests.conftest import create_reading
 
 
-def test_window_average():
+def test_call():
     window = WindowAverage(seconds=2)
 
     assert not window(create_reading(value=1, timestamp_seconds=1))
