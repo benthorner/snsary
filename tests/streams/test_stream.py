@@ -22,6 +22,12 @@ def output():
     return FakeOutput()
 
 
+def test_tee(stream, output):
+    assert stream.tee(output) == stream
+    stream.publish(create_reading())
+    assert len(output.readings) == 1
+
+
 def test_apply(stream, output):
     def _function(reading):
         return [create_reading(value=2)]
@@ -67,8 +73,13 @@ def test_summarize(stream, output):
     assert output.readings[0].value == 1.5
 
 
-def test_rename(stream, output):
-    stream.rename(append='foo').into(output)
+@pytest.mark.parametrize('kwargs,expected', [
+    ({'append': 'foo'}, 'myreadingfoo'),
+    ({'to': 'bar'}, 'bar'),
+    ({'append': 'foo', 'to': 'bar'}, 'barfoo')
+])
+def test_rename(stream, output, kwargs, expected):
+    stream.rename(**kwargs).into(output)
     stream.publish(create_reading())
     assert len(output.readings) == 1
-    assert output.readings[0].name == 'myreadingfoo'
+    assert output.readings[0].name == expected

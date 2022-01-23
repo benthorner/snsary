@@ -86,6 +86,16 @@ This works for **pressure** out the box - the Adafruit library sets it up to [re
 
 Temperature / humidity can't be adjusted easily: the calibration values are documented in the datasheet but not in detail, and [aren't intended to be changed](https://github.com/adafruit/Adafruit_CircuitPython_MS8607/blob/1d08d0d09f0c556c71bb19c9816e6efb59aead65/adafruit_ms8607.py#L210). Not useful if the sensor is positioned near other heat sources.
 
+#### Adafruit SGP30 Air Quality Sensor
+
+- [Datasheet](https://cdn-learn.adafruit.com/assets/assets/000/050/058/original/Sensirion_Gas_Sensors_SGP30_Datasheet_EN.pdf)
+- [Shop link](https://thepihut.com/products/adafruit-sgp30-air-quality-sensor-breakout-voc-and-eco2-ada3709)
+
+TODO:
+
+- evaluation
+- calibration
+
 ### Pimoroni
 
 Example usage: [see the API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/pimoroni/index.html)

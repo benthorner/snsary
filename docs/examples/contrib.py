@@ -4,10 +4,12 @@ import board
 from adafruit_bh1750 import BH1750
 from adafruit_ms8607 import MS8607
 from adafruit_scd30 import SCD30
+from adafruit_sgp30 import Adafruit_SGP30
 from dotenv import load_dotenv
 
 from snsary import system
 from snsary.contrib.adafruit import GenericSensor as AdafruitSensor
+from snsary.contrib.adafruit.sgp30 import SGP30Sensor
 from snsary.contrib.awair import AwairSensor
 from snsary.contrib.datastax import GraphQLOutput
 from snsary.contrib.grafana import GraphiteOutput
@@ -29,12 +31,16 @@ longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql)
 longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql)
 longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
 
+sgp30 = SGP30Sensor(Adafruit_SGP30(i2c))
+sgp30.device.set_iaq_baseline(TVOC=37036, eCO2=35816)
+
 MultiSource(
     *AwairSensor.discover_from_env(),
     PyPMSSensor(sensor_name='PMSx003'),
-    AdafruitSensor(SCD30(i2c)),
+    AdafruitSensor(SCD30(i2c)).stream.tee(sgp30),
     AdafruitSensor(BH1750(i2c)),
     AdafruitSensor(MS8607(i2c)),
+    sgp30,
 ).stream.into(
     GraphiteOutput.from_env(),  # best for short term data + configuration
     longterm_stream,

@@ -4,7 +4,7 @@ from snsary.contrib.adafruit import GenericSensor
 
 
 @pytest.fixture
-def mock_device(mocker):
+def mock_device():
     class MockDevice:
         @property
         def data(self):
@@ -15,19 +15,7 @@ def mock_device(mocker):
 
 @pytest.fixture
 def sensor(mock_device):
-    return GenericSensor(
-        mock_device,
-        ready_fn=lambda device: device.data_available,
-    )
-
-
-def test_sample_no_data(sensor, mock_device):
-    mock_device.data_available = False
-
-    with pytest.raises(RuntimeError) as excinfo:
-        list(sensor.sample('now'))
-
-    assert str(excinfo.value) == 'Device has no data to read.'
+    return GenericSensor(mock_device)
 
 
 def test_name(sensor):
@@ -35,11 +23,17 @@ def test_name(sensor):
 
 
 def test_sample(sensor, mock_device):
-    mock_device.data_available = True
-    readings = list(sensor.sample('now'))
-    assert len(readings) == 1
+    readings = list(sensor.sample(
+        timestamp_seconds='now'
+    ))
 
+    assert len(readings) == 1
     assert readings[0].name == 'data'
     assert readings[0].value == 1.23
     assert readings[0].sensor == sensor
     assert readings[0].timestamp == 'now'
+
+
+def test_sample_not_ready(sensor):
+    sensor.ready = lambda kwarg: False
+    assert not sensor.sample(kwarg=1)

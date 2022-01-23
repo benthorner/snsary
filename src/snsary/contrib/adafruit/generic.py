@@ -32,28 +32,37 @@ class GenericSensor(PollingSensor):
     def __init__(
         self,
         device,
-        ready_fn=lambda device: True,
-        period_seconds=10
+        period_seconds=10,
     ):
         PollingSensor.__init__(self, period_seconds=period_seconds)
-        self.__ready_fn = ready_fn
         self.__device = device
         self.__scraper = scraper.for_class(type(device))
 
     @property
-    def name(self):
-        return type(self.__device).__name__
+    def device(self):
+        return self.__device
 
-    def sample(self, timestamp_seconds, **kwargs):
-        if not self.__ready_fn(self.__device):
-            raise RuntimeError('Device has no data to read.')
+    @property
+    def name(self):
+        return type(self.device).__name__
+
+    def ready(self, **kwargs):
+        """
+        Returns ``True`` if the device is ready to be sampled, based on the kwargs to ``sample``. The decision to sample could equally be made based on the ``device`` itself. The default implementation returns ``True``.
+        """
+        return True
+
+    def sample(self, **kwargs):
+        if not self.ready(**kwargs):
+            self.logger.info("Still warming up, no data yet.")
+            return []
 
         return [
             Reading(
                 sensor=self,
                 name=name,
                 value=value,
-                timestamp_seconds=timestamp_seconds
+                timestamp_seconds=kwargs['timestamp_seconds']
             )
-            for (name, value) in self.__scraper(self.__device)
+            for (name, value) in self.__scraper(self.device)
         ]
