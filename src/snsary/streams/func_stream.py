@@ -1,5 +1,5 @@
 """
-Only publishes a :mod:`Reading <snsary.models.Reading>` if the specified :mod:`function <snsary.functions>` returns a :mod:`Reading <snsary.models.Reading>` for it. This could be the same reading or a different one. Nothing is published if the :mod:`function <snsary.functions>` returns ``None``.
+Publishes zero or more :mod:`Readings <snsary.models.Reading>` depending on what the specified :mod:`function <snsary.functions>` returns for a given :mod:`Reading <snsary.models.reading>`. This could be nothing, the same reading, or multiple, different readings.
 """
 from .simple_stream import SimpleStream
 
@@ -8,14 +8,14 @@ class FuncStream(SimpleStream):
     def __init__(
         self,
         stream,
-        function=lambda reading: reading
+        function=lambda reading: [reading]
     ):
         SimpleStream.__init__(self)
         stream.subscribe(self)
         self.__function = function
 
     def publish(self, reading):
-        output_reading = self.__function(reading)
+        output_readings = self.__function(reading)
 
-        if output_reading:
+        for output_reading in output_readings:
             SimpleStream.publish(self, output_reading)

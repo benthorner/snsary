@@ -24,25 +24,13 @@ def output():
 
 def test_apply(stream, output):
     def _function(reading):
-        return create_reading(value=2)
+        return [create_reading(value=2)]
 
     stream.apply(_function).into(output)
     stream.publish(create_reading(value=1))
 
     assert len(output.readings) == 1
     assert output.readings[0].value == 2
-
-
-def test_filter(stream, output):
-    stream.filter(
-        lambda reading: reading.name == 'pass'
-    ).into(output)
-
-    stream.publish(create_reading(name='fail'))
-    stream.publish(create_reading(name='pass'))
-
-    assert len(output.readings) == 1
-    assert output.readings[0].name == 'pass'
 
 
 def test_filter_names(stream, output):
@@ -55,7 +43,7 @@ def test_filter_names(stream, output):
 
 
 def test_average(stream, output):
-    stream.average(period=2).into(output)
+    stream.average(seconds=2).into(output)
 
     for i in range(3):
         stream.publish(create_reading(
@@ -63,4 +51,17 @@ def test_average(stream, output):
         ))
 
     assert len(output.readings) == 1
+    assert output.readings[0].value == 1.5
+
+
+def test_summarize(stream, output):
+    stream.summarize(seconds=2).into(output)
+
+    for i in range(3):
+        stream.publish(create_reading(
+            value=i+1, timestamp_seconds=i
+        ))
+
+    assert len(output.readings) == 4
+    assert output.readings[0].name == 'myreading--mean'
     assert output.readings[0].value == 1.5

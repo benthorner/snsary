@@ -1,15 +1,17 @@
 """
-A function accepts a single :mod:`Reading <snsary.models.reading>` as an argument and can either return a :mod:`Reading <snsary.models.reading>` or ``None``. This module contains classes whose instances are callable and act as functions.
+A function accepts a single :mod:`Reading <snsary.models.reading>` as an argument and can return zero or more :mod:`Readings <snsary.models.reading>`. This module contains classes whose instances are callable and act as functions.
 """
 
 from .filter import Filter
 from .function import Function
 from .window import Window
 from .window_average import WindowAverage
+from .window_summary import WindowSummary
 
 __all__ = [
     "Filter",
     "Window",
     "WindowAverage",
-    "Function"
+    "Function",
+    "WindowSummary"
 ]
