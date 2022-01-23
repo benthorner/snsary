@@ -1,4 +1,4 @@
-from snsary.functions import Filter, WindowAverage
+from snsary.functions import Filter, WindowAverage, WindowSummary
 from snsary.outputs import Output
 from snsary.sources import Source
 
@@ -12,15 +12,17 @@ class Stream(Source, Output):
         from .func_stream import FuncStream
         return FuncStream(self, function)
 
-    def filter(self, filter):
-        def _filter(reading):
-            if filter(reading):
-                return reading
-
-        return self.apply(_filter)
-
     def filter_names(self, *names):
         return self.apply(Filter.names(*names))
 
-    def average(self, period=10):
-        return self.apply(WindowAverage(period=period))
+    def average(self, **kwargs):
+        """
+        Returns a new stream that applies a :mod:`WindowAverage <snsary.functions.window_average>` to all :mod:`Readings <snsary.models.reading>` over a period, specified as the keyword arguments for a ``timedelta``.
+        """
+        return self.apply(WindowAverage(**kwargs))
+
+    def summarize(self, **kwargs):
+        """
+        Returns a new stream that applies a :mod:`WindowSummary <snsary.functions.window_summary>` to all :mod:`Readings <snsary.models.reading>` over a period, specified as the keyword arguments for a ``timedelta``.
+        """
+        return self.apply(WindowSummary(**kwargs))

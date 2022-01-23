@@ -6,7 +6,7 @@ class Filter(Function):
         self.__allow_fn = allow_fn
 
     def __call__(self, reading):
-        return reading if self.__allow_fn(reading) else None
+        return [reading] if self.__allow_fn(reading) else []
 
     @property
     def invert(self):
