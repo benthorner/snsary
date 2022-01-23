@@ -5,7 +5,6 @@ import httpretty
 import pytest
 
 from snsary.contrib.grafana import GraphiteOutput
-from snsary.models import Reading
 
 
 @pytest.fixture()
@@ -31,36 +30,30 @@ def test_from_env(mocker):
 @httpretty.activate(allow_net_connect=False)
 def test_publish_batch(
     graphite,
-    sensor
+    sensor,
+    reading
 ):
     httpretty.register_uri(
         httpretty.POST,
         'http://graphite/'
     )
 
-    graphite.publish_batch([
-        Reading(
-            sensor=sensor,
-            name='metric',
-            timestamp_seconds=1000,
-            value=1
-        )
-    ])
-
+    graphite.publish_batch([reading])
     request = httpretty.last_request()
 
     assert json.loads(request.body) == [{
         'interval': 1,
-        'name': 'snsary.mysensor.metric',
-        'time': 1000,
-        'value': 1
+        'name': 'snsary.mysensor.myreading',
+        'time': 123,
+        'value': 123
     }]
 
 
 @httpretty.activate(allow_net_connect=False)
 def test_publish_batch_error(
     graphite,
-    sensor
+    sensor,
+    reading
 ):
     httpretty.register_uri(
         httpretty.POST,
@@ -69,6 +62,6 @@ def test_publish_batch_error(
     )
 
     with pytest.raises(Exception) as excinfo:
-        graphite.publish_batch([])
+        graphite.publish_batch([reading])
 
     assert '500 Server Error' in str(excinfo.value)

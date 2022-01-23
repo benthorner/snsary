@@ -4,7 +4,6 @@ import httpretty
 import pytest
 
 from snsary.contrib.influxdb import InfluxDBOutput
-from snsary.models import Reading
 
 
 @pytest.fixture()
@@ -47,22 +46,34 @@ def test_from_env(mocker):
 @httpretty.activate(allow_net_connect=False)
 def test_publish_batch(
     influxdb,
-    sensor
+    sensor,
+    reading
 ):
     httpretty.register_uri(
         httpretty.POST,
         'http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s'
     )
 
-    influxdb.publish_batch([
-        Reading(
-            sensor=sensor,
-            name='metric',
-            timestamp_seconds=1000,
-            value=1
-        )
-    ])
-
+    influxdb.publish_batch([reading])
     request = httpretty.last_request()
+
     assert request.headers['Authorization'] == 'Token token'
-    assert b'metric,host=snsary,sensor=mysensor value=1i 1000' in request.body
+    assert b'myreading,host=snsary,sensor=mysensor value=123i 123' in request.body
+
+
+@httpretty.activate(allow_net_connect=False)
+def test_publish_batch_error(
+    influxdb,
+    sensor,
+    reading
+):
+    httpretty.register_uri(
+        httpretty.POST,
+        'http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s',
+        status=500
+    )
+
+    with pytest.raises(Exception) as excinfo:
+        influxdb.publish_batch([reading])
+
+    assert 'Internal Server Error' in str(excinfo.value)
