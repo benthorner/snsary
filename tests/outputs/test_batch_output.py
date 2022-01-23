@@ -34,6 +34,14 @@ def test_stop(
     mock_publish_batch.assert_called_with(['reading'])
 
 
+def test_flush_empty(
+    output,
+    mock_publish_batch
+):
+    output.flush()
+    mock_publish_batch.assert_not_called()
+
+
 def test_publish_forwards_large_batches(
     output,
     mock_publish_batch

@@ -18,6 +18,10 @@ class BatchOutput(Output, Service):
         self.__last_publish = datetime.utcnow().timestamp()
 
     def flush(self):
+        # in case of multiple consecutive batch/age flushes
+        if not self.__readings:
+            return
+
         self.logger.info(f"Sending {len(self.__readings)} readings.")
         self.publish_batch(self.__readings)
         self.__readings = []
