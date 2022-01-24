@@ -24,11 +24,12 @@ i2c = board.I2C()
 load_dotenv()
 configure_logging()
 
+graphql = GraphQLOutput.from_env()
 longterm_stream = SimpleStream()
-longterm_stream.into(GraphQLOutput.from_env())
-longterm_stream.summarize(minutes=1).rename(append="/minute").into(GraphQLOutput.from_env())
-longterm_stream.summarize(hours=1).rename(append="/hour").into(GraphQLOutput.from_env())
-longterm_stream.summarize(days=1).rename(append="/day").into(GraphQLOutput.from_env())
+longterm_stream.into(graphql)
+longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql)
+longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql)
+longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
 
 MultiSource(
     OctopusSensor.from_env(),
