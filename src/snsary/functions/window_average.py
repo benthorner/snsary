@@ -10,7 +10,7 @@ from .window import Window
 
 
 class WindowAverage(Window):
-    def _aggregate(self, readings):
+    def aggregate(self, readings):
         return [Reading(
             sensor=readings[0].sensor,
             name=readings[0].name,

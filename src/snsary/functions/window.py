@@ -1,7 +1,7 @@
 """
 Base class for functions that aggregate :mod:`Readings <snsary.models.reading>` over fixed, consecutive periods, specified as the keyword arguments for a ``timedelta`` (seconds, minutes, etc.).
 
-A subclass should define an ``_aggregate`` method that is called each time the age of the window for a sensor / reading name pair reaches the specified period.
+A subclass should define an ``aggregate`` method that is called each time the age of the window for a sensor / reading name pair reaches the specified period.
 
 The windows are consecutive, not moving: after a window has been aggregated a new window is started using the :mod:`Reading <snsary.models.reading>` that triggered the previous window to close.
 """
@@ -32,7 +32,7 @@ class Window(Function):
         if age >= self.__period:
             self.logger.debug(f"Closing window for {key}.")
             self.__windows[key] = [reading]
-            return self._aggregate(readings)
+            return self.aggregate(readings)
 
         readings.append(reading)
         return []

@@ -7,7 +7,7 @@ from tests.conftest import create_reading, create_sensor
 @pytest.fixture
 def window():
     class TestWindow(Window):
-        def _aggregate(self, readings):
+        def aggregate(self, readings):
             return [readings[0]]
 
     return TestWindow(seconds=2)
