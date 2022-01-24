@@ -13,7 +13,6 @@ from snsary.contrib.datastax import GraphQLOutput
 from snsary.contrib.grafana import GraphiteOutput
 from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.contrib.octopus import OctopusSensor
-from snsary.contrib.pimoroni import GenericSensor as PimoroniSensor
 from snsary.contrib.psutil import PSUtilSensor
 from snsary.contrib.pypms import PyPMSSensor
 from snsary.sources import MultiSource
@@ -37,7 +36,6 @@ MultiSource(
     AdafruitSensor(SCD30(i2c)),
     AdafruitSensor(BH1750(i2c)),
     AdafruitSensor(MS8607(i2c)),
-    PimoroniSensor.mics6814_i2c(),
 ).stream.into(
     GraphiteOutput.from_env(),  # best for short term data + configuration
     InfluxDBOutput.from_env(),  # graphite can't ingest old Octopus data
