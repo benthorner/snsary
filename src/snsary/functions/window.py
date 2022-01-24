@@ -34,8 +34,7 @@ class Window(Function):
             self.__windows[key] = [reading]
             return self._aggregate(readings)
 
-        readings += [reading]
-        self.__windows[key] = readings
+        readings.append(reading)
         return []
 
     def aggregate(readings):
