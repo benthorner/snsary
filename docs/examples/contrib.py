@@ -26,7 +26,6 @@ configure_logging()
 
 graphql = GraphQLOutput.from_env()
 longterm_stream = SimpleStream()
-longterm_stream.into(graphql)
 longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql)
 longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql)
 longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
@@ -34,19 +33,19 @@ longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
 MultiSource(
     OctopusSensor.from_env(),
     *AwairSensor.discover_from_env(),
-    PyPMSSensor(sensor_name='PMSx003').stream.filter_names('pm10', 'pm25'),
-    AdafruitSensor(SCD30(i2c)).stream.filter_names('CO2', 'temperature', 'relative_humidity'),
-    AdafruitSensor(BH1750(i2c)).stream.filter_names('lux'),
-    AdafruitSensor(MS8607(i2c)).stream.filter_names('pressure'),
+    PyPMSSensor(sensor_name='PMSx003'),
+    AdafruitSensor(SCD30(i2c)),
+    AdafruitSensor(BH1750(i2c)),
+    AdafruitSensor(MS8607(i2c)),
     PimoroniSensor.mics6814_i2c(),
 ).stream.into(
-    GraphiteOutput.from_env(),
-    InfluxDBOutput.from_env(),
+    GraphiteOutput.from_env(),  # best for short term data + configuration
+    InfluxDBOutput.from_env(),  # graphite can't ingest old Octopus data
     longterm_stream,
 )
 
 PSUtilSensor().stream.into(
-    GraphiteOutput.from_env()
+    GraphiteOutput.from_env(),  # best for short term data + configuration
 )
 
 system.start_and_wait()
