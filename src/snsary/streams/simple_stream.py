@@ -7,7 +7,10 @@ class SimpleStream(Stream):
 
     def publish(self, reading):
         for output in self.__outputs:
-            output.publish(reading)
+            try:
+                output.publish(reading)
+            except Exception as e:
+                output.logger.exception(e)
 
     def subscribe(self, output):
         self.__outputs += [output]
