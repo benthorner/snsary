@@ -95,7 +95,7 @@ Example usage: [see the API docs](https://snsary.readthedocs.io/en/latest/autoap
 - [Datasheet](https://www.sgxsensortech.com/content/uploads/2015/02/1143_Datasheet-MiCS-6814-rev-8.pdf)
 - [Shop link](https://thepihut.com/products/mics6814-3-in-1-gas-sensor-breakout-co-no2-nh3)
 
-TODO
+The resistance readings from this sensor [weren't useful in practice and it's unclear if they are correct](https://github.com/pimoroni/mics6814-python/issues/4), even as relative measurements. They all change together. It's unlcear if the sensor is faulty as there are no baselines for comparison. Trying [the "Sharpie suggestion"](https://learn.pimoroni.com/article/getting-started-with-enviro-plus) only led to a negligible change in all three measurements.
 
 ## Example Outputs
 
