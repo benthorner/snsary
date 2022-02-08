@@ -30,7 +30,6 @@ longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql)
 longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
 
 MultiSource(
-    OctopusSensor.from_env(),
     *AwairSensor.discover_from_env(),
     PyPMSSensor(sensor_name='PMSx003'),
     AdafruitSensor(SCD30(i2c)),
@@ -38,6 +37,10 @@ MultiSource(
     AdafruitSensor(MS8607(i2c)),
 ).stream.into(
     GraphiteOutput.from_env(),  # best for short term data + configuration
+    longterm_stream,
+)
+
+OctopusSensor.from_env().stream.into(
     InfluxDBOutput.from_env(),  # graphite can't ingest old Octopus data
     longterm_stream,
 )
