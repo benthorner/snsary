@@ -8,6 +8,13 @@ class Stream(Source, Output):
         for output in outputs:
             self.subscribe(output)
 
+    def tee(self, output):
+        """
+        Subscribes the specified :mod:`Output <snsary.outputs.output>` to the stream using ``into``, but unlike ``into`` also returns the stream for further use, similar to the Unix ``tee`` command.
+        """
+        self.into(output)
+        return self
+
     def apply(self, function):
         from .func_stream import FuncStream
         return FuncStream(self, function)
