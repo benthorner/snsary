@@ -2,15 +2,15 @@ from datetime import datetime
 
 
 class Reading:
-    def __init__(self, *, sensor, name, timestamp_seconds, value):
-        self.__sensor = sensor
+    def __init__(self, *, sensor_name, name, timestamp, value):
+        self.__sensor_name = sensor_name
         self.__name = name
         self.__value = value
-        self.__timestamp = timestamp_seconds
+        self.__timestamp = timestamp
 
     @property
-    def sensor(self):
-        return self.__sensor
+    def sensor_name(self):
+        return self.__sensor_name
 
     @property
     def name(self):
@@ -30,3 +30,13 @@ class Reading:
 
     def __str__(self):
         return f'<{self.name} {self.timestamp} {self.value}>'
+
+    def dup(self, **kwargs):
+        source = dict(
+            sensor_name=self.sensor_name,
+            name=self.name,
+            value=self.value,
+            timestamp=self.timestamp,
+        )
+
+        return type(self)(**{**source, **kwargs})

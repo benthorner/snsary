@@ -28,11 +28,11 @@ class ButtonSensor(PollingSensor):
         self.__button = digitalio.DigitalInOut(board.D17)
         self.__button.direction = digitalio.Direction.INPUT
 
-    def sample(self, timestamp_seconds, **kwargs):
+    def sample(self, timestamp, **kwargs):
         return [Reading(
+            sensor_name=self.name,
             name='pressed',
-            timestamp_seconds=timestamp_seconds,
-            sensor=self,
+            timestamp=timestamp,
             value=self.__button.value
         )]
 

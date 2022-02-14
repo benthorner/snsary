@@ -75,7 +75,7 @@ class GraphQLOutput(BatchOutput):
     def __mutation(self, reading):
         value = {
             'timestamp': reading.datetime.isoformat(),
-            'sensor': reading.sensor.name,
+            'sensor': reading.sensor_name,
             'hostname': platform.node(),
             'metric': reading.name,
             'value': float(reading.value)

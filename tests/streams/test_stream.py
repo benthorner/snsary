@@ -53,7 +53,7 @@ def test_average(stream, output):
 
     for i in range(3):
         stream.publish(create_reading(
-            value=i+1, timestamp_seconds=i
+            value=i+1, timestamp=i
         ))
 
     assert len(output.readings) == 1
@@ -65,7 +65,7 @@ def test_summarize(stream, output):
 
     for i in range(3):
         stream.publish(create_reading(
-            value=i+1, timestamp_seconds=i
+            value=i+1, timestamp=i
         ))
 
     assert len(output.readings) == 4
