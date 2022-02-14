@@ -7,8 +7,6 @@ Supported alterations include:
     - ``append`` - adds to the new or existing name of the reading.
 """
 
-from snsary.models import Reading
-
 from .function import Function
 
 
@@ -20,10 +18,4 @@ class Rename(Function):
     def __call__(self, reading):
         new_name = self.__to if self.__to else reading.name
         new_name += self.__append
-
-        return [Reading(
-            sensor_name=reading.sensor_name,
-            name=new_name,
-            timestamp=reading.timestamp,
-            value=reading.value
-        )]
+        return [reading.dup(name=new_name)]

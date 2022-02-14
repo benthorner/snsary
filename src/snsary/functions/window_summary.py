@@ -4,20 +4,14 @@ Computes the mean, max, min and median (p50) of :mod:`Readings <snsary.models.re
 
 from statistics import mean, median
 
-from snsary.models import Reading
-
 from .window import Window
 
 
 class WindowSummary(Window):
     def aggregate(self, readings):
         def __dup_reading(name, value):
-            source = readings[-1]
-
-            return Reading(
-                sensor_name=source.sensor_name,
-                name=source.name + f'--{name}',
-                timestamp=source.timestamp,
+            return readings[-1].dup(
+                name=readings[-1].name + f'--{name}',
                 value=value
             )
 

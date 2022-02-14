@@ -30,3 +30,13 @@ class Reading:
 
     def __str__(self):
         return f'<{self.name} {self.timestamp} {self.value}>'
+
+    def dup(self, **kwargs):
+        source = dict(
+            sensor_name=self.sensor_name,
+            name=self.name,
+            value=self.value,
+            timestamp=self.timestamp,
+        )
+
+        return type(self)(**{**source, **kwargs})
