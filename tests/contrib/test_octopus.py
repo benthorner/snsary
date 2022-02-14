@@ -71,7 +71,7 @@ def test_sample(
     assert len(readings) == 1
 
     assert readings[0].value == 0.076
-    assert readings[0].sensor == sensor
+    assert readings[0].sensor_name == 'octopus'
     assert readings[0].name == 'consumption'
     assert datetime.fromtimestamp(readings[0].timestamp).minute == 30
 

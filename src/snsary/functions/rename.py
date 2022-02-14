@@ -22,8 +22,8 @@ class Rename(Function):
         new_name += self.__append
 
         return [Reading(
-            sensor=reading.sensor,
+            sensor_name=reading.sensor_name,
             name=new_name,
-            timestamp_seconds=reading.timestamp,
+            timestamp=reading.timestamp,
             value=reading.value
         )]

@@ -94,7 +94,7 @@ def test_sample(
     assert len(readings) == 1
 
     assert readings[0].value == 123
-    assert readings[0].sensor == sensor
+    assert readings[0].sensor_name == 'awair-r2-1234'
     assert readings[0].name == 'temp'
     assert datetime.fromtimestamp(readings[0].timestamp).minute == 55
 

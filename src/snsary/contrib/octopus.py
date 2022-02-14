@@ -69,8 +69,8 @@ class OctopusSensor(PollingSensor):
         )
 
         return Reading(
-            sensor=self,
+            sensor_name=self.name,
             name='consumption',
-            timestamp_seconds=sample_timestamp,
+            timestamp=sample_timestamp,
             value=sample["consumption"],
         )

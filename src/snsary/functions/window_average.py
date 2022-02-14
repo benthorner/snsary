@@ -12,8 +12,8 @@ from .window import Window
 class WindowAverage(Window):
     def aggregate(self, readings):
         return [Reading(
-            sensor=readings[0].sensor,
+            sensor_name=readings[0].sensor_name,
             name=readings[0].name,
-            timestamp_seconds=readings[-1].timestamp,
+            timestamp=readings[-1].timestamp,
             value=mean(r.value for r in readings)
         )]

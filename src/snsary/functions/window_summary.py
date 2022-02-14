@@ -15,9 +15,9 @@ class WindowSummary(Window):
             source = readings[-1]
 
             return Reading(
-                sensor=source.sensor,
+                sensor_name=source.sensor_name,
                 name=source.name + f'--{name}',
-                timestamp_seconds=source.timestamp,
+                timestamp=source.timestamp,
                 value=value
             )
 

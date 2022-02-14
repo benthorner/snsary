@@ -37,7 +37,7 @@ class InfluxDBOutput(BatchOutput):
     def publish_batch(self, readings):
         points = [
             Point(reading.name)
-            .tag('sensor', reading.sensor.name)
+            .tag('sensor', reading.sensor_name)
             .tag('host', platform.node())
             .field('value', reading.value)
             .time(reading.timestamp, write_precision='s')

@@ -24,13 +24,13 @@ def test_name(sensor):
 
 def test_sample(sensor, mock_device):
     readings = list(sensor.sample(
-        timestamp_seconds='now'
+        timestamp='now'
     ))
 
     assert len(readings) == 1
     assert readings[0].name == 'data'
     assert readings[0].value == 1.23
-    assert readings[0].sensor == sensor
+    assert readings[0].sensor_name == 'MockDevice'
     assert readings[0].timestamp == 'now'
 
 

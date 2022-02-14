@@ -152,7 +152,7 @@ def test_stop_already_closed(
 def test_sample(
     sensor
 ):
-    readings = sensor.sample(timestamp_seconds='now', elapsed_seconds=0)
+    readings = sensor.sample(timestamp='now', elapsed_seconds=0)
     assert len(readings) == 12
 
     pm10_reading = next(r for r in readings if r.name == 'pm10')
@@ -164,10 +164,10 @@ def test_sample_warm_up(
     sensor
 ):
     sensor.warm_up_seconds = 5
-    readings = sensor.sample(timestamp_seconds='now', elapsed_seconds=0)
+    readings = sensor.sample(timestamp='now', elapsed_seconds=0)
     assert len(readings) == 0
 
-    readings = sensor.sample(timestamp_seconds='now', elapsed_seconds=5)
+    readings = sensor.sample(timestamp='now', elapsed_seconds=5)
     assert len(readings) == 12
 
     pm10_reading = next(r for r in readings if r.name == 'pm10')
@@ -186,7 +186,7 @@ def test_sample_bad_response(
     )
 
     with pytest.raises(pms.WrongMessageFormat):
-        sensor.sample(timestamp_seconds='now', elapsed_seconds=0)
+        sensor.sample(timestamp='now', elapsed_seconds=0)
 
 
 def test_sample_already_closed(
@@ -197,6 +197,6 @@ def test_sample_already_closed(
     sensor.stop()
 
     with pytest.raises(Exception) as einfo:
-        sensor.sample(timestamp_seconds='now', elapsed_seconds=0)
+        sensor.sample(timestamp='now', elapsed_seconds=0)
 
     assert str(einfo.value) == "Attempting to use a port that is not open"

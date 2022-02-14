@@ -75,7 +75,7 @@ class PyPMSSensor(PollingSensor):
         except Exception as e:
             self.logger.exception(e)
 
-    def sample(self, timestamp_seconds, elapsed_seconds, **kwargs):
+    def sample(self, timestamp, elapsed_seconds, **kwargs):
         if elapsed_seconds < self.warm_up_seconds:
             self.logger.info("Still warming up, no data yet.")
             return []
@@ -85,10 +85,10 @@ class PyPMSSensor(PollingSensor):
 
         return [
             Reading(
-                sensor=self,
+                sensor_name=self.name,
                 name=key,
                 value=value,
-                timestamp_seconds=timestamp_seconds
+                timestamp=timestamp
             )
             for key, value in dataclasses.asdict(obs).items()
             if key not in ('time')

@@ -18,7 +18,7 @@ class Window(Function):
         self.__windows = dict()
 
     def __call__(self, reading):
-        key = (reading.sensor, reading.name)
+        key = (reading.sensor_name, reading.name)
 
         if not self.__windows.get(key, []):
             self.logger.debug(f"Starting window for {key}.")
@@ -37,5 +37,5 @@ class Window(Function):
         readings.append(reading)
         return []
 
-    def aggregate(readings):
+    def aggregate(self, readings):
         raise NotImplementedError()

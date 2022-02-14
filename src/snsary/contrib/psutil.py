@@ -30,13 +30,13 @@ class PSUtilSensor(PollingSensor):
     def name(self):
         return 'psutil'
 
-    def sample(self, timestamp_seconds, **kwargs):
+    def sample(self, timestamp, **kwargs):
         return [
             Reading(
-                sensor=self,
+                sensor_name=self.name,
                 name=name,
                 value=value,
-                timestamp_seconds=timestamp_seconds
+                timestamp=timestamp
             )
             for fname, kwargs in self.__functions.items()
             for (name, value) in self.__sample_fn(fname, kwargs)

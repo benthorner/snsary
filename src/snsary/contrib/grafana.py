@@ -42,7 +42,7 @@ class GraphiteOutput(BatchOutput):
     def __format(self, readings):
         return json.dumps([
             {
-                'name': f'{self.__prefix}.{reading.sensor.name}.{reading.name}',
+                'name': f'{self.__prefix}.{reading.sensor_name}.{reading.name}',
                 'value': reading.value,
                 'time': reading.timestamp,
                 'interval': 1

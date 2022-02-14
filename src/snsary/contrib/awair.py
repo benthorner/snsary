@@ -90,9 +90,9 @@ class AwairSensor(PollingSensor):
 
         return (
             Reading(
-                sensor=self,
+                sensor_name=self.name,
                 name=sensor["comp"],
-                timestamp_seconds=sample_timestamp,
+                timestamp=sample_timestamp,
                 value=sensor["value"]
             )
             for sensor in sample["sensors"]

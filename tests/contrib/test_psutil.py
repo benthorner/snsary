@@ -23,18 +23,18 @@ def test_sample(mocker):
     )
 
     readings = sorted(
-        sensor.sample(timestamp_seconds='now'),
+        sensor.sample(timestamp='now'),
         key=lambda r: r.name
     )
 
     assert len(readings) == 2
     assert readings[0].name == 'disk_partitions-0-maxfile'
     assert readings[0].value == 255
-    assert readings[0].sensor == sensor
+    assert readings[0].sensor_name == 'psutil'
     assert readings[0].timestamp == 'now'
 
 
 def test_sample_ignores_unavailable_stats(mocker):
     sensor = PSUtilSensor(functions={'foo': {}})
-    readings = sensor.sample(timestamp_seconds='now')
+    readings = sensor.sample(timestamp='now')
     assert len(readings) == 0

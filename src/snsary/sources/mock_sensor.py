@@ -32,7 +32,7 @@ class MockSensor(PollingSensor):
         self,
         now,  # unused here
         start_time,  # unused here
-        timestamp_seconds,
+        timestamp,
         elapsed_seconds
     ):
         if self.__fail:
@@ -44,9 +44,9 @@ class MockSensor(PollingSensor):
 
         return [
             Reading(
-                sensor=self,
+                sensor_name=self.name,
                 name='abc',
-                timestamp_seconds=timestamp_seconds,
+                timestamp=timestamp,
                 value=elapsed_seconds,
             )
         ]

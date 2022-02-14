@@ -17,7 +17,7 @@ def test_mics6814_i2c(mocker):
     mock_class().set_led.assert_called_with(0, 0, 0)
 
     readings = sorted(
-        sensor.sample(timestamp_seconds=1),
+        sensor.sample(timestamp=1),
         key=lambda reading: reading.name
     )
 
@@ -33,10 +33,10 @@ def test_sample():
         read_fn=lambda: [('name', 'value')]
     )
 
-    readings = sensor.sample(timestamp_seconds=123)
+    readings = sensor.sample(timestamp=123)
 
     assert len(readings) == 1
     assert readings[0].name == 'name'
     assert readings[0].value == 'value'
-    assert readings[0].sensor == sensor
+    assert readings[0].sensor_name == 'sensor'
     assert readings[0].timestamp == 123

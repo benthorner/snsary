@@ -5,10 +5,10 @@ from tests.conftest import create_reading
 def test_call():
     window = WindowSummary(seconds=2)
 
-    assert not window(create_reading(value=1, timestamp_seconds=1))
-    assert not window(create_reading(value=2, timestamp_seconds=2))
+    assert not window(create_reading(value=1, timestamp=1))
+    assert not window(create_reading(value=2, timestamp=2))
 
-    readings = window(create_reading(value=3, timestamp_seconds=3))
+    readings = window(create_reading(value=3, timestamp=3))
 
     assert len(readings) == 4
     assert readings[0].name == 'myreading--mean'
@@ -20,4 +20,4 @@ def test_call():
     assert readings[3].name == 'myreading--p50'
     assert readings[3].value == 1.5
 
-    assert not window(create_reading(timestamp_seconds=4))
+    assert not window(create_reading(timestamp=4))
