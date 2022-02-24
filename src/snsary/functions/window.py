@@ -18,7 +18,7 @@ class Window(Function):
         self.__windows = dict()
 
     def __call__(self, reading):
-        key = (reading.sensor_name, reading.name)
+        key = self.key(reading)
 
         if not self.__windows.get(key, []):
             self.logger.debug(f"Starting window for {key}.")
@@ -39,3 +39,6 @@ class Window(Function):
 
     def aggregate(self, readings):
         raise NotImplementedError()
+
+    def key(self, reading):
+        return f'window-{int(self.__period)}-{reading.sensor_name}-{reading.name}'
