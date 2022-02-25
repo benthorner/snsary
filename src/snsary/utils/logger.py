@@ -27,7 +27,10 @@ def get_logger(name=None):
     if main_thread().ident == thread_id:
         return rootLogger
 
-    return loggers[thread_id]
+    if thread_id in loggers:
+        return loggers[thread_id]
+
+    return logging.getLogger(f'snsary.anon-{thread_id}')
 
 
 def configure_logging(level=logging.INFO):

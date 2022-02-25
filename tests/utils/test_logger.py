@@ -2,8 +2,6 @@ import logging
 import sys
 from threading import Thread
 
-import pytest
-
 from snsary.utils import HasLogger, configure_logging, get_logger
 from tests.conftest import retry
 
@@ -23,9 +21,7 @@ def test_get_logger_main_thread():
 def test_get_logger_not_found(mocker):
     mock_thread = mocker.patch('snsary.utils.logger.current_thread')
     mock_thread().ident = 'rand'  # mock ident to avoid reuse issues
-
-    with pytest.raises(KeyError):
-        get_logger()
+    assert get_logger().name == 'snsary.anon-rand'
 
 
 def test_get_logger_child_thread(caplog):
