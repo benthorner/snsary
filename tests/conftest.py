@@ -3,6 +3,7 @@ from retry import retry as retrier
 
 from snsary.models import Reading
 from snsary.sources import Sensor
+from snsary.utils import get_storage
 
 
 def retry(fn):
@@ -13,6 +14,12 @@ def retry(fn):
 @pytest.fixture
 def reading():
     return create_reading()
+
+
+@pytest.fixture
+def mock_store():
+    yield get_storage()
+    get_storage().clear()
 
 
 @pytest.fixture
