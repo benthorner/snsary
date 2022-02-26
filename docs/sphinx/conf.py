@@ -37,7 +37,8 @@ autoapi_add_toctree_entry = False
 autoapi_options = [
     'members',
     'undoc-members',
-    'special-members'
+    'special-members',
+    'show-inheritance'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -2,6 +2,7 @@ from . import scraper
 from .logger import HasLogger, configure_logging, get_logger
 from .poller import Poller
 from .service import Service
+from .storage import get_storage
 
 __all__ = [
     "Poller",
@@ -10,5 +11,6 @@ __all__ = [
     "scraper",
     "Service",
     "get_logger",
-    "HasLogger"
+    "HasLogger",
+    "get_storage"
 ]

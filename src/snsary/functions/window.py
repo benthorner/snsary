@@ -4,23 +4,37 @@ Base class for functions that aggregate :mod:`Readings <snsary.models.reading>` 
 A subclass should define an ``aggregate`` method that is called each time the age of the window for a sensor / reading name pair reaches the specified period.
 
 The windows are consecutive, not moving: after a window has been aggregated a new window is started using the :mod:`Reading <snsary.models.reading>` that triggered the previous window to close.
+
+Windows also act as a :mod:`Service <snsary.utils.service>` in order to persist and restore :mod:`Readings <snsary.models.reading>` when the program they are used in starts and stops. See the :mod:`storage <snsary.utils.storage>` module for more details.
 """
 
 
 from datetime import timedelta
 
+from snsary.utils import Service
+
 from .function import Function
 
 
-class Window(Function):
+class Window(Function, Service):
     def __init__(self, **kwargs):
+        Service.__init__(self)
         self.__period = timedelta(**kwargs).total_seconds()
         self.__windows = dict()
 
-    def __call__(self, reading):
-        key = (reading.sensor_name, reading.name)
+    def stop(self):
+        for key, window in self.__windows.items():
+            self.logger.debug(f"Storing window for {key}.")
+            self.store[key] = window
 
-        if not self.__windows.get(key, []):
+    def __call__(self, reading):
+        key = self.key(reading)
+
+        if key not in self.__windows and key in self.store:
+            self.logger.debug(f"Restoring window for {key}.")
+            self.__windows[key] = self.store[key]
+
+        if key not in self.__windows:
             self.logger.debug(f"Starting window for {key}.")
             self.__windows[key] = [reading]
             return []
@@ -39,3 +53,6 @@ class Window(Function):
 
     def aggregate(self, readings):
         raise NotImplementedError()
+
+    def key(self, reading):
+        return f'window-{int(self.__period)}-{reading.sensor_name}-{reading.name}'
