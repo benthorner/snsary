@@ -32,7 +32,6 @@ longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql)
 longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
 
 sgp30 = SGP30Sensor(Adafruit_SGP30(i2c))
-sgp30.device.set_iaq_baseline(TVOC=37036, eCO2=35816)
 
 MultiSource(
     *AwairSensor.discover_from_env(),
