@@ -17,6 +17,11 @@ The installation and configuration is the same as the generic wrapper: ::
     # prepare to poll / scrape
     SGP30Sensor(sgp30)
 
+``SGP30Sensor`` polls at the default period of :mod:`GenericSensor <snsary.contrib.adafruit.generic>`. The `datasheet <https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/9_Gas_Sensors/Datasheets/Sensirion_Gas_Sensors_Datasheet_SGP30.pdf>`_ says it should be 1s, but this doesn't work in practice, especially when the I2C bus is busy.
+
+Humidity compensation
+=====================
+
 ``SGP30Sensor`` is also an :mod:`Output <snsary.outputs.output>`. The TVOC and eCO2 readings from the SGP30 sensor need to be adjusted based on the absolute humidity of the surrounding air, which `can be calculated <https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/9_Gas_Sensors/Datasheets/Sensirion_Gas_Sensors_Datasheet_SGP30.pdf>`_ from the "temperature" and "relative_humidity" in a batch of :mod:`Readings <snsary.models.reading>`: ::
 
     # SCD30 outputs the required readings
@@ -27,27 +32,64 @@ The required names - "tempeature" and "relative_humidity" - may not match some s
     OtherSensor.stream.filter_names('temp').rename(to='temperature').into(sgp30)
     OtherSensor.stream.filter_names('humid').rename(to='relative_humidity').into(sgp30)
 
-``SGP30Sensor`` polls at the default period of :mod:`GenericSensor <snsary.contrib.adafruit.generic>`. The `datasheet <https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/9_Gas_Sensors/Datasheets/Sensirion_Gas_Sensors_Datasheet_SGP30.pdf>`_ says it should be 1s, but this doesn't work in practice, especially when the I2C bus is busy.
+Persistent IAQ baselines
+========================
+
+``SGP30Sensor`` emits ``baseline_TVOC`` and ``baseline_eCO2`` values, which are a moving average of the best environmental conditions the sensor has encountered. Higher values are better (from manual observation). `Adafruit recommend exposing the sensor to fresh air for at least 10 minutes <https://learn.adafruit.com/adafruit-sgp30-gas-tvoc-eco2-mox-sensor/circuitpython-wiring-test>`_ as part of configuring the IAQ baseline.
+
+Every time the SGP30 sensor is sampled, the values of both baseline :mod:`Readings <snsary.models.reading>` are checked. Higher values are set as the new baseline for future readings; use ``persistent_baselines=False`` in the constructor to disable this. The baseline values are kept in persistent :mod:`storage <snsary.utils.storage>` so they survive restarts. See the :mod:`tracker <snsary.utils.tracker>` module for more details.
+
 """
 
 from math import exp
 
 from snsary.outputs import BatchOutput
+from snsary.utils.tracker import MaxTracker, NullTracker
 
 from .generic import GenericSensor
 
 
 class SGP30Sensor(GenericSensor, BatchOutput):
-    def __init__(self, device):
+    def __init__(self, device, persistent_baselines=True):
         BatchOutput.__init__(self)
         GenericSensor.__init__(self, device)
+
+        if persistent_baselines:
+            self.tracker = MaxTracker(
+                self.name,
+                names=['baseline_TVOC', 'baseline_eCO2'],
+                on_change=self.tracked_values_changed
+            )
+        else:
+            self.tracker = NullTracker()
+            self.logger.debug('Persistent baselines disabled, ignoring.')
 
     @property
     def name(self):
         return 'SGP30'
 
+    def start(self):
+        if self.tracker.values:
+            self.tracked_values_changed({}, self.tracker.values)
+        else:
+            self.logger.debug('No baselines to restore, using defaults.')
+
+        GenericSensor.start(self)
+
     def ready(self, elapsed_seconds, **kwargs):
         return elapsed_seconds > 15
+
+    def sample(self, **kwargs):
+        readings = GenericSensor.sample(self, **kwargs)
+        self.tracker.update(readings)
+        return readings
+
+    def tracked_values_changed(self, _, baselines):
+        self.logger.debug(f'Setting baselines: {baselines}')
+
+        self.device.set_iaq_baseline(
+            eCO2=baselines['baseline_eCO2'], TVOC=baselines['baseline_TVOC']
+        )
 
     def publish_batch(self, readings):
         temperatures = self.__filter(readings, 'temperature')

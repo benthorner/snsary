@@ -91,10 +91,7 @@ Temperature / humidity can't be adjusted easily: the calibration values are docu
 - [Datasheet](https://cdn-learn.adafruit.com/assets/assets/000/050/058/original/Sensirion_Gas_Sensors_SGP30_Datasheet_EN.pdf)
 - [Shop link](https://thepihut.com/products/adafruit-sgp30-air-quality-sensor-breakout-voc-and-eco2-ada3709)
 
-TODO:
-
-- evaluation
-- calibration
+This needs some calibration ([see API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/adafruit/index.html)) but ultimately produces comparable TVOC trends and even values compared to another, benchmark VOC sensor. As with the benchmark sensor, most of the trends can be attributed to household activities. There's a fairly constant or "background" TVOC level of 100-200 unless a window is open; this makes it hard to use the sensor as a meaningful indicator of pollution in an indoor environment.
 
 ### Pimoroni
 
