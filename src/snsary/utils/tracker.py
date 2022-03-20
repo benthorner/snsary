@@ -30,17 +30,17 @@ class Tracker(HasLogger, HasStore):
             current_value = self.__filter_value(readings, name)
 
             if not current_value:
-                self.logger.debug(f'Missing value for {name}.')
+                self.logger.debug(f'Tracker missing value for {name}.')
                 return
 
             if name not in values:
-                self.logger.debug(f'Filling empty value for {name}.')
+                self.logger.debug(f'Tracker filling value for {name}.')
                 new_values[name] = current_value
             else:
                 new_values[name] = fn(current_value, values[name])
 
         if new_values == values:
-            self.logger.debug('Tracked values unchanged.')
+            self.logger.debug('Tracked values unchanged, continuing.')
             return
 
         self.logger.debug(f'Storing tracked values: {new_values}')
