@@ -69,12 +69,12 @@ def test_ready(sensor):
 
 def test_publish_batch(sensor, mock_sgp30):
     sensor.publish_batch([
-        create_reading(name='temperature'),
-        create_reading(name='relative_humidity')
+        create_reading(name='temperature', value=1),
+        create_reading(name='relative_humidity', value=2)
     ])
 
-    mock_sgp30.set_iaq_humidity.assert_called_with(
-        pytest.approx(1530.766)
+    mock_sgp30.set_iaq_relative_humidity.assert_called_with(
+        celcius=1, relative_humidity=2
     )
 
 

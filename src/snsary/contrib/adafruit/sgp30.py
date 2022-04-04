@@ -99,16 +99,10 @@ class SGP30Sensor(GenericSensor, BatchOutput):
             self.logger.warning('Incomplete data for self-calibration.')
             return
 
-        H = self.__abs_humidity(
-            temperatures[-1].value, relative_humidities[-1].value
+        self.device.set_iaq_relative_humidity(
+            celcius=temperatures[-1].value,
+            relative_humidity=relative_humidities[-1].value
         )
-
-        self.device.set_iaq_humidity(H)
-
-    def __abs_humidity(self, T, RH):
-        numerator = ((RH / 100) * 6.112) * exp((17.62 * T) / (243.12 + T))
-        denominator = 273.15 + T
-        return 216.7 * (numerator / denominator)
 
     def __filter(self, readings, name):
         return [reading for reading in readings if reading.name == name]
