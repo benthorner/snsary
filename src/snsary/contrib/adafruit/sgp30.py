@@ -41,8 +41,6 @@ Every time the SGP30 sensor is sampled, the values of both baseline :mod:`Readin
 
 """
 
-from math import exp
-
 from snsary.outputs import BatchOutput
 from snsary.utils.tracker import MaxTracker, NullTracker
 
