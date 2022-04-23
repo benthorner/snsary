@@ -44,7 +44,7 @@ def test_publish_batch(
     assert json.loads(request.body) == [{
         'interval': 1,
         'name': 'snsary.mysensor.myreading',
-        'time': 123,
+        'time': 1650745546,
         'value': 123
     }]
 

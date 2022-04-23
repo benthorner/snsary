@@ -4,6 +4,7 @@ pytest
 freezegun
 pytest-mock
 retry
+time-machine
 sphinx-autoapi
 sphinx-rtd-theme
 sphinx-autobuild

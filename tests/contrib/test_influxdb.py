@@ -58,7 +58,7 @@ def test_publish_batch(
     request = httpretty.last_request()
 
     assert request.headers['Authorization'] == 'Token token'
-    assert b'myreading,host=snsary,sensor=mysensor value=123i 123' in request.body
+    assert b'myreading,host=snsary,sensor=mysensor value=123i 1650745546' in request.body
 
 
 @httpretty.activate(allow_net_connect=False)

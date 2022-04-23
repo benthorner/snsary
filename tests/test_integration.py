@@ -1,9 +1,8 @@
 import logging
 from contextlib import contextmanager
-from datetime import datetime
 from threading import Thread
 
-from freezegun import freeze_time
+import time_machine
 
 from snsary import system
 from snsary.outputs import MockOutput
@@ -29,26 +28,24 @@ def test_system(caplog):
     outputs = [MockOutput(), MockOutput(index=1)]
 
     def first_assertions():
-        timestamp = int(datetime.utcnow().timestamp())
         assert 'INFO - [snsary] Started.' in caplog.text
         assert 'INFO - [snsary.mocksensor-0] Collected 1 readings.' in caplog.text
-        assert f'INFO - [snsary.mockoutput-0] Reading: <abc {timestamp} 0>' in caplog.text
-        assert f'INFO - [snsary.mockoutput-1] Reading: <abc {timestamp} 0>' in caplog.text
+        assert 'INFO - [snsary.mockoutput-0] Reading: <abc 1650885071 0>' in caplog.text
+        assert 'INFO - [snsary.mockoutput-1] Reading: <abc 1650885071 0>' in caplog.text
 
     def second_assertions():
-        timestamp = int(datetime.utcnow().timestamp())
-        assert f'INFO - [snsary.mockoutput-0] Reading: <abc {timestamp} 1>' in caplog.text
-        assert f'INFO - [snsary.mockoutput-1] Reading: <abc {timestamp} 1>' in caplog.text
+        assert 'INFO - [snsary.mockoutput-0] Reading: <abc 1650885072 1>' in caplog.text
+        assert 'INFO - [snsary.mockoutput-1] Reading: <abc 1650885072 1>' in caplog.text
 
     def end_assertions():
         assert 'INFO - [snsary] Stopping.' in caplog.text
         assert 'INFO - [snsary] Bye.' in caplog.text
         assert 'ERROR' not in caplog.text
 
-    with freeze_time() as frozen_time:
+    with time_machine.travel("2022-04-25T12:11:11+01:00", tick=False) as frozen_time:
         with tmp_app(sensors=sensors, outputs=outputs):
             retry(first_assertions)
-            frozen_time.tick()
+            frozen_time.shift(1)
             retry(second_assertions)
 
     retry(end_assertions)

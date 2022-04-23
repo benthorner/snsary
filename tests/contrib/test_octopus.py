@@ -3,10 +3,11 @@ import json
 import os
 import re
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import httpretty
 import pytest
-from freezegun import freeze_time
+import time_machine
 
 from snsary.contrib.octopus import OctopusSensor
 
@@ -43,7 +44,11 @@ def test_from_env(mocker):
     )
 
 
-@freeze_time("2021-11-05 15:32:23.1234")
+@time_machine.travel(
+    # temporarily set timezone to Europe/London
+    datetime(2022, 4, 5, 15, 32, 23, tzinfo=ZoneInfo('Europe/London')),
+    tick=False
+)
 @httpretty.activate(allow_net_connect=False)
 def test_sample(
     sensor
@@ -51,7 +56,7 @@ def test_sample(
     url = OctopusSensor.CONSUMPTION_URL.format(**{
         'mpan': 'mpan',
         'serial_number': 'serial_number',
-        'period_from': '2021-11-04T00:00:00'
+        'period_from': '2022-04-03T23:00:00+00:00'
     })
 
     httpretty.register_uri(
@@ -61,13 +66,13 @@ def test_sample(
         body=json.dumps({
             'results': [{
                 "consumption": 0.076,
-                "interval_start": "2021-11-04T23:00:00Z",
-                "interval_end": "2021-11-04T23:30:00Z"
+                "interval_start": "2022-04-03T22:00:00Z",
+                "interval_end": "2022-04-03T22:30:00Z"
             }]
         })
     )
 
-    readings = sensor.sample(now=datetime.utcnow())
+    readings = sensor.sample(now=datetime.now().astimezone())
     assert len(readings) == 1
 
     assert readings[0].value == 0.076
@@ -91,6 +96,6 @@ def test_sample_error(
     )
 
     with pytest.raises(Exception) as excinfo:
-        sensor.sample(now=datetime.utcnow())
+        sensor.sample(now=datetime.now().astimezone())
 
     assert '500 Server Error' in str(excinfo.value)

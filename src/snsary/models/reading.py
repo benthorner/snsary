@@ -26,7 +26,7 @@ class Reading:
 
     @property
     def datetime(self):
-        return datetime.utcfromtimestamp(self.timestamp)
+        return datetime.utcfromtimestamp(self.timestamp).astimezone()
 
     def __str__(self):
         return f'<{self.name} {self.timestamp} {self.value}>'

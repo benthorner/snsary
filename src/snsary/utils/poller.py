@@ -17,7 +17,7 @@ class Poller(Service):
         return self.__period
 
     def start(self):
-        self.__start_time = datetime.utcnow()
+        self.__start_time = datetime.now().astimezone()
         self.__thread.start()
 
     def stop(self):
@@ -26,9 +26,11 @@ class Poller(Service):
 
     def __loop(self):
         while not self.__stop.is_set():
-            now = datetime.utcnow()
+            now = datetime.now().astimezone()
             self.tick(**self.__tick_kwargs(now))
-            delay = int((datetime.utcnow() - now).total_seconds())
+
+            now2 = datetime.now().astimezone()
+            delay = int((now2 - now).total_seconds())
 
             if delay > self.period:
                 get_logger().warning(f"Took too long to get sample: {delay}s.")

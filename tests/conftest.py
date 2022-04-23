@@ -35,7 +35,7 @@ def sensor():
 def create_reading(
     *,
     sensor_name='mysensor',
-    timestamp=123,
+    timestamp=1650745546,  # 2022-04-23T21:25:46+01:00
     value=123,
     name='myreading'
 ):

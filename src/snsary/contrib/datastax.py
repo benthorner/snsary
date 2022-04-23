@@ -29,6 +29,7 @@ import logging
 import os
 import platform
 
+import pytz
 from gql import Client
 from gql.dsl import DSLMutation, DSLSchema, dsl_gql
 from gql.transport.requests import RequestsHTTPTransport
@@ -74,7 +75,8 @@ class GraphQLOutput(BatchOutput):
 
     def __mutation(self, reading):
         value = {
-            'timestamp': reading.datetime.isoformat(),
+            # using UTC ensures test stability when run in different zones
+            'timestamp': reading.datetime.astimezone(pytz.utc).isoformat(),
             'sensor': reading.sensor_name,
             'hostname': platform.node(),
             'metric': reading.name,

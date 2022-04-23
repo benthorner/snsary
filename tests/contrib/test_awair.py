@@ -5,7 +5,7 @@ from datetime import datetime
 
 import httpretty
 import pytest
-from freezegun import freeze_time
+import time_machine
 
 from snsary.contrib.awair import AwairSensor
 
@@ -67,7 +67,7 @@ def test_discover_error():
     assert '500 Server Error' in str(excinfo.value)
 
 
-@freeze_time("2021-11-05 12:00:00")
+@time_machine.travel("2022-04-05T12:00:00+01:00", tick=False)
 @httpretty.activate(allow_net_connect=False)
 def test_sample(
     sensor
@@ -75,7 +75,7 @@ def test_sample(
     url = AwairSensor.DATA_URL.format(**{
         'deviceType': 'awair-r2',
         'deviceId': '1234',
-        'from': '2021-11-05T11:50:00Z'
+        'from': '2022-04-05T10:50:00Z'
     })
 
     httpretty.register_uri(
@@ -84,13 +84,13 @@ def test_sample(
         match_querystring=True,
         body=json.dumps({
             'data': [{
-                'timestamp': '2021-11-05T11:55:00.000Z',
+                'timestamp': '2022-04-05T10:55:00.000Z',
                 'sensors': [{'comp': 'temp', 'value': 123}]
             }]
         })
     )
 
-    readings = sensor.sample(now=datetime.utcnow())
+    readings = sensor.sample(now=datetime.now().astimezone())
     assert len(readings) == 1
 
     assert readings[0].value == 123
@@ -113,6 +113,6 @@ def test_sample_error(
     )
 
     with pytest.raises(Exception) as excinfo:
-        sensor.sample(now=datetime.utcnow())
+        sensor.sample(now=datetime.now().astimezone())
 
     assert '500 Server Error' in str(excinfo.value)

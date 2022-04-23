@@ -75,7 +75,7 @@ def test_publish_batch(graphql, reading):
         '  r0: insertreading(\n'
         '    options: {ttl: 33696000}\n'
         '    value: {hostname: "snsary", sensor: "mysensor", metric: '
-        '"myreading", timestamp: "1970-01-01T00:02:03", value: 123}\n'
+        '"myreading", timestamp: "2022-04-23T19:25:46+00:00", value: 123}\n'
         '  ) {\n'
         '    value {\n'
         '      metric\n'
