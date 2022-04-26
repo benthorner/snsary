@@ -102,7 +102,6 @@ def test_sample(
     assert request.headers['Authorization'] == 'Bearer token-123'
 
 
-@freeze_time("2021-11-05 12:00:00")
 @httpretty.activate(allow_net_connect=False)
 def test_sample_error(
     sensor
