@@ -75,7 +75,7 @@ def test_sample(
     url = AwairSensor.DATA_URL.format(**{
         'deviceType': 'awair-r2',
         'deviceId': '1234',
-        'from': '2021-11-05T11:50:00'
+        'from': '2021-11-05T11:50:00Z'
     })
 
     httpretty.register_uri(

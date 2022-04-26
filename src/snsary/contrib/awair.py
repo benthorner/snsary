@@ -66,7 +66,7 @@ class AwairSensor(PollingSensor):
         url = self.DATA_URL.format(**{
             'deviceType': self.__device_type,
             'deviceId': self.__device_id,
-            'from': sample_start.isoformat()
+            'from': pyrfc3339.generate(sample_start, accept_naive=True)
         })
 
         self.logger.debug(f'Request {url}')
