@@ -1,7 +1,19 @@
 """
 Sends batches of :mod:`Readings <snsary.models.reading>` as "mutations" to a specified `DataStax Astra DB <https://docs.datastax.com/en/astra/docs/index.html>`_ GraphQL endpoint using the `Python GQL client <https://github.com/graphql-python/gql>`_, as a means of inserting into a Cassandra table.
 
-The Cassandra table should be created as follows: ::
+GraphQL replaces normal REST with a server-defined language / API in nested {} format. `DataStax generates the API automatically based on the keyspaces and tables that exist <https://docs.datastax.com/en/astra/docs/using-the-astra-graphql-api.html>`_.
+
+GraphQL isn't well suited to timeseries data: every insertion ("mutation") must have a unique alias. The output compensates for this by using throwaway "r0", "r1" aliases for each reading mutation. See the tests for an example. In order to simplify building each request, the output makes an initial request to get the schema for the keyspace in order to utilise the DSL feature.
+
+Create an instance with ``.from_env()``, which expects:
+
+- DATASTAX_URL
+- DATASTAX_TOKEN (needs API write permission)
+
+Setting up Astra DB
+===================
+
+Create a DB table in Astra as follows: ::
 
     CREATE TABLE reading (
         hostname text,
@@ -16,15 +28,32 @@ The Cassandra table should be created as follows: ::
 
 The output specifies a TTL for each insertion, which may be configurable in future. Having a default TTL for the table is optional but reduces the risk of data remaining indefinitely. Note that it's current not possible to specify other options like the compaction strategy. However, `the DataStax docs say the default strategy is suitable for time series data <https://docs.datastax.com/en/astra/docs/datastax-astra-database-limits.html>`_.
 
-GraphQL replaces normal REST with a server-defined language / API in nested {} format. `DataStax generates the API automatically based on the keyspaces and tables that exist <https://docs.datastax.com/en/astra/docs/using-the-astra-graphql-api.html>`_.
+Querying the data
+=================
 
-GraphQL isn't well suited to timeseries data: every insertion ("mutation") must have a unique alias. The output compensates for this by using throwaway "r0", "r1" aliases for each reading mutation. See the tests for an example. In order to simplify building each request, the output makes an initial request to get the schema for the keyspace in order to utilise the GQL DSL feature.
+Example GraphQL query for data in the table: ::
 
-Create an instance with ``.from_env()``, which expects:
+    query readings {
+      data:reading (
+        options: {
+          pageSize: 10000, limit: 10000
+        },
+        filter: {
+          hostname: { eq: "raspberrypi" },
+          sensor: { eq: "PMSx003" },
+          metric: { eq: "pm25--max/minute" },
+          timestamp: { gt: "${__from:date:iso}", lt: "${__to:date:iso}" }
+        }
+      ) {
+        values {
+          hostname, sensor, metric, timestamp, value
+        }
+      }
+    }
 
-- DATASTAX_URL
-- DATASTAX_TOKEN (needs API write permission)
+Note that the "$" variables are `Grafana global variables <https://grafana.com/docs/grafana/latest/variables/variable-types/global-variables/>`_.
 """
+
 import logging
 import os
 import platform
