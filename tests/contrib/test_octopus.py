@@ -56,7 +56,7 @@ def test_sample(
     url = OctopusSensor.CONSUMPTION_URL.format(**{
         'mpan': 'mpan',
         'serial_number': 'serial_number',
-        'period_from': '2022-04-03T23:00:00+00:00'
+        'period_from': '2022-04-03T23:00:00Z'
     })
 
     httpretty.register_uri(

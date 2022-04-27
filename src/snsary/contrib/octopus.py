@@ -10,7 +10,6 @@ import os
 from datetime import timedelta
 
 import pyrfc3339
-import pytz
 import requests
 
 from snsary.models import Reading
@@ -49,8 +48,7 @@ class OctopusSensor(PollingSensor):
         url = self.CONSUMPTION_URL.format(
             mpan=self.__mpan,
             serial_number=self.__serial_number,
-            # using UTC ensures test stability across timezones
-            period_from=start.astimezone(pytz.utc).isoformat(),
+            period_from=pyrfc3339.generate(start)
         )
 
         self.logger.debug('Request {url}')
