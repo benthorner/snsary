@@ -74,7 +74,7 @@ def test_publish_batch(graphql, reading):
         'query': 'mutation {\n'
         '  r0: insertreading(\n'
         '    options: {ttl: 33696000}\n'
-        '    value: {hostname: "snsary", sensor: "mysensor", metric: '
+        '    value: {host: "snsary", sensor: "mysensor", metric: '
         '"myreading", timestamp: "2022-04-23T20:25:46+00:00", value: 123}\n'
         '  ) {\n'
         '    value {\n'

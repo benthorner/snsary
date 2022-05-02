@@ -16,12 +16,12 @@ Setting up Astra DB
 Create a DB table in Astra as follows: ::
 
     CREATE TABLE reading (
-        hostname text,
+        host text,
         sensor text,
         metric text,
         timestamp timestamp,
         value double,
-        PRIMARY KEY ((hostname,sensor,metric), timestamp)
+        PRIMARY KEY ((host,sensor,metric), timestamp)
     )
     WITH CLUSTERING ORDER BY (timestamp DESC)
     AND default_time_to_live = 33696000;
@@ -39,14 +39,14 @@ Example GraphQL query for data in the table: ::
           pageSize: 10000, limit: 10000
         },
         filter: {
-          hostname: { eq: "raspberrypi" },
+          host: { eq: "raspberrypi" },
           sensor: { eq: "PMSx003" },
           metric: { eq: "pm25--max/minute" },
           timestamp: { gt: "${__from:date:iso}", lt: "${__to:date:iso}" }
         }
       ) {
         values {
-          hostname, sensor, metric, timestamp, value
+          host, sensor, metric, timestamp, value
         }
       }
     }
@@ -107,7 +107,7 @@ class GraphQLOutput(BatchOutput):
             # using UTC ensures test stability when run in different zones
             'timestamp': reading.datetime.astimezone(pytz.utc).isoformat(),
             'sensor': reading.sensor_name,
-            'hostname': platform.node(),
+            'host': platform.node(),
             'metric': reading.name,
             'value': float(reading.value)
         }
