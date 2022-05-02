@@ -7,9 +7,7 @@ from snsary.contrib.influxdb import InfluxDBOutput
 
 
 @pytest.fixture()
-def influxdb(mocker):
-    mocker.patch('platform.node', return_value='snsary')
-
+def influxdb():
     return InfluxDBOutput(
         url='http://influxdb',
         token='token',
@@ -45,6 +43,7 @@ def test_from_env(mocker):
 
 @httpretty.activate(allow_net_connect=False)
 def test_publish_batch(
+    mocker,
     influxdb,
     sensor,
     reading
@@ -54,6 +53,7 @@ def test_publish_batch(
         'http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s'
     )
 
+    mocker.patch('platform.node', return_value='snsary')
     influxdb.publish_batch([reading])
     request = httpretty.last_request()
 

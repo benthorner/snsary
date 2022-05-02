@@ -21,15 +21,13 @@ def schema():
 
 @pytest.fixture
 @httpretty.activate(allow_net_connect=False)
-def graphql(schema, mocker):
+def graphql(schema):
     httpretty.register_uri(
         httpretty.POST,
         'http://graphql/',
         content_type='application/json',
         body=schema
     )
-
-    mocker.patch('platform.node', return_value='snsary')
 
     return GraphQLOutput(
         url="http://graphql", token="token"
@@ -57,7 +55,11 @@ def test_from_env(mocker):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch(graphql, reading):
+def test_publish_batch(
+    mocker,
+    graphql,
+    reading
+):
     httpretty.register_uri(
         httpretty.POST,
         'http://graphql/',
@@ -65,6 +67,7 @@ def test_publish_batch(graphql, reading):
         body='{"data": []}'
     )
 
+    mocker.patch('platform.node', return_value='snsary')
     graphql.publish_batch([reading])
     request = httpretty.last_request()
 
