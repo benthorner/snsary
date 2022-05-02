@@ -12,6 +12,7 @@ from snsary.contrib.adafruit import GenericSensor as AdafruitSensor
 from snsary.contrib.adafruit.sgp30 import SGP30Sensor
 from snsary.contrib.awair import AwairSensor
 from snsary.contrib.datastax import GraphQLOutput
+from snsary.contrib.google import BigQueryOutput
 from snsary.contrib.grafana import GraphiteOutput
 from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.contrib.octopus import OctopusSensor
@@ -25,11 +26,14 @@ i2c = board.I2C()
 load_dotenv()
 configure_logging()
 
-graphql = GraphQLOutput.from_env()
+# summarization is necessary to minimise the amount of data stored but also
+# for GraphQL to make longterm queries practical in the absence of grouping
 longterm_stream = SimpleStream()
-longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql)
-longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql)
-longterm_stream.summarize(days=1).rename(append="/day").into(graphql)
+bigquery = BigQueryOutput()
+graphql = GraphQLOutput.from_env()
+longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql, bigquery)
+longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql, bigquery)
+longterm_stream.summarize(days=1).rename(append="/day").into(graphql, bigquery)
 
 sgp30 = SGP30Sensor(Adafruit_SGP30(i2c))
 

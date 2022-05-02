@@ -15,3 +15,4 @@ Outputs for remote / web APIs include:
 
 - GraphiteOutput ([API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/grafana/index.html))
 - InfluxDBOutput ([API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/influxdb/index.html))
+- BigQueryOutput ([API docs](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/influxdb/index.html)) - requires `sudo apt install cmake`
