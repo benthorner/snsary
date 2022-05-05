@@ -51,7 +51,7 @@ class OctopusSensor(PollingSensor):
             period_from=pyrfc3339.generate(start)
         )
 
-        self.logger.debug('Request {url}')
+        self.logger.debug(f'Request {url}')
         response = requests.get(
             url, auth=(self.__token, '')
         )
