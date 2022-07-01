@@ -29,7 +29,7 @@ configure_logging()
 # summarization is necessary to minimise the amount of data stored but also
 # for GraphQL to make longterm queries practical in the absence of grouping
 longterm_stream = SimpleStream()
-bigquery = BigQueryOutput()
+bigquery = BigQueryOutput.from_env()
 graphql = GraphQLOutput.from_env()
 longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql, bigquery)
 longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql, bigquery)
