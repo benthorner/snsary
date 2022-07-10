@@ -98,7 +98,7 @@ class SGP30Sensor(GenericSensor, BatchOutput):
             return
 
         self.device.set_iaq_relative_humidity(
-            celcius=temperatures[-1].value,
+            celsius=temperatures[-1].value,
             relative_humidity=relative_humidities[-1].value
         )
 

@@ -74,7 +74,7 @@ def test_publish_batch(sensor, mock_sgp30):
     ])
 
     mock_sgp30.set_iaq_relative_humidity.assert_called_with(
-        celcius=1, relative_humidity=2
+        celsius=1, relative_humidity=2
     )
 
 
