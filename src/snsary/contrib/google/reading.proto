@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package snsary;
+
+message Reading {
+  required string host = 1;
+  required string sensor = 2;
+  required string metric = 3;
+  required string timestamp = 4;
+  required double value = 5;
+}
