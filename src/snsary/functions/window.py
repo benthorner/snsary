@@ -55,4 +55,4 @@ class Window(Function, Service):
         raise NotImplementedError()
 
     def key(self, reading):
-        return f'window-{int(self.__period)}-{reading.sensor_name}-{reading.name}'
+        return f"window-{int(self.__period)}-{reading.sensor_name}-{reading.name}"

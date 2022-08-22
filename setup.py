@@ -21,16 +21,17 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.8",
     install_requires=[
-        *open('requirements/default.txt').read().splitlines(),
+        *open("requirements/default.txt").read().splitlines(),
     ],
     extras_require={
         **{
             path.parent.stem: open(path).read().splitlines()
-            for path in Path('requirements/').glob('*/extra.txt')
+            for path in Path("requirements/").glob("*/extra.txt")
         },
-        'all': set(
-            line for path in Path('requirements/').glob('*/extra.txt')
+        "all": set(
+            line
+            for path in Path("requirements/").glob("*/extra.txt")
             for line in open(path).read().splitlines()
-        )
-    }
+        ),
+    },
 )

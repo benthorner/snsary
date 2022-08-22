@@ -29,7 +29,7 @@ class Reading:
         return datetime.fromtimestamp(self.timestamp).astimezone()
 
     def __str__(self):
-        return f'<{self.name} {self.timestamp} {self.value}>'
+        return f"<{self.name} {self.timestamp} {self.value}>"
 
     def dup(self, **kwargs):
         source = dict(

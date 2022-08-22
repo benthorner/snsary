@@ -6,18 +6,8 @@ from .polling_sensor import PollingSensor
 
 
 class MockSensor(PollingSensor):
-    def __init__(
-        self,
-        *,
-        fail=False,
-        hang=False,
-        period_seconds=5,
-        index=0
-    ):
-        PollingSensor.__init__(
-            self,
-            period_seconds=period_seconds
-        )
+    def __init__(self, *, fail=False, hang=False, period_seconds=5, index=0):
+        PollingSensor.__init__(self, period_seconds=period_seconds)
 
         self.__hang = hang
         self.__fail = fail
@@ -26,18 +16,14 @@ class MockSensor(PollingSensor):
 
     @property
     def name(self):
-        return f'mocksensor-{self.__index}'
+        return f"mocksensor-{self.__index}"
 
     def sample(
-        self,
-        now,  # unused here
-        start_time,  # unused here
-        timestamp,
-        elapsed_seconds
+        self, now, start_time, timestamp, elapsed_seconds  # unused here  # unused here
     ):
         if self.__fail:
             self.__failures += 1
-            raise RuntimeError(f'problem-{self.__failures}')
+            raise RuntimeError(f"problem-{self.__failures}")
 
         if self.__hang:
             Event().wait()
@@ -45,7 +31,7 @@ class MockSensor(PollingSensor):
         return [
             Reading(
                 sensor_name=self.name,
-                name='abc',
+                name="abc",
                 timestamp=timestamp,
                 value=elapsed_seconds,
             )

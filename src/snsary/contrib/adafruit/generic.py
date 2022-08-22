@@ -62,7 +62,7 @@ class GenericSensor(PollingSensor):
                 sensor_name=self.name,
                 name=name,
                 value=value,
-                timestamp=kwargs['timestamp']
+                timestamp=kwargs["timestamp"],
             )
             for (name, value) in self.__scraper(self.device)
         ]

@@ -7,19 +7,19 @@ from snsary.utils import scraper
 
 class PSUtilSensor(PollingSensor):
     FUNCTIONS = {
-        'cpu_times': {},
-        'cpu_percent': {'interval': 1},
-        'cpu_count': {},
-        'cpu_stats': {},
-        'getloadavg': {},
-        'virtual_memory': {},
-        'swap_memory': {},
-        'disk_usage': {'path': '/'},
-        'disk_io_counter': {},
-        'net_io_counters': {},
-        'sensors_temperatures': {},
-        'sensors_fans': {},
-        'sensors_battery': {},
+        "cpu_times": {},
+        "cpu_percent": {"interval": 1},
+        "cpu_count": {},
+        "cpu_stats": {},
+        "getloadavg": {},
+        "virtual_memory": {},
+        "swap_memory": {},
+        "disk_usage": {"path": "/"},
+        "disk_io_counter": {},
+        "net_io_counters": {},
+        "sensors_temperatures": {},
+        "sensors_fans": {},
+        "sensors_battery": {},
     }
 
     def __init__(self, functions=FUNCTIONS):
@@ -28,16 +28,11 @@ class PSUtilSensor(PollingSensor):
 
     @property
     def name(self):
-        return 'psutil'
+        return "psutil"
 
     def sample(self, timestamp, **kwargs):
         return [
-            Reading(
-                sensor_name=self.name,
-                name=name,
-                value=value,
-                timestamp=timestamp
-            )
+            Reading(sensor_name=self.name, name=name, value=value, timestamp=timestamp)
             for fname, kwargs in self.__functions.items()
             for (name, value) in self.__sample_fn(fname, kwargs)
         ]
@@ -48,5 +43,5 @@ class PSUtilSensor(PollingSensor):
             return []
 
         value = getattr(psutil, fname)(**kwargs)
-        self.logger.debug(f'Scraping {fname} => {value}')
+        self.logger.debug(f"Scraping {fname} => {value}")
         return scraper.extract_from(value, prefix=fname)

@@ -27,21 +27,16 @@ def sensor():
     class FakeSensor(Sensor):
         @property
         def name(self):
-            return 'mysensor'
+            return "mysensor"
 
     return FakeSensor()
 
 
 def create_reading(
     *,
-    sensor_name='mysensor',
+    sensor_name="mysensor",
     timestamp=1650745546,  # 2022-04-23T21:25:46+01:00
     value=123,
-    name='myreading'
+    name="myreading"
 ):
-    return Reading(
-        sensor_name=sensor_name,
-        timestamp=timestamp,
-        value=value,
-        name=name
-    )
+    return Reading(sensor_name=sensor_name, timestamp=timestamp, value=value, name=name)

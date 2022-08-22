@@ -4,10 +4,4 @@ from .polling_sensor import PollingSensor
 from .sensor import Sensor
 from .source import Source
 
-__all__ = [
-    "MockSensor",
-    "PollingSensor",
-    "Sensor",
-    "Source",
-    "MultiSource"
-]
+__all__ = ["MockSensor", "PollingSensor", "Sensor", "Source", "MultiSource"]

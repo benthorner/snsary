@@ -19,19 +19,17 @@ def sensor(mock_device):
 
 
 def test_name(sensor):
-    assert sensor.name == 'MockDevice'
+    assert sensor.name == "MockDevice"
 
 
 def test_sample(sensor, mock_device):
-    readings = list(sensor.sample(
-        timestamp='now'
-    ))
+    readings = list(sensor.sample(timestamp="now"))
 
     assert len(readings) == 1
-    assert readings[0].name == 'data'
+    assert readings[0].name == "data"
     assert readings[0].value == 1.23
-    assert readings[0].sensor_name == 'MockDevice'
-    assert readings[0].timestamp == 'now'
+    assert readings[0].sensor_name == "MockDevice"
+    assert readings[0].timestamp == "now"
 
 
 def test_sample_not_ready(sensor):

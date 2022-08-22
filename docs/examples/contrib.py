@@ -39,7 +39,7 @@ sgp30 = SGP30Sensor(Adafruit_SGP30(i2c))
 
 MultiSource(
     *AwairSensor.discover_from_env(),
-    PyPMSSensor(sensor_name='PMSx003'),
+    PyPMSSensor(sensor_name="PMSx003"),
     AdafruitSensor(SCD30(i2c)).stream.tee(sgp30),
     AdafruitSensor(BH1750(i2c)),
     AdafruitSensor(MS8607(i2c)),

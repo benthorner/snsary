@@ -28,21 +28,22 @@ class GenericSensor(PollingSensor):
 
         # data is stored as slots in reading
         from mics6814 import Mics6814Reading
+
         class_scraper = scraper.for_class(Mics6814Reading)
 
         # create once to avoid descriptor leak
         from mics6814 import MICS6814
+
         instance = MICS6814()
 
         # turn off bright LED (on by default)
         instance.set_led(0, 0, 0)
 
         return cls(
-            name='MICS6814',
+            name="MICS6814",
             read_fn=lambda: filter(
-                lambda scrap: scrap[0] != 'adc',
-                class_scraper(instance.read_all())
-            )
+                lambda scrap: scrap[0] != "adc", class_scraper(instance.read_all())
+            ),
         )
 
     def __init__(self, *, name, read_fn):
@@ -56,11 +57,6 @@ class GenericSensor(PollingSensor):
 
     def sample(self, timestamp, **kwargs):
         return [
-            Reading(
-                sensor_name=self.name,
-                name=name,
-                value=value,
-                timestamp=timestamp
-            )
+            Reading(sensor_name=self.name, name=name, value=value, timestamp=timestamp)
             for name, value in self.__read_fn()
         ]

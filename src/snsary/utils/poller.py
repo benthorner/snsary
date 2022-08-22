@@ -45,5 +45,5 @@ class Poller(Service):
             "now": now,
             "start_time": self.__start_time,
             "timestamp": int(now.timestamp()),
-            "elapsed_seconds": int((now - self.__start_time).total_seconds())
+            "elapsed_seconds": int((now - self.__start_time).total_seconds()),
         }

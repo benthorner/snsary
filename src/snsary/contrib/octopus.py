@@ -22,16 +22,13 @@ class OctopusSensor(PollingSensor):
     @classmethod
     def from_env(cls):
         return cls(
-            mpan=os.environ['OCTOPUS_MPAN'],
-            serial_number=os.environ['OCTOPUS_SERIAL'],
-            token=os.environ['OCTOPUS_TOKEN']
+            mpan=os.environ["OCTOPUS_MPAN"],
+            serial_number=os.environ["OCTOPUS_SERIAL"],
+            token=os.environ["OCTOPUS_TOKEN"],
         )
 
     def __init__(self, *, mpan, serial_number, token):
-        PollingSensor.__init__(
-            self,
-            period_seconds=30 * 60  # 30 mins
-        )
+        PollingSensor.__init__(self, period_seconds=30 * 60)  # 30 mins
 
         self.__token = token
         self.__mpan = mpan
@@ -39,7 +36,7 @@ class OctopusSensor(PollingSensor):
 
     @property
     def name(self):
-        return 'octopus'
+        return "octopus"
 
     def sample(self, now, **kwargs):
         start = now - timedelta(days=1)
@@ -48,29 +45,23 @@ class OctopusSensor(PollingSensor):
         url = self.CONSUMPTION_URL.format(
             mpan=self.__mpan,
             serial_number=self.__serial_number,
-            period_from=pyrfc3339.generate(start)
+            period_from=pyrfc3339.generate(start),
         )
 
-        self.logger.debug(f'Request {url}')
-        response = requests.get(
-            url, auth=(self.__token, '')
-        )
+        self.logger.debug(f"Request {url}")
+        response = requests.get(url, auth=(self.__token, ""))
         response.raise_for_status()
         samples = response.json()["results"]
-        self.logger.debug(f'Response {samples}')
+        self.logger.debug(f"Response {samples}")
 
-        return [
-            self.__sample_reading(sample) for sample in samples
-        ]
+        return [self.__sample_reading(sample) for sample in samples]
 
     def __sample_reading(self, sample):
-        sample_timestamp = int(
-            pyrfc3339.parse(sample["interval_end"]).timestamp()
-        )
+        sample_timestamp = int(pyrfc3339.parse(sample["interval_end"]).timestamp())
 
         return Reading(
             sensor_name=self.name,
-            name='consumption',
+            name="consumption",
             timestamp=sample_timestamp,
             value=sample["consumption"],
         )

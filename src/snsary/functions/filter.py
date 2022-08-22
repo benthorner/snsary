@@ -14,12 +14,8 @@ class Filter(Function):
 
     @classmethod
     def sensor_name(cls, name):
-        return cls(
-            lambda reading: reading.sensor_name == name
-        )
+        return cls(lambda reading: reading.sensor_name == name)
 
     @classmethod
     def names(cls, *names):
-        return cls(
-            lambda reading: reading.name in names
-        )
+        return cls(lambda reading: reading.name in names)

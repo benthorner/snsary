@@ -38,7 +38,7 @@ class OLEDOutput(Output, Service):
     def publish(self, reading):
         self.__count += 1
         self.__display.fill(0)
-        self.__display.text(f'Sent {self.__count} readings.', 0, 0, color=1)
+        self.__display.text(f"Sent {self.__count} readings.", 0, 0, color=1)
         self.__display.show()
 
 

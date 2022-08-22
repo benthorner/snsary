@@ -68,13 +68,11 @@ class BigQueryOutput(BatchOutput):
     @classmethod
     def from_env(cls):
         return cls(
-            stream=os.environ['GOOGLE_BIGQUERY_STREAM'],
+            stream=os.environ["GOOGLE_BIGQUERY_STREAM"],
         )
 
     def publish_batch(self, readings):
-        self.__proto_send(
-            [self.__proto_row(reading) for reading in readings]
-        )
+        self.__proto_send([self.__proto_row(reading) for reading in readings])
 
     def __proto_row(self, reading):
         """
@@ -102,9 +100,7 @@ class BigQueryOutput(BatchOutput):
         proto_rows = types.ProtoRows()
 
         for proto_reading in proto_readings:
-            proto_rows.serialized_rows.append(
-                proto_reading.SerializeToString()
-            )
+            proto_rows.serialized_rows.append(proto_reading.SerializeToString())
 
         proto_data = types.AppendRowsRequest.ProtoData()
         proto_data.rows = proto_rows
@@ -115,6 +111,5 @@ class BigQueryOutput(BatchOutput):
         request.proto_rows = proto_data
 
         self.__client.append_rows(
-            requests=iter([request]),
-            retry=Retry(deadline=self.RETRY_DEADLINE)
+            requests=iter([request]), retry=Retry(deadline=self.RETRY_DEADLINE)
         )

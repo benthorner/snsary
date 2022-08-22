@@ -55,22 +55,22 @@ class SGP30Sensor(GenericSensor, BatchOutput):
         if persistent_baselines:
             self.tracker = MaxTracker(
                 self.name,
-                names=['baseline_TVOC', 'baseline_eCO2'],
-                on_change=self.tracked_values_changed
+                names=["baseline_TVOC", "baseline_eCO2"],
+                on_change=self.tracked_values_changed,
             )
         else:
             self.tracker = NullTracker()
-            self.logger.debug('Persistent baselines disabled, ignoring.')
+            self.logger.debug("Persistent baselines disabled, ignoring.")
 
     @property
     def name(self):
-        return 'SGP30'
+        return "SGP30"
 
     def start(self):
         if self.tracker.values:
             self.tracked_values_changed({}, self.tracker.values)
         else:
-            self.logger.debug('No baselines to restore, using defaults.')
+            self.logger.debug("No baselines to restore, using defaults.")
 
         GenericSensor.start(self)
 
@@ -83,23 +83,23 @@ class SGP30Sensor(GenericSensor, BatchOutput):
         return readings
 
     def tracked_values_changed(self, _, baselines):
-        self.logger.debug(f'Setting baselines: {baselines}')
+        self.logger.debug(f"Setting baselines: {baselines}")
 
         self.device.set_iaq_baseline(
-            eCO2=baselines['baseline_eCO2'], TVOC=baselines['baseline_TVOC']
+            eCO2=baselines["baseline_eCO2"], TVOC=baselines["baseline_TVOC"]
         )
 
     def publish_batch(self, readings):
-        temperatures = self.__filter(readings, 'temperature')
-        relative_humidities = self.__filter(readings, 'relative_humidity')
+        temperatures = self.__filter(readings, "temperature")
+        relative_humidities = self.__filter(readings, "relative_humidity")
 
         if not temperatures or not relative_humidities:
-            self.logger.warning('Incomplete data for self-calibration.')
+            self.logger.warning("Incomplete data for self-calibration.")
             return
 
         self.device.set_iaq_relative_humidity(
             celsius=temperatures[-1].value,
-            relative_humidity=relative_humidities[-1].value
+            relative_humidity=relative_humidities[-1].value,
         )
 
     def __filter(self, readings, name):

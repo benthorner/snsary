@@ -11,6 +11,7 @@ bootstrap-all: bootstrap
 	cat requirements/*/tests.txt | xargs pip install
 
 test:
+	black --check .
 	isort --check-only .
 	flake8 .
 	pytest --ignore=tests/contrib

@@ -29,12 +29,14 @@ class ButtonSensor(PollingSensor):
         self.__button.direction = digitalio.Direction.INPUT
 
     def sample(self, timestamp, **kwargs):
-        return [Reading(
-            sensor_name=self.name,
-            name='pressed',
-            timestamp=timestamp,
-            value=self.__button.value
-        )]
+        return [
+            Reading(
+                sensor_name=self.name,
+                name="pressed",
+                timestamp=timestamp,
+                value=self.__button.value,
+            )
+        ]
 
 
 ButtonSensor().subscribe(MockOutput())
