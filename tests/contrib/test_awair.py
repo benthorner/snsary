@@ -47,7 +47,7 @@ def test_discover():
 
     sensors = AwairSensor.discover(token='token-123')
     assert len(sensors) == 1
-    assert(sensors[0].name) == 'awair-r2-1234'
+    assert sensors[0].name == 'awair-r2-1234'
 
     request = httpretty.last_request()
     assert request.headers['Authorization'] == 'Bearer token-123'
