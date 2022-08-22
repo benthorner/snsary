@@ -22,7 +22,12 @@ def test_sample(mocker):
         functions={"disk_partitions": {}},
     )
 
-    readings = sorted(sensor.sample(timestamp="now"), key=lambda r: r.name)
+    readings = list(
+        sorted(
+            sensor.sample(timestamp="now"),
+            key=lambda r: r.name,
+        )
+    )
 
     assert len(readings) == 2
     assert readings[0].name == "disk_partitions-0-maxfile"
@@ -33,5 +38,5 @@ def test_sample(mocker):
 
 def test_sample_ignores_unavailable_stats(mocker):
     sensor = PSUtilSensor(functions={"foo": {}})
-    readings = sensor.sample(timestamp="now")
+    readings = list(sensor.sample(timestamp="now"))
     assert len(readings) == 0

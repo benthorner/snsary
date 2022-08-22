@@ -57,9 +57,10 @@ class OctopusSensor(PollingSensor):
         samples = response.json()["results"]
         self.logger.debug(f"Response {samples}")
 
-        return [self.__sample_reading(sample) for sample in samples]
+        for sample in samples:
+            yield self.__reading_from_sample(sample)
 
-    def __sample_reading(self, sample):
+    def __reading_from_sample(self, sample):
         sample_timestamp = int(pyrfc3339.parse(sample["interval_end"]).timestamp())
 
         return Reading(

@@ -99,7 +99,8 @@ def test_sample(sensor):
         ),
     )
 
-    readings = sensor.sample(now=datetime.now().astimezone())
+    now = datetime.now().astimezone()
+    readings = list(sensor.sample(now=now))
     assert len(readings) == 1
 
     assert readings[0].value == 123
@@ -122,6 +123,7 @@ def test_sample_error(
     )
 
     with pytest.raises(Exception) as excinfo:
-        sensor.sample(now=datetime.now().astimezone())
+        now = datetime.now().astimezone()
+        list(sensor.sample(now=now))
 
     assert "500 Server Error" in str(excinfo.value)

@@ -31,17 +31,28 @@ class PSUtilSensor(PollingSensor):
         return "psutil"
 
     def sample(self, timestamp, **kwargs):
-        return [
-            Reading(sensor_name=self.name, name=name, value=value, timestamp=timestamp)
-            for fname, kwargs in self.__functions.items()
-            for (name, value) in self.__sample_fn(fname, kwargs)
-        ]
+        for fname in self.__functions:
+            yield from self.__readings_from_function(
+                timestamp,
+                fname,
+            )
 
-    def __sample_fn(self, fname, kwargs):
+    def __readings_from_function(self, timestamp, fname):
+        for name, value in self.__sample_fn(fname):
+            yield Reading(
+                sensor_name=self.name,
+                name=name,
+                value=value,
+                timestamp=timestamp,
+            )
+
+    def __sample_fn(self, fname):
         if not hasattr(psutil, fname):
             self.logger.debug(f"Skipping {fname} as not available.")
             return []
 
+        kwargs = self.__functions[fname]
         value = getattr(psutil, fname)(**kwargs)
+
         self.logger.debug(f"Scraping {fname} => {value}")
         return scraper.extract_from(value, prefix=fname)

@@ -81,19 +81,18 @@ class AwairSensor(PollingSensor):
         samples = response.json()["data"]
         self.logger.debug("Response {samples}")
 
-        return [
-            reading for sample in samples for reading in self.__sample_readings(sample)
-        ]
+        for sample in samples:
+            yield from self.__readings_from_sample(sample)
 
-    def __sample_readings(self, sample):
+    def __readings_from_sample(self, sample):
         sample_timestamp = int(pyrfc3339.parse(sample["timestamp"]).timestamp())
 
-        return (
-            Reading(
-                sensor_name=self.name,
-                name=sensor["comp"],
-                timestamp=sample_timestamp,
-                value=sensor["value"],
+        for sensor in sample["sensors"]:
+            yield (
+                Reading(
+                    sensor_name=self.name,
+                    name=sensor["comp"],
+                    timestamp=sample_timestamp,
+                    value=sensor["value"],
+                )
             )
-            for sensor in sample["sensors"]
-        )
