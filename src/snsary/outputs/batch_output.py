@@ -1,8 +1,12 @@
 """
-Depending on the output, it may be more efficient to dispatch multiple :mod:`Readings<snsary.models.reading>` together. This can be done by inheriting from BatchOutput, which requires a ``publish_batch`` method. BatchOutput is also a :mod:`Service <snsary.utils.service>` and will try to publish any remaining Readings when told to ``stop()``.
+Depending on the output, it may be more efficient to dispatch multiple :mod:`Readings<snsary.models.reading>` together. This can be done by inheriting from BatchOutput, which requires a ``publish_batch`` method.
+
+BatchOutput protects against concurrent execution of its ``publish`` method. BatchOutput is also a :mod:`Service <snsary.utils.service>` and will try to publish any remaining Readings when told to ``stop()``.
 """
 
 from datetime import datetime
+
+from wrapt import synchronized
 
 from snsary.utils import Service
 
@@ -30,6 +34,7 @@ class BatchOutput(Output, Service):
         if self.__readings:
             self.flush()
 
+    @synchronized
     def publish(self, reading):
         self.__readings += [reading]
         self.__try_publish_large_batch()

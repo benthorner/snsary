@@ -1,6 +1,8 @@
 """
 Publishes zero or more :mod:`Readings <snsary.models.Reading>` depending on what the specified :mod:`function <snsary.functions>` returns for a given :mod:`Reading <snsary.models.reading>`. This could be nothing, the same reading, or multiple, different readings.
 """
+from wrapt import synchronized
+
 from .simple_stream import SimpleStream
 
 
@@ -14,6 +16,7 @@ class FuncStream(SimpleStream):
         stream.subscribe(self)
         self.__function = function
 
+    @synchronized
     def publish(self, reading):
         output_readings = self.__function(reading)
 
