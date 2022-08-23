@@ -104,10 +104,10 @@ def test_sample(sensor, mock_generic, mocker):
     mock_tracker.update.assert_called_with(["readings"])
 
 
-def test_tracked_values_changed(sensor, mock_sgp30):
+def test_baselines_changed(sensor, mock_sgp30):
     sensor.tracker.on_change(
-        None,
-        {"baseline_TVOC": "tvoc", "baseline_eCO2": "eco2"},
+        old=None,
+        new={"baseline_TVOC": "tvoc", "baseline_eCO2": "eco2"},
     )
 
     mock_sgp30.set_iaq_baseline.assert_called_with(

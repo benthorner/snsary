@@ -3,7 +3,7 @@ Utility to track the values of readings with specified names using persistent :m
 
     Tracker('id-for-persistent-storage', myreading=max, othername=min)
 
-Call ``update`` when new readings are available. ``on_change`` is called when one or more tracked values change - set to a different function to subscribe to changes.
+Call ``update`` when new readings are available. ``on_change`` is called with kwargs ``old`` and ``new`` when one or more tracked values change - set to a different function to subscribe to changes.
 """
 
 from .logger import HasLogger
@@ -19,7 +19,7 @@ class Tracker(HasLogger, HasStore):
     def values(self):
         return self.store.get(f"{self.__id}-tracked-values", {})
 
-    def on_change(self, old, new):
+    def on_change(self, *, old, new):
         pass
 
     def update(self, readings):
@@ -45,7 +45,7 @@ class Tracker(HasLogger, HasStore):
 
         self.logger.debug(f"Storing tracked values: {new_values}")
         self.store[f"{self.__id}-tracked-values"] = new_values
-        self.on_change(values, new_values)
+        self.on_change(old=values, new=new_values)
 
     def __filter_value(self, readings, name):
         for reading in readings:

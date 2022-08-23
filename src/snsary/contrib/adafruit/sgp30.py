@@ -56,7 +56,7 @@ class SGP30Sensor(GenericSensor, BatchOutput):
             self.tracker = MaxTracker(
                 self.name,
                 names=["baseline_TVOC", "baseline_eCO2"],
-                on_change=self.tracked_values_changed,
+                on_change=self.baselines_changed,
             )
         else:
             self.tracker = NullTracker()
@@ -68,7 +68,7 @@ class SGP30Sensor(GenericSensor, BatchOutput):
 
     def start(self):
         if self.tracker.values:
-            self.tracked_values_changed({}, self.tracker.values)
+            self.baselines_changed(old={}, new=self.tracker.values)
         else:
             self.logger.debug("No baselines to restore, using defaults.")
 
@@ -82,11 +82,11 @@ class SGP30Sensor(GenericSensor, BatchOutput):
         self.tracker.update(readings)
         return readings
 
-    def tracked_values_changed(self, _, baselines):
-        self.logger.debug(f"Setting baselines: {baselines}")
+    def baselines_changed(self, old, new):
+        self.logger.debug(f"Setting baselines: {new}")
 
         self.device.set_iaq_baseline(
-            eCO2=baselines["baseline_eCO2"], TVOC=baselines["baseline_TVOC"]
+            eCO2=new["baseline_eCO2"], TVOC=new["baseline_TVOC"]
         )
 
     def publish_batch(self, readings):
