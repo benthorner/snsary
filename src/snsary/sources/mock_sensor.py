@@ -6,8 +6,18 @@ from .polling_sensor import PollingSensor
 
 
 class MockSensor(PollingSensor):
-    def __init__(self, *, fail=False, hang=False, period_seconds=5, index=0):
-        PollingSensor.__init__(self, period_seconds=period_seconds)
+    def __init__(
+        self,
+        *,
+        fail=False,
+        hang=False,
+        period_seconds=5,
+        index=0,
+    ):
+        PollingSensor.__init__(
+            self,
+            period_seconds=period_seconds,
+        )
 
         self.__hang = hang
         self.__fail = fail
@@ -19,7 +29,11 @@ class MockSensor(PollingSensor):
         return f"mocksensor-{self.__index}"
 
     def sample(
-        self, now, start_time, timestamp, elapsed_seconds  # unused here  # unused here
+        self,
+        now,  # unused here (implicit test for kwarg)
+        start_time,  # unused (implicitly kwarg check)
+        timestamp,
+        elapsed_seconds,
     ):
         if self.__fail:
             self.__failures += 1

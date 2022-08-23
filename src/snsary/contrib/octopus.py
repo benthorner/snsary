@@ -28,7 +28,10 @@ class OctopusSensor(PollingSensor):
         )
 
     def __init__(self, *, mpan, serial_number, token):
-        PollingSensor.__init__(self, period_seconds=30 * 60)  # 30 mins
+        PollingSensor.__init__(
+            self,
+            period_seconds=30 * 60,  # 30 mins
+        )
 
         self.__token = token
         self.__mpan = mpan

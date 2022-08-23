@@ -24,13 +24,16 @@ class AwairSensor(PollingSensor):
 
     @classmethod
     def discover_from_env(cls):
-        return cls.discover(token=os.environ["AWAIR_TOKEN"])
+        return cls.discover(
+            token=os.environ["AWAIR_TOKEN"],
+        )
 
     @classmethod
     def discover(cls, *, token):
         get_logger().debug(f"Request {cls.DEVICES_URL}")
         response = requests.get(
-            cls.DEVICES_URL, headers={"Authorization": f"Bearer {token}"}
+            cls.DEVICES_URL,
+            headers={"Authorization": f"Bearer {token}"},
         )
         response.raise_for_status()
         devices = response.json()["devices"]
@@ -71,7 +74,8 @@ class AwairSensor(PollingSensor):
 
         self.logger.debug(f"Request {url}")
         response = requests.get(
-            url, headers={"Authorization": f"Bearer {self.__token}"}
+            url,
+            headers={"Authorization": f"Bearer {self.__token}"},
         )
         response.raise_for_status()
         samples = response.json()["data"]

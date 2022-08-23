@@ -9,7 +9,10 @@ from snsary.contrib.grafana import GraphiteOutput
 
 @pytest.fixture()
 def graphite():
-    return GraphiteOutput(url="http://graphite", prefix="snsary")
+    return GraphiteOutput(
+        url="http://graphite",
+        prefix="snsary",
+    )
 
 
 def test_from_env(mocker):
@@ -25,8 +28,15 @@ def test_from_env(mocker):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch(graphite, sensor, reading):
-    httpretty.register_uri(httpretty.POST, "http://graphite/")
+def test_publish_batch(
+    graphite,
+    sensor,
+    reading,
+):
+    httpretty.register_uri(
+        httpretty.POST,
+        "http://graphite/",
+    )
 
     graphite.publish_batch([reading])
     request = httpretty.last_request()
@@ -42,8 +52,16 @@ def test_publish_batch(graphite, sensor, reading):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch_error(graphite, sensor, reading):
-    httpretty.register_uri(httpretty.POST, "http://graphite/", status=500)
+def test_publish_batch_error(
+    graphite,
+    sensor,
+    reading,
+):
+    httpretty.register_uri(
+        httpretty.POST,
+        "http://graphite/",
+        status=500,
+    )
 
     with pytest.raises(Exception) as excinfo:
         graphite.publish_batch([reading])

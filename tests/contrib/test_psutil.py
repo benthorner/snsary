@@ -18,7 +18,9 @@ def test_sample(mocker):
         ],
     )
 
-    sensor = PSUtilSensor(functions={"disk_partitions": {}})
+    sensor = PSUtilSensor(
+        functions={"disk_partitions": {}},
+    )
 
     readings = sorted(sensor.sample(timestamp="now"), key=lambda r: r.name)
 

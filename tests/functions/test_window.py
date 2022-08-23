@@ -47,7 +47,9 @@ def test_call(window):
 
 
 def test_call_restore(window, mock_store):
-    mock_store["window-2-mysensor-myreading"] = [create_reading(timestamp=1, value=1)]
+    mock_store["window-2-mysensor-myreading"] = [
+        create_reading(timestamp=1, value=1),
+    ]
 
     readings = window(create_reading(value=2, timestamp=3))
     assert len(readings) == 1

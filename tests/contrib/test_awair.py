@@ -12,11 +12,18 @@ from snsary.contrib.awair import AwairSensor
 
 @pytest.fixture
 def sensor():
-    return AwairSensor(device_type="awair-r2", device_id="1234", token="token-123")
+    return AwairSensor(
+        device_type="awair-r2",
+        device_id="1234",
+        token="token-123",
+    )
 
 
 def test_discover_from_env(mocker):
-    mocker.patch.dict(os.environ, {"AWAIR_TOKEN": "token"})
+    mocker.patch.dict(
+        os.environ,
+        {"AWAIR_TOKEN": "token"},
+    )
 
     mock_discover = mocker.patch.object(
         AwairSensor, "discover", return_value="instances"
@@ -31,7 +38,16 @@ def test_discover():
     httpretty.register_uri(
         httpretty.GET,
         AwairSensor.DEVICES_URL,
-        body=json.dumps({"devices": [{"deviceType": "awair-r2", "deviceId": "1234"}]}),
+        body=json.dumps(
+            {
+                "devices": [
+                    {
+                        "deviceType": "awair-r2",
+                        "deviceId": "1234",
+                    }
+                ]
+            }
+        ),
     )
 
     sensors = AwairSensor.discover(token="token-123")
@@ -60,7 +76,11 @@ def test_discover_error():
 @httpretty.activate(allow_net_connect=False)
 def test_sample(sensor):
     url = AwairSensor.DATA_URL.format(
-        **{"deviceType": "awair-r2", "deviceId": "1234", "from": "2022-04-05T10:50:00Z"}
+        **{
+            "deviceType": "awair-r2",
+            "deviceId": "1234",
+            "from": "2022-04-05T10:50:00Z",
+        }
     )
 
     httpretty.register_uri(
@@ -92,7 +112,9 @@ def test_sample(sensor):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_sample_error(sensor):
+def test_sample_error(
+    sensor,
+):
     httpretty.register_uri(
         httpretty.GET,
         re.compile(".*"),

@@ -16,7 +16,10 @@ from snsary.outputs import BatchOutput
 class GraphiteOutput(BatchOutput):
     @classmethod
     def from_env(cls):
-        return cls(url=os.environ["GRAPHITE_URL"], prefix=platform.node())
+        return cls(
+            url=os.environ["GRAPHITE_URL"],
+            prefix=platform.node(),
+        )
 
     def __init__(self, *, url, prefix):
         BatchOutput.__init__(self)

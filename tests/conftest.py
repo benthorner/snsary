@@ -39,4 +39,9 @@ def create_reading(
     value=123,
     name="myreading"
 ):
-    return Reading(sensor_name=sensor_name, timestamp=timestamp, value=value, name=name)
+    return Reading(
+        sensor_name=sensor_name,
+        timestamp=timestamp,
+        value=value,
+        name=name,
+    )

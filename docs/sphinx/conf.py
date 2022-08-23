@@ -27,12 +27,19 @@ author = "Ben Thorner"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["autoapi.extension"]
+extensions = [
+    "autoapi.extension",
+]
 
 autoapi_type = "python"
 autoapi_dirs = ["../../src"]
 autoapi_add_toctree_entry = False
-autoapi_options = ["members", "undoc-members", "special-members", "show-inheritance"]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "special-members",
+    "show-inheritance",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

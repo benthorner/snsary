@@ -72,7 +72,11 @@ def test_init_sensor_not_found():
     assert "KeyError" in str(einfo)
 
 
-def test_start(mocker, mock_sensor, sensor):
+def test_start(
+    mocker,
+    mock_sensor,
+    sensor,
+):
     mock_start = mocker.patch("snsary.contrib.pypms.PollingSensor.start")
     sensor.start()
 
@@ -82,9 +86,15 @@ def test_start(mocker, mock_sensor, sensor):
 
 
 @pytest.mark.parametrize("send_bytes", [b"", b"123"])
-def test_start_bad_response(mock_sensor, sensor, send_bytes):
+def test_start_bad_response(
+    mock_sensor,
+    sensor,
+    send_bytes,
+):
     mock_sensor.stub(
-        name="passive_mode", receive_bytes=b"BM\xe1\x00\x00\x01p", send_bytes=send_bytes
+        name="passive_mode",
+        receive_bytes=b"BM\xe1\x00\x00\x01p",
+        send_bytes=send_bytes,
     )
 
     with pytest.raises(RuntimeError) as einfo:
@@ -111,7 +121,9 @@ def test_stop_bad_response(
     sensor,
 ):
     mock_sensor.stub(
-        name="sleep", receive_bytes=b"BM\xe4\x00\x00\x01s", send_bytes=b"123"
+        name="sleep",
+        receive_bytes=b"BM\xe4\x00\x00\x01s",
+        send_bytes=b"123",
     )
 
     mock_stop = mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
@@ -121,7 +133,12 @@ def test_stop_bad_response(
     mock_stop.assert_called_once()
 
 
-def test_stop_already_closed(mocker, mock_sensor, sensor, caplog):
+def test_stop_already_closed(
+    mocker,
+    mock_sensor,
+    sensor,
+    caplog,
+):
     mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
     sensor.stop()
 
@@ -129,7 +146,9 @@ def test_stop_already_closed(mocker, mock_sensor, sensor, caplog):
     assert "Attempting to use a port that is not open" in caplog.text
 
 
-def test_sample(sensor):
+def test_sample(
+    sensor,
+):
     readings = sensor.sample(timestamp="now", elapsed_seconds=0)
     assert len(readings) == 12
 
@@ -138,7 +157,9 @@ def test_sample(sensor):
     assert pm10_reading.timestamp == "now"
 
 
-def test_sample_warm_up(sensor):
+def test_sample_warm_up(
+    sensor,
+):
     sensor.warm_up_seconds = 5
     readings = sensor.sample(timestamp="now", elapsed_seconds=0)
     assert len(readings) == 0
@@ -151,9 +172,14 @@ def test_sample_warm_up(sensor):
     assert pm10_reading.timestamp == "now"
 
 
-def test_sample_bad_response(mock_sensor, sensor):
+def test_sample_bad_response(
+    mock_sensor,
+    sensor,
+):
     mock_sensor.stub(
-        name="passive_read", receive_bytes=b"BM\xe2\x00\x00\x01q", send_bytes=b"123"
+        name="passive_read",
+        receive_bytes=b"BM\xe2\x00\x00\x01q",
+        send_bytes=b"123",
     )
 
     with pytest.raises(pms.WrongMessageFormat):

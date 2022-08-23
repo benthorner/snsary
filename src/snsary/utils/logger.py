@@ -35,5 +35,7 @@ def get_logger(name=None):
 
 def configure_logging(level=logging.INFO):
     logging.basicConfig(
-        stream=sys.stdout, level=level, format="%(levelname)s - [%(name)s] %(message)s"
+        stream=sys.stdout,
+        level=level,
+        format="%(levelname)s - [%(name)s] %(message)s",
     )

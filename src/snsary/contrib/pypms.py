@@ -20,7 +20,12 @@ class PyPMSSensor(PollingSensor):
     """
 
     def __init__(
-        self, *, sensor_name, port="/dev/ttyS0", warm_up_seconds=10, timeout=5
+        self,
+        *,
+        sensor_name,
+        port="/dev/ttyS0",
+        warm_up_seconds=10,
+        timeout=5,
     ):
         self.__sensor = Sensor[sensor_name]
         self.warm_up_seconds = warm_up_seconds
@@ -31,7 +36,10 @@ class PyPMSSensor(PollingSensor):
             timeout=timeout,
         )
 
-        PollingSensor.__init__(self, period_seconds=10)
+        PollingSensor.__init__(
+            self,
+            period_seconds=10,
+        )
 
     @property
     def name(self):
@@ -77,7 +85,12 @@ class PyPMSSensor(PollingSensor):
         obs = self.__sensor.decode(buffer)
 
         return [
-            Reading(sensor_name=self.name, name=key, value=value, timestamp=timestamp)
+            Reading(
+                sensor_name=self.name,
+                name=key,
+                value=value,
+                timestamp=timestamp,
+            )
             for key, value in dataclasses.asdict(obs).items()
             if key not in ("time")
         ]

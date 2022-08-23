@@ -113,7 +113,10 @@ def test_stuck_output_async(caplog):
 
 
 def test_wait_stop():
-    thread = Thread(target=lambda: system.wait(handle_signals=False), daemon=True)
+    thread = Thread(
+        target=lambda: system.wait(handle_signals=False),
+        daemon=True,
+    )
 
     thread.start()
     thread.join(timeout=0.1)

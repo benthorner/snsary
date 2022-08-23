@@ -47,5 +47,7 @@ def test_configure_logging(mocker):
     configure_logging()
 
     mock_config.assert_called_with(
-        stream=sys.stdout, level=logging.INFO, format=mocker.ANY
+        stream=sys.stdout,
+        level=logging.INFO,
+        format=mocker.ANY,
     )

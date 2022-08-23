@@ -7,7 +7,11 @@ from .simple_stream import SimpleStream
 
 
 class FuncStream(SimpleStream):
-    def __init__(self, stream, function=lambda reading: [reading]):
+    def __init__(
+        self,
+        stream,
+        function=lambda reading: [reading],
+    ):
         SimpleStream.__init__(self)
         stream.subscribe(self)
         self.__function = function

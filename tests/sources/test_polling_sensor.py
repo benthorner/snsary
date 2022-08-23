@@ -3,7 +3,9 @@ import logging
 from snsary.sources import PollingSensor
 
 
-def test_tick_copes_with_generators(caplog):
+def test_tick_copes_with_generators(
+    caplog,
+):
     class TestSensor(PollingSensor):
         def __init__(self):
             PollingSensor.__init__(self, period_seconds=5)

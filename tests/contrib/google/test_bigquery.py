@@ -33,7 +33,6 @@ def test_from_env(mocker):
     )
 
     assert isinstance(BigQueryOutput.from_env(), BigQueryOutput)
-
     mock_init.assert_called_with(stream="stream")
 
 

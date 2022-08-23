@@ -9,4 +9,11 @@ from .window import Window
 from .window_average import WindowAverage
 from .window_summary import WindowSummary
 
-__all__ = ["Filter", "Window", "WindowAverage", "Function", "WindowSummary", "Rename"]
+__all__ = [
+    "Filter",
+    "Window",
+    "WindowAverage",
+    "Function",
+    "WindowSummary",
+    "Rename",
+]

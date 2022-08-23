@@ -57,6 +57,11 @@ class GenericSensor(PollingSensor):
 
     def sample(self, timestamp, **kwargs):
         return [
-            Reading(sensor_name=self.name, name=name, value=value, timestamp=timestamp)
+            Reading(
+                sensor_name=self.name,
+                name=name,
+                value=value,
+                timestamp=timestamp,
+            )
             for name, value in self.__read_fn()
         ]

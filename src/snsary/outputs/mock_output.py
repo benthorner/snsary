@@ -6,7 +6,13 @@ from .output import Output
 
 
 class MockOutput(Output):
-    def __init__(self, *, fail=False, hang=False, index=0):
+    def __init__(
+        self,
+        *,
+        fail=False,
+        hang=False,
+        index=0,
+    ):
         self.__fail = fail
         self.__hang = hang
         self.__failures = 0

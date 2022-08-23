@@ -9,7 +9,10 @@ from snsary.contrib.influxdb import InfluxDBOutput
 @pytest.fixture()
 def influxdb():
     return InfluxDBOutput(
-        url="http://influxdb", token="token", org="org", bucket="bucket"
+        url="http://influxdb",
+        token="token",
+        org="org",
+        bucket="bucket",
     )
 
 
@@ -30,13 +33,24 @@ def test_from_env(mocker):
 
     assert isinstance(InfluxDBOutput.from_env(), InfluxDBOutput)
 
-    mock_init.assert_called_with(url="url", token="token", org="org", bucket="bucket")
+    mock_init.assert_called_with(
+        url="url",
+        token="token",
+        org="org",
+        bucket="bucket",
+    )
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch(mocker, influxdb, sensor, reading):
+def test_publish_batch(
+    mocker,
+    influxdb,
+    sensor,
+    reading,
+):
     httpretty.register_uri(
-        httpretty.POST, "http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s"
+        httpretty.POST,
+        "http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s",
     )
 
     mocker.patch("platform.node", return_value="snsary")
@@ -50,7 +64,11 @@ def test_publish_batch(mocker, influxdb, sensor, reading):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch_error(influxdb, sensor, reading):
+def test_publish_batch_error(
+    influxdb,
+    sensor,
+    reading,
+):
     httpretty.register_uri(
         httpretty.POST,
         "http://influxdb/api/v2/write?org=org&bucket=bucket&precision=s",

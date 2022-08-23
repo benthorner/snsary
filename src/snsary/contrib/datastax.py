@@ -73,7 +73,8 @@ class GraphQLOutput(BatchOutput):
     def __init__(self, url, token):
         self.__client = Client(
             transport=RequestsHTTPTransport(
-                url=url, headers={"X-Cassandra-Token": token}
+                url=url,
+                headers={"X-Cassandra-Token": token},
             ),
         )
 

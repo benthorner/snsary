@@ -23,7 +23,10 @@ def schema():
 @httpretty.activate(allow_net_connect=False)
 def graphql(schema):
     httpretty.register_uri(
-        httpretty.POST, "http://graphql/", content_type="application/json", body=schema
+        httpretty.POST,
+        "http://graphql/",
+        content_type="application/json",
+        body=schema,
     )
 
     return GraphQLOutput(url="http://graphql", token="token")
@@ -43,12 +46,15 @@ def test_from_env(mocker):
     )
 
     assert isinstance(GraphQLOutput.from_env(), GraphQLOutput)
-
     mock_init.assert_called_with(url="url", token="token")
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch(mocker, graphql, reading):
+def test_publish_batch(
+    mocker,
+    graphql,
+    reading,
+):
     httpretty.register_uri(
         httpretty.POST,
         "http://graphql/",
@@ -78,9 +84,16 @@ def test_publish_batch(mocker, graphql, reading):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_publish_batch_error(graphql, sensor, reading):
+def test_publish_batch_error(
+    graphql,
+    sensor,
+    reading,
+):
     httpretty.register_uri(
-        httpretty.POST, "http://graphql/", content_type="application/json", status=500
+        httpretty.POST,
+        "http://graphql/",
+        content_type="application/json",
+        status=500,
     )
 
     with pytest.raises(Exception) as excinfo:

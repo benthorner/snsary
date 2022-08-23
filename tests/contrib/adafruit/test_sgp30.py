@@ -7,7 +7,10 @@ from tests.conftest import create_reading
 
 @pytest.fixture
 def mock_sgp30(mocker):
-    mock_class = mocker.patch("adafruit_sgp30.Adafruit_SGP30", autospec=True)
+    mock_class = mocker.patch(
+        "adafruit_sgp30.Adafruit_SGP30",
+        autospec=True,
+    )
 
     return mock_class("i2c")
 
@@ -43,12 +46,23 @@ def test_start(
     mock_sgp30.set_iaq_baseline.assert_not_called()
 
 
-def test_start_restore(sensor, mock_sgp30, mock_generic, mock_store):
-    mock_store["SGP30-tracked-values"] = {"baseline_TVOC": 123, "baseline_eCO2": 456}
+def test_start_restore(
+    sensor,
+    mock_sgp30,
+    mock_generic,
+    mock_store,
+):
+    mock_store["SGP30-tracked-values"] = {
+        "baseline_TVOC": 123,
+        "baseline_eCO2": 456,
+    }
 
     sensor.start()
 
-    mock_sgp30.set_iaq_baseline.assert_called_with(TVOC=123, eCO2=456)
+    mock_sgp30.set_iaq_baseline.assert_called_with(
+        TVOC=123,
+        eCO2=456,
+    )
 
 
 def test_ready(sensor):
@@ -91,6 +105,12 @@ def test_sample(sensor, mock_generic, mocker):
 
 
 def test_tracked_values_changed(sensor, mock_sgp30):
-    sensor.tracker.on_change(None, {"baseline_TVOC": "tvoc", "baseline_eCO2": "eco2"})
+    sensor.tracker.on_change(
+        None,
+        {"baseline_TVOC": "tvoc", "baseline_eCO2": "eco2"},
+    )
 
-    mock_sgp30.set_iaq_baseline.assert_called_with(TVOC="tvoc", eCO2="eco2")
+    mock_sgp30.set_iaq_baseline.assert_called_with(
+        TVOC="tvoc",
+        eCO2="eco2",
+    )

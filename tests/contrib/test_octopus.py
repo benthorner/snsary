@@ -14,13 +14,21 @@ from snsary.contrib.octopus import OctopusSensor
 
 @pytest.fixture
 def sensor():
-    return OctopusSensor(mpan="mpan", serial_number="serial_number", token="token-123")
+    return OctopusSensor(
+        mpan="mpan",
+        serial_number="serial_number",
+        token="token-123",
+    )
 
 
 def test_from_env(mocker):
     mocker.patch.dict(
         os.environ,
-        {"OCTOPUS_MPAN": "mpan", "OCTOPUS_SERIAL": "serial", "OCTOPUS_TOKEN": "token"},
+        {
+            "OCTOPUS_MPAN": "mpan",
+            "OCTOPUS_SERIAL": "serial",
+            "OCTOPUS_TOKEN": "token",
+        },
     )
 
     mock_init = mocker.patch.object(
@@ -29,7 +37,11 @@ def test_from_env(mocker):
 
     assert isinstance(OctopusSensor.from_env(), OctopusSensor)
 
-    mock_init.assert_called_with(mpan="mpan", serial_number="serial", token="token")
+    mock_init.assert_called_with(
+        mpan="mpan",
+        serial_number="serial",
+        token="token",
+    )
 
 
 @time_machine.travel(
@@ -38,7 +50,9 @@ def test_from_env(mocker):
     tick=False,
 )
 @httpretty.activate(allow_net_connect=False)
-def test_sample(sensor):
+def test_sample(
+    sensor,
+):
     url = OctopusSensor.CONSUMPTION_URL.format(
         **{
             "mpan": "mpan",
@@ -78,7 +92,9 @@ def test_sample(sensor):
 
 
 @httpretty.activate(allow_net_connect=False)
-def test_sample_error(sensor):
+def test_sample_error(
+    sensor,
+):
     httpretty.register_uri(
         httpretty.GET,
         re.compile(".*"),
