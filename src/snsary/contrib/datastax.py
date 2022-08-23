@@ -111,11 +111,13 @@ class GraphQLOutput(BatchOutput):
             "value": float(reading.value),
         }
 
+        throwaway_result = self.__dsl.readingMutationResult.value.select(
+            self.__dsl.reading.metric
+        )
+
         return self.__dsl.Mutation.insertreading.args(
             options={"ttl": self.TTL}, value=value
-        ).select(
-            self.__dsl.readingMutationResult.value.select(self.__dsl.reading.metric)
-        )
+        ).select(throwaway_result)
 
     def __init_schema(self):
         with self.__client as session:
