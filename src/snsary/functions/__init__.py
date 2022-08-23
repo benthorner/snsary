@@ -15,5 +15,5 @@ __all__ = [
     "WindowAverage",
     "Function",
     "WindowSummary",
-    "Rename"
+    "Rename",
 ]

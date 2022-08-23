@@ -74,13 +74,12 @@ class GraphQLOutput(BatchOutput):
         self.__client = Client(
             transport=RequestsHTTPTransport(
                 url=url,
-                headers={'X-Cassandra-Token': token}
+                headers={"X-Cassandra-Token": token},
             ),
         )
 
-        logging.getLogger('gql').setLevel(
-            logging.WARNING  # logs per request otherwise
-        )
+        # logs per request otherwise
+        logging.getLogger("gql").setLevel(logging.WARNING)
 
         BatchOutput.__init__(self)
         self.__init_schema()
@@ -88,13 +87,13 @@ class GraphQLOutput(BatchOutput):
     @classmethod
     def from_env(cls):
         return cls(
-            url=os.environ['DATASTAX_URL'],
-            token=os.environ['DATASTAX_TOKEN'],
+            url=os.environ["DATASTAX_URL"],
+            token=os.environ["DATASTAX_TOKEN"],
         )
 
     def publish_batch(self, readings):
         mutations = list(
-            self.__mutation(reading).alias(f'r{i}')
+            self.__mutation(reading).alias(f"r{i}")
             for i, reading in enumerate(readings)
         )
 
@@ -105,24 +104,24 @@ class GraphQLOutput(BatchOutput):
     def __mutation(self, reading):
         value = {
             # using UTC ensures test stability when run in different zones
-            'timestamp': reading.datetime.astimezone(pytz.utc).isoformat(),
-            'sensor': reading.sensor_name,
-            'host': platform.node(),
-            'metric': reading.name,
-            'value': float(reading.value)
+            "timestamp": reading.datetime.astimezone(pytz.utc).isoformat(),
+            "sensor": reading.sensor_name,
+            "host": platform.node(),
+            "metric": reading.name,
+            "value": float(reading.value),
         }
 
-        return self.__dsl.Mutation.insertreading.args(
-            options={'ttl': self.TTL}, value=value
-        ).select(
-            self.__dsl.readingMutationResult.value.select(
-                self.__dsl.reading.metric
-            )
+        throwaway_result = self.__dsl.readingMutationResult.value.select(
+            self.__dsl.reading.metric
         )
+
+        return self.__dsl.Mutation.insertreading.args(
+            options={"ttl": self.TTL}, value=value
+        ).select(throwaway_result)
 
     def __init_schema(self):
         with self.__client as session:
             session.fetch_schema()
 
-        self.logger.debug('Initialised schema.')
+        self.logger.debug("Initialised schema.")
         self.__dsl = DSLSchema(self.__client.schema)

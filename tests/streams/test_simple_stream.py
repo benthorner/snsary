@@ -11,10 +11,10 @@ def test_publish_exception(caplog):
     stream.subscribe(MockOutput(index=1))
 
     caplog.set_level(logging.INFO)
-    stream.publish('reading')
+    stream.publish("reading")
 
     def assertions():
-        assert 'ERROR - [snsary.mockoutput-0] problem-1' in caplog.text
-        assert 'INFO - [snsary.mockoutput-1] Reading' in caplog.text
+        assert "ERROR - [snsary.mockoutput-0] problem-1" in caplog.text
+        assert "INFO - [snsary.mockoutput-1] Reading" in caplog.text
 
     retry(assertions)

@@ -16,7 +16,7 @@ from snsary.contrib.datastax import GraphQLOutput
 @pytest.fixture()
 def schema():
     file = f"{Path(__file__).parent}/schema.json"
-    return open(file, 'r').read()
+    return open(file, "r").read()
 
 
 @pytest.fixture
@@ -24,67 +24,62 @@ def schema():
 def graphql(schema):
     httpretty.register_uri(
         httpretty.POST,
-        'http://graphql/',
-        content_type='application/json',
-        body=schema
+        "http://graphql/",
+        content_type="application/json",
+        body=schema,
     )
 
-    return GraphQLOutput(
-        url="http://graphql", token="token"
-    )
+    return GraphQLOutput(url="http://graphql", token="token")
 
 
 def test_from_env(mocker):
-    mocker.patch.dict(os.environ, {
-        'DATASTAX_URL': 'url',
-        'DATASTAX_TOKEN': 'token',
-    })
+    mocker.patch.dict(
+        os.environ,
+        {
+            "DATASTAX_URL": "url",
+            "DATASTAX_TOKEN": "token",
+        },
+    )
 
     mock_init = mocker.patch.object(
-        GraphQLOutput, '__init__',
-        return_value=None  # required to mock __init__
+        GraphQLOutput, "__init__", return_value=None  # required to mock __init__
     )
 
-    assert isinstance(
-        GraphQLOutput.from_env(), GraphQLOutput
-    )
-
-    mock_init.assert_called_with(
-        url='url', token='token'
-    )
+    assert isinstance(GraphQLOutput.from_env(), GraphQLOutput)
+    mock_init.assert_called_with(url="url", token="token")
 
 
 @httpretty.activate(allow_net_connect=False)
 def test_publish_batch(
     mocker,
     graphql,
-    reading
+    reading,
 ):
     httpretty.register_uri(
         httpretty.POST,
-        'http://graphql/',
-        content_type='application/json',
-        body='{"data": []}'
+        "http://graphql/",
+        content_type="application/json",
+        body='{"data": []}',
     )
 
-    mocker.patch('platform.node', return_value='snsary')
+    mocker.patch("platform.node", return_value="snsary")
     graphql.publish_batch([reading])
     request = httpretty.last_request()
 
     # extracted using the following in a debugger session
     # pprint(json.loads(str(request.body, 'utf-8')))
     assert json.loads(request.body) == {
-        'query': 'mutation {\n'
-        '  r0: insertreading(\n'
-        '    options: {ttl: 33696000}\n'
+        "query": "mutation {\n"
+        "  r0: insertreading(\n"
+        "    options: {ttl: 33696000}\n"
         '    value: {host: "snsary", sensor: "mysensor", metric: '
         '"myreading", timestamp: "2022-04-23T20:25:46+00:00", value: 123}\n'
-        '  ) {\n'
-        '    value {\n'
-        '      metric\n'
-        '    }\n'
-        '  }\n'
-        '}'
+        "  ) {\n"
+        "    value {\n"
+        "      metric\n"
+        "    }\n"
+        "  }\n"
+        "}"
     }
 
 
@@ -92,16 +87,16 @@ def test_publish_batch(
 def test_publish_batch_error(
     graphql,
     sensor,
-    reading
+    reading,
 ):
     httpretty.register_uri(
         httpretty.POST,
-        'http://graphql/',
-        content_type='application/json',
-        status=500
+        "http://graphql/",
+        content_type="application/json",
+        status=500,
     )
 
     with pytest.raises(Exception) as excinfo:
         graphql.publish_batch([reading])
 
-    assert 'Internal Server Error' in str(excinfo.value)
+    assert "Internal Server Error" in str(excinfo.value)

@@ -22,10 +22,10 @@ class InfluxDBOutput(BatchOutput):
     @classmethod
     def from_env(cls):
         return cls(
-            url=os.environ['INFLUXDB_URL'],
-            token=os.environ['INFLUXDB_TOKEN'],
-            org=os.environ['INFLUXDB_ORG'],
-            bucket=os.environ['INFLUXDB_BUCKET']
+            url=os.environ["INFLUXDB_URL"],
+            token=os.environ["INFLUXDB_TOKEN"],
+            org=os.environ["INFLUXDB_ORG"],
+            bucket=os.environ["INFLUXDB_BUCKET"],
         )
 
     def __init__(self, *, url, token, org, bucket):
@@ -37,17 +37,14 @@ class InfluxDBOutput(BatchOutput):
     def publish_batch(self, readings):
         points = [
             Point(reading.name)
-            .tag('sensor', reading.sensor_name)
-            .tag('host', platform.node())
-            .field('value', reading.value)
-            .time(reading.timestamp, write_precision='s')
+            .tag("sensor", reading.sensor_name)
+            .tag("host", platform.node())
+            .field("value", reading.value)
+            .time(reading.timestamp, write_precision="s")
             for reading in readings
         ]
 
-        self.logger.debug('Sending ' + str(list(
-            point.to_line_protocol() for point in points
-        )))
+        lines = [point.to_line_protocol() for point in points]
+        self.logger.debug("Sending " + str(lines))
 
-        self.__write_api.write(
-            bucket=self.__bucket, record=points
-        )
+        self.__write_api.write(bucket=self.__bucket, record=points)

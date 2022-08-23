@@ -12,5 +12,5 @@ __all__ = [
     "Service",
     "get_logger",
     "HasLogger",
-    "get_storage"
+    "get_storage",
 ]

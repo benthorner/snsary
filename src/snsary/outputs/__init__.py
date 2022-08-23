@@ -9,5 +9,5 @@ from .output import Output
 __all__ = [
     "BatchOutput",
     "MockOutput",
-    "Output"
+    "Output",
 ]

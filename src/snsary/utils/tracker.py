@@ -3,7 +3,7 @@ Utility to track the values of readings with specified names using persistent :m
 
     Tracker('id-for-persistent-storage', myreading=max, othername=min)
 
-Call ``update`` when new readings are available. ``on_change`` is called when one or more tracked values change - set to a different function to subscribe to changes.
+Call ``update`` when new readings are available. ``on_change`` is called with kwargs ``old`` and ``new`` when one or more tracked values change - set to a different function to subscribe to changes.
 """
 
 from .logger import HasLogger
@@ -17,9 +17,9 @@ class Tracker(HasLogger, HasStore):
 
     @property
     def values(self):
-        return self.store.get(f'{self.__id}-tracked-values', {})
+        return self.store.get(f"{self.__id}-tracked-values", {})
 
-    def on_change(self, old, new):
+    def on_change(self, *, old, new):
         pass
 
     def update(self, readings):
@@ -30,22 +30,22 @@ class Tracker(HasLogger, HasStore):
             current_value = self.__filter_value(readings, name)
 
             if not current_value:
-                self.logger.debug(f'Tracker missing value for {name}.')
+                self.logger.debug(f"Tracker missing value for {name}.")
                 return
 
             if name not in values:
-                self.logger.debug(f'Tracker filling value for {name}.')
+                self.logger.debug(f"Tracker filling value for {name}.")
                 new_values[name] = current_value
             else:
                 new_values[name] = fn(current_value, values[name])
 
         if new_values == values:
-            self.logger.debug('Tracked values unchanged, continuing.')
+            self.logger.debug("Tracked values unchanged, continuing.")
             return
 
-        self.logger.debug(f'Storing tracked values: {new_values}')
-        self.store[f'{self.__id}-tracked-values'] = new_values
-        self.on_change(values, new_values)
+        self.logger.debug(f"Storing tracked values: {new_values}")
+        self.store[f"{self.__id}-tracked-values"] = new_values
+        self.on_change(old=values, new=new_values)
 
     def __filter_value(self, readings, name):
         for reading in readings:
@@ -56,10 +56,7 @@ class Tracker(HasLogger, HasStore):
 class MaxTracker(Tracker):
     def __init__(self, id, *, names, on_change):
         self.on_change = on_change
-
-        Tracker.__init__(
-            self, id, **{name: max for name in names}
-        )
+        Tracker.__init__(self, id, **{name: max for name in names})
 
 
 class NullTracker(Tracker):

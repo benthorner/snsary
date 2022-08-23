@@ -18,13 +18,14 @@ class PyPMSSensor(PollingSensor):
     """
     ``warm_up_seconds`` is necessary for some sensors e.g. for the PMSA003 the first two samples always `raise an InconsistentObservation exception <https://github.com/avaldebe/PyPMS/blob/04ff8edede7d780018cd00a7fcf78ffed43c0de4/src/pms/sensors/plantower/pmsx003.py#L63>`_.
     """
+
     def __init__(
         self,
         *,
         sensor_name,
-        port='/dev/ttyS0',
+        port="/dev/ttyS0",
         warm_up_seconds=10,
-        timeout=5
+        timeout=5,
     ):
         self.__sensor = Sensor[sensor_name]
         self.warm_up_seconds = warm_up_seconds
@@ -37,7 +38,7 @@ class PyPMSSensor(PollingSensor):
 
         PollingSensor.__init__(
             self,
-            period_seconds=10
+            period_seconds=10,
         )
 
     @property
@@ -88,8 +89,8 @@ class PyPMSSensor(PollingSensor):
                 sensor_name=self.name,
                 name=key,
                 value=value,
-                timestamp=timestamp
+                timestamp=timestamp,
             )
             for key, value in dataclasses.asdict(obs).items()
-            if key not in ('time')
+            if key not in ("time")
         ]

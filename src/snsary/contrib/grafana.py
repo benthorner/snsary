@@ -17,8 +17,8 @@ class GraphiteOutput(BatchOutput):
     @classmethod
     def from_env(cls):
         return cls(
-            url=os.environ['GRAPHITE_URL'],
-            prefix=platform.node()
+            url=os.environ["GRAPHITE_URL"],
+            prefix=platform.node(),
         )
 
     def __init__(self, *, url, prefix):
@@ -33,18 +33,21 @@ class GraphiteOutput(BatchOutput):
         response = requests.post(
             self.__url,
             data=data,
-            headers={'Content-Type': 'application/json'},
+            headers={"Content-Type": "application/json"},
         )
 
         self.logger.debug(response.text)
         response.raise_for_status()
 
     def __format(self, readings):
-        return json.dumps([
-            {
-                'name': f'{self.__prefix}.{reading.sensor_name}.{reading.name}',
-                'value': reading.value,
-                'time': reading.timestamp,
-                'interval': 1
-            } for reading in readings
-        ])
+        return json.dumps(
+            [
+                {
+                    "name": f"{self.__prefix}.{reading.sensor_name}.{reading.name}",
+                    "value": reading.value,
+                    "time": reading.timestamp,
+                    "interval": 1,
+                }
+                for reading in readings
+            ]
+        )

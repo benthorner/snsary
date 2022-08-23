@@ -31,5 +31,5 @@ from .stream import Stream
 __all__ = [
     "SimpleStream",
     "AsyncStream",
-    "Stream"
+    "Stream",
 ]

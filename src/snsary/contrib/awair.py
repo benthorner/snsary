@@ -25,26 +25,27 @@ class AwairSensor(PollingSensor):
     @classmethod
     def discover_from_env(cls):
         return cls.discover(
-            token=os.environ['AWAIR_TOKEN']
+            token=os.environ["AWAIR_TOKEN"],
         )
 
     @classmethod
     def discover(cls, *, token):
-        get_logger().debug(f'Request {cls.DEVICES_URL}')
+        get_logger().debug(f"Request {cls.DEVICES_URL}")
         response = requests.get(
-            cls.DEVICES_URL, headers={'Authorization': f'Bearer {token}'}
+            cls.DEVICES_URL,
+            headers={"Authorization": f"Bearer {token}"},
         )
         response.raise_for_status()
         devices = response.json()["devices"]
 
         get_logger().info(f"Discovered {len(devices)} Awair devices.")
-        get_logger().debug(f'Discovered {devices}')
+        get_logger().debug(f"Discovered {devices}")
 
         return [
             AwairSensor(
-                device_type=device['deviceType'],
-                device_id=device['deviceId'],
-                token=token
+                device_type=device["deviceType"],
+                device_id=device["deviceId"],
+                token=token,
             )
             for device in devices
         ]
@@ -57,43 +58,42 @@ class AwairSensor(PollingSensor):
 
     @property
     def name(self):
-        return f'{self.__device_type}-{self.__device_id}'
+        return f"{self.__device_type}-{self.__device_id}"
 
     def sample(self, now, **kwargs):
         # subtract double period in case of delayed readings
         sample_start = now - timedelta(seconds=self.PERIOD * 2)
 
-        url = self.DATA_URL.format(**{
-            'deviceType': self.__device_type,
-            'deviceId': self.__device_id,
-            'from': pyrfc3339.generate(sample_start)
-        })
+        url = self.DATA_URL.format(
+            **{
+                "deviceType": self.__device_type,
+                "deviceId": self.__device_id,
+                "from": pyrfc3339.generate(sample_start),
+            }
+        )
 
-        self.logger.debug(f'Request {url}')
+        self.logger.debug(f"Request {url}")
         response = requests.get(
             url,
-            headers={'Authorization': f'Bearer {self.__token}'}
+            headers={"Authorization": f"Bearer {self.__token}"},
         )
         response.raise_for_status()
         samples = response.json()["data"]
-        self.logger.debug('Response {samples}')
+        self.logger.debug("Response {samples}")
 
-        return [
-            reading for sample in samples
-            for reading in self.__sample_readings(sample)
-        ]
+        for sample in samples:
+            yield from self.__readings_from_sample(sample)
 
-    def __sample_readings(self, sample):
-        sample_timestamp = int(
-            pyrfc3339.parse(sample["timestamp"]).timestamp()
-        )
+    def __readings_from_sample(self, sample):
+        sample_datetime = pyrfc3339.parse(sample["timestamp"])
+        sample_timestamp = int(sample_datetime.timestamp())
 
-        return (
-            Reading(
-                sensor_name=self.name,
-                name=sensor["comp"],
-                timestamp=sample_timestamp,
-                value=sensor["value"]
+        for sensor in sample["sensors"]:
+            yield (
+                Reading(
+                    sensor_name=self.name,
+                    name=sensor["comp"],
+                    timestamp=sample_timestamp,
+                    value=sensor["value"],
+                )
             )
-            for sensor in sample["sensors"]
-        )

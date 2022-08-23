@@ -11,7 +11,7 @@ class MockOutput(Output):
         *,
         fail=False,
         hang=False,
-        index=0
+        index=0,
     ):
         self.__fail = fail
         self.__hang = hang
@@ -20,7 +20,7 @@ class MockOutput(Output):
 
     @property
     def logger(self):
-        return get_logger(f'mockoutput-{self.__index}')
+        return get_logger(f"mockoutput-{self.__index}")
 
     def publish(self, reading):
         if self.__hang:
@@ -28,6 +28,6 @@ class MockOutput(Output):
 
         if self.__fail:
             self.__failures += 1
-            raise RuntimeError(f'problem-{self.__failures}')
+            raise RuntimeError(f"problem-{self.__failures}")
 
         self.logger.info(f"Reading: {reading}")

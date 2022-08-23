@@ -18,12 +18,12 @@ def start_and_wait():
 
 
 def stop(*_):
-    get_logger().info('Stopping.')
+    get_logger().info("Stopping.")
 
     for service in Service.instances:
         __stop_service(service)
 
-    get_logger().info('Bye.')
+    get_logger().info("Bye.")
 
 
 def wait(*, handle_signals=True):

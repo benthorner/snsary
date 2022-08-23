@@ -9,5 +9,5 @@ __all__ = [
     "PollingSensor",
     "Sensor",
     "Source",
-    "MultiSource"
+    "MultiSource",
 ]

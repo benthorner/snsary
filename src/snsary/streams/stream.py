@@ -17,6 +17,7 @@ class Stream(Source, Output):
 
     def apply(self, function):
         from .func_stream import FuncStream
+
         return FuncStream(self, function)
 
     def filter_names(self, *names):

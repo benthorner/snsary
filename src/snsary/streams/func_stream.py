@@ -10,7 +10,7 @@ class FuncStream(SimpleStream):
     def __init__(
         self,
         stream,
-        function=lambda reading: [reading]
+        function=lambda reading: [reading],
     ):
         SimpleStream.__init__(self)
         stream.subscribe(self)

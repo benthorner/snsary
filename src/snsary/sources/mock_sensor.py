@@ -12,11 +12,11 @@ class MockSensor(PollingSensor):
         fail=False,
         hang=False,
         period_seconds=5,
-        index=0
+        index=0,
     ):
         PollingSensor.__init__(
             self,
-            period_seconds=period_seconds
+            period_seconds=period_seconds,
         )
 
         self.__hang = hang
@@ -26,18 +26,18 @@ class MockSensor(PollingSensor):
 
     @property
     def name(self):
-        return f'mocksensor-{self.__index}'
+        return f"mocksensor-{self.__index}"
 
     def sample(
         self,
-        now,  # unused here
-        start_time,  # unused here
+        now,  # unused here (implicit test for kwarg)
+        start_time,  # unused (implicitly kwarg check)
         timestamp,
-        elapsed_seconds
+        elapsed_seconds,
     ):
         if self.__fail:
             self.__failures += 1
-            raise RuntimeError(f'problem-{self.__failures}')
+            raise RuntimeError(f"problem-{self.__failures}")
 
         if self.__hang:
             Event().wait()
@@ -45,7 +45,7 @@ class MockSensor(PollingSensor):
         return [
             Reading(
                 sensor_name=self.name,
-                name='abc',
+                name="abc",
                 timestamp=timestamp,
                 value=elapsed_seconds,
             )

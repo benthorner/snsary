@@ -11,7 +11,7 @@ from .function import Function
 
 
 class Rename(Function):
-    def __init__(self, append='', to=None):
+    def __init__(self, append="", to=None):
         self.__append = append
         self.__to = to
 
