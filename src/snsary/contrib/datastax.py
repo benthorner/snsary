@@ -78,7 +78,8 @@ class GraphQLOutput(BatchOutput):
             ),
         )
 
-        logging.getLogger("gql").setLevel(logging.WARNING)  # logs per request otherwise
+        # logs per request otherwise
+        logging.getLogger("gql").setLevel(logging.WARNING)
 
         BatchOutput.__init__(self)
         self.__init_schema()
