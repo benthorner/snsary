@@ -9,4 +9,5 @@ from .window import Window
 
 class WindowAverage(Window):
     def aggregate(self, readings):
-        return [readings[-1].dup(value=mean(r.value for r in readings))]
+        aggregate_value = mean(r.value for r in readings)
+        return [readings[-1].dup(value=aggregate_value)]

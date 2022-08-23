@@ -10,7 +10,12 @@ from .window import Window
 class WindowSummary(Window):
     def aggregate(self, readings):
         def __dup_reading(name, value):
-            return readings[-1].dup(name=readings[-1].name + f"--{name}", value=value)
+            base_reading = readings[-1]
+
+            return base_reading.dup(
+                name=base_reading.name + f"--{name}",
+                value=value,
+            )
 
         values = [r.value for r in readings]
 
