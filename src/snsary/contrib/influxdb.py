@@ -44,8 +44,7 @@ class InfluxDBOutput(BatchOutput):
             for reading in readings
         ]
 
-        self.logger.debug(
-            "Sending " + str(list(point.to_line_protocol() for point in points))
-        )
+        lines = [point.to_line_protocol() for point in points]
+        self.logger.debug("Sending " + str(lines))
 
         self.__write_api.write(bucket=self.__bucket, record=points)
