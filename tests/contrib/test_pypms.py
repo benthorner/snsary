@@ -10,9 +10,9 @@ def mock_sensor(mock_serial):
         name="wake",
         receive_bytes=b"BM\xe4\x00\x01\x01t",
         send_bytes=(
-            b"BM\x00\x1c"
-            + b".........................."  # expected header
-            + b"\x05W"  # payload (to total 32 bytes)  # checksum = sum(header) + sum(payload)
+            b"BM\x00\x1c"  # expected header
+            + b".........................."  # payload (to total 32 bytes)
+            + b"\x05W"  # checksum = sum(header) + sum(payload)
         ),
     )
 
@@ -20,9 +20,9 @@ def mock_sensor(mock_serial):
         name="passive_mode",
         receive_bytes=b"BM\xe1\x00\x00\x01p",
         send_bytes=(
-            b"BM\x00\x04"
-            + b".."  # expected header
-            + b"\x00\xef"  # payload (to total 8 bytes)  # checksum
+            b"BM\x00\x04"  # expected header
+            + b".."  # payload (to total 8 bytes)
+            + b"\x00\xef"  # checksum
         ),
     )
 
@@ -30,9 +30,9 @@ def mock_sensor(mock_serial):
         name="passive_read",
         receive_bytes=b"BM\xe2\x00\x00\x01q",
         send_bytes=(
-            b"BM\x00\x1c"
-            + b".........................."  # expected header
-            + b"\x05W"  # payload (to total 32 bytes)  # checksum
+            b"BM\x00\x1c"  # expected header
+            + b".........................."  # payload (to total 32 bytes)
+            + b"\x05W"  # checksum
         ),
     )
 
@@ -40,9 +40,9 @@ def mock_sensor(mock_serial):
         name="sleep",
         receive_bytes=b"BM\xe4\x00\x00\x01s",
         send_bytes=(
-            b"BM\x00\x04"
-            + b".."  # expected header
-            + b"\x00\xef"  # payload (to total 8 bytes)  # checksum
+            b"BM\x00\x04"  # expected header
+            + b".."  # payload (to total 8 bytes)
+            + b"\x00\xef"  # checksum
         ),
     )
 
