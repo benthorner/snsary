@@ -61,7 +61,8 @@ class OctopusSensor(PollingSensor):
             yield self.__reading_from_sample(sample)
 
     def __reading_from_sample(self, sample):
-        sample_timestamp = int(pyrfc3339.parse(sample["interval_end"]).timestamp())
+        sample_datetime = pyrfc3339.parse(sample["interval_end"])
+        sample_timestamp = int(sample_datetime.timestamp())
 
         return Reading(
             sensor_name=self.name,

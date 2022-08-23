@@ -85,7 +85,8 @@ class AwairSensor(PollingSensor):
             yield from self.__readings_from_sample(sample)
 
     def __readings_from_sample(self, sample):
-        sample_timestamp = int(pyrfc3339.parse(sample["timestamp"]).timestamp())
+        sample_datetime = pyrfc3339.parse(sample["timestamp"])
+        sample_timestamp = int(sample_datetime.timestamp())
 
         for sensor in sample["sensors"]:
             yield (
