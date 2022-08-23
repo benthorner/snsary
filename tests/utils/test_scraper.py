@@ -56,7 +56,8 @@ test_namedtuple = namedtuple(
     ],
 )
 def test_extract_from(value, expected):
-    assert list(scraper.extract_from(value, prefix="prefix")) == expected
+    scraps = scraper.extract_from(value, prefix="prefix")
+    assert list(scraps) == expected
 
 
 def test_for_class():
