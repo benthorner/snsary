@@ -39,12 +39,12 @@ class GenericSensor(PollingSensor):
         # turn off bright LED (on by default)
         instance.set_led(0, 0, 0)
 
-        return cls(
-            name="MICS6814",
-            read_fn=lambda: filter(
-                lambda scrap: scrap[0] != "adc", class_scraper(instance.read_all())
-            ),
-        )
+        def read_fn():
+            scraps = class_scraper(instance.read_all())
+            # filter out internal "adc" resistance values
+            return filter(lambda scrap: scrap[0] != "adc", scraps)
+
+        return cls(name="MICS6814", read_fn=read_fn)
 
     def __init__(self, *, name, read_fn):
         PollingSensor.__init__(self, period_seconds=10)
