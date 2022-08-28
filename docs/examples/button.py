@@ -19,7 +19,7 @@ from snsary import system
 from snsary.models import Reading
 from snsary.outputs import MockOutput
 from snsary.sources import PollingSensor
-from snsary.utils import configure_logging
+from snsary.utils import logging
 
 
 class ButtonSensor(PollingSensor):
@@ -40,5 +40,5 @@ class ButtonSensor(PollingSensor):
 
 
 ButtonSensor().subscribe(MockOutput())
-configure_logging()
+logging.configure_logging()
 system.start_and_wait()

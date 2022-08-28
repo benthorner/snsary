@@ -16,7 +16,7 @@ import board
 from snsary import system
 from snsary.outputs import Output
 from snsary.sources import MockSensor
-from snsary.utils import configure_logging
+from snsary.utils import logging
 
 
 class OLEDOutput(Output, system.Service):
@@ -44,5 +44,5 @@ class OLEDOutput(Output, system.Service):
 
 i2c = board.I2C()
 MockSensor().subscribe(OLEDOutput(i2c))
-configure_logging()
+logging.configure_logging()
 system.start_and_wait()

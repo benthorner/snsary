@@ -20,11 +20,11 @@ from snsary.contrib.psutil import PSUtilSensor
 from snsary.contrib.pypms import PyPMSSensor
 from snsary.sources import MultiSource
 from snsary.streams import SimpleStream
-from snsary.utils import configure_logging
+from snsary.utils import logging
 
 i2c = board.I2C()
 load_dotenv()
-configure_logging()
+logging.configure_logging()
 
 # summarization is necessary to minimise the amount of data stored but also
 # for GraphQL to make longterm queries practical in the absence of grouping
