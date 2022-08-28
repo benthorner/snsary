@@ -10,14 +10,11 @@ class PollingSensor(Sensor, Poller):
         Poller.__init__(self, period_seconds=period_seconds)
 
     def tick(self, **kwargs):
-        try:
-            readings = list(self.sample(**kwargs))
-            self.logger.info(f"Collected {len(readings)} readings.")
+        readings = list(self.sample(**kwargs))
+        self.logger.info(f"Collected {len(readings)} readings.")
 
-            for reading in readings:
-                self.stream.publish(reading)
-        except Exception as e:
-            self.logger.exception(e)
+        for reading in readings:
+            self.stream.publish(reading)
 
     def sample(self, **kwargs):
         raise NotImplementedError()
