@@ -1,8 +1,7 @@
 from datetime import datetime
 from threading import Event, Thread
 
-from .logger import get_logger
-from .service import Service
+from snsary.utils import Service, get_logger
 
 
 class Poller(Service):

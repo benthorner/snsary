@@ -1,5 +1,4 @@
-from snsary.utils import Poller
-
+from .poller import Poller
 from .sensor import Sensor
 
 
