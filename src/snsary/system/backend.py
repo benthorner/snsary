@@ -5,13 +5,15 @@ from snsary.utils import logging
 
 from .service import Service, get_services
 
+_logger = logging.get_logger()
+
 
 def start():
     for service in get_services():
         service.logger.debug("Starting.")
         service.start()
 
-    logging.get_logger().info("Started.")
+    _logger.info("Started.")
 
 
 def start_and_wait():
@@ -20,12 +22,12 @@ def start_and_wait():
 
 
 def stop(*_):
-    logging.get_logger().info("Stopping.")
+    _logger.info("Stopping.")
 
     for service in get_services():
         __stop_service(service)
 
-    logging.get_logger().info("Bye.")
+    _logger.info("Bye.")
 
 
 def wait(*, handle_signals=True):

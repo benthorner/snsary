@@ -30,7 +30,8 @@ class AwairSensor(PollingSensor):
 
     @classmethod
     def discover(cls, *, token):
-        logging.get_logger().debug(f"Request {cls.DEVICES_URL}")
+        logger = logging.get_logger()
+        logger.debug(f"Request {cls.DEVICES_URL}")
         response = requests.get(
             cls.DEVICES_URL,
             headers={"Authorization": f"Bearer {token}"},
@@ -38,8 +39,8 @@ class AwairSensor(PollingSensor):
         response.raise_for_status()
         devices = response.json()["devices"]
 
-        logging.get_logger().info(f"Discovered {len(devices)} Awair devices.")
-        logging.get_logger().debug(f"Discovered {devices}")
+        logger.info(f"Discovered {len(devices)} Awair devices.")
+        logger.debug(f"Discovered {devices}")
 
         return [
             AwairSensor(
