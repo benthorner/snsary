@@ -19,7 +19,7 @@ def test_get_logger_main_thread():
 
 
 def test_get_logger_not_found(mocker):
-    mock_thread = mocker.patch("snsary.utils.logger.current_thread")
+    mock_thread = mocker.patch("snsary.utils.logging.current_thread")
     mock_thread().ident = "rand"  # mock ident to avoid reuse issues
     assert get_logger().name == "snsary.anon-rand"
 

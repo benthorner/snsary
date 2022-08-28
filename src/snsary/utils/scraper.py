@@ -1,6 +1,6 @@
 from types import MemberDescriptorType as member_descriptor
 
-from .logger import get_logger
+from .logging import get_logger
 
 
 def extract_from(value, *, prefix):

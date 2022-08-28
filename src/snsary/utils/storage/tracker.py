@@ -1,4 +1,4 @@
-from ..logger import HasLogger
+from ..logging import HasLogger
 from .backend import HasStore
 
 

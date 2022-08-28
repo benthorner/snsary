@@ -4,7 +4,7 @@ import pickle
 
 from cachetools import TTLCache, cached
 
-from ..logger import get_logger
+from ..logging import get_logger
 
 
 class HasStore:

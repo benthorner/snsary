@@ -1,5 +1,5 @@
 from . import scraper
-from .logger import HasLogger, configure_logging, get_logger
+from .logging import HasLogger, configure_logging, get_logger
 from .storage import HasStore, MaxTracker, NullTracker, get_storage
 
 __all__ = [
