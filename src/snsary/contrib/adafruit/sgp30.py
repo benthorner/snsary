@@ -37,12 +37,12 @@ Persistent IAQ baselines
 
 ``SGP30Sensor`` emits ``baseline_TVOC`` and ``baseline_eCO2`` values, which are a moving average of the best environmental conditions the sensor has encountered. Higher values are better (from manual observation). `Adafruit recommend exposing the sensor to fresh air for at least 10 minutes <https://learn.adafruit.com/adafruit-sgp30-gas-tvoc-eco2-mox-sensor/circuitpython-wiring-test>`_ as part of configuring the IAQ baseline.
 
-Every time the SGP30 sensor is sampled, the values of both baseline :mod:`Readings <snsary.models.reading>` are checked. Higher values are set as the new baseline for future readings; use ``persistent_baselines=False`` in the constructor to disable this. The baseline values are kept in persistent :mod:`storage <snsary.utils.storage>` so they survive restarts. See the :mod:`tracker <snsary.utils.tracker>` module for more details.
+Every time the SGP30 sensor is sampled, the values of both baseline :mod:`Readings <snsary.models.reading>` are checked. Higher values are set as the new baseline for future readings; use ``persistent_baselines=False`` in the constructor to disable this. The baseline values are kept in persistent :mod:`storage <snsary.utils.storage>` so they survive restarts. See the :mod:`storage <snsary.utils.storage>` module for more details.
 
 """
 
 from snsary.outputs import BatchOutput
-from snsary.utils.tracker import MaxTracker, NullTracker
+from snsary.utils import MaxTracker, NullTracker
 
 from .generic import GenericSensor
 

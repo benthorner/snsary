@@ -1,7 +1,7 @@
 import pytest
 
 from snsary.contrib.adafruit.sgp30 import SGP30Sensor
-from snsary.utils.tracker import MaxTracker, NullTracker
+from snsary.utils import MaxTracker, NullTracker
 from tests.conftest import create_reading
 
 

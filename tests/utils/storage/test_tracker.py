@@ -1,6 +1,6 @@
 import pytest
 
-from snsary.utils.tracker import Tracker
+from snsary.utils.storage.tracker import Tracker
 from tests.conftest import create_reading
 
 

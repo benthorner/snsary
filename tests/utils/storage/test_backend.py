@@ -3,7 +3,7 @@ import pickle
 
 import pytest
 
-from snsary.utils.storage import _get_storage_backend, get_storage
+from snsary.utils.storage.backend import _get_storage_backend, get_storage
 
 
 @pytest.fixture

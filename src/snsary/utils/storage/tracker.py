@@ -1,13 +1,5 @@
-"""
-Utility to track the values of readings with specified names using persistent :mod:`storage <snsary.utils.storage>`. New values are individually compared with old using a specified function e.g. ::
-
-    Tracker('id-for-persistent-storage', myreading=max, othername=min)
-
-Call ``update`` when new readings are available. ``on_change`` is called with kwargs ``old`` and ``new`` when one or more tracked values change - set to a different function to subscribe to changes.
-"""
-
-from .logger import HasLogger
-from .storage import HasStore
+from ..logger import HasLogger
+from .backend import HasStore
 
 
 class Tracker(HasLogger, HasStore):
@@ -51,27 +43,3 @@ class Tracker(HasLogger, HasStore):
         for reading in readings:
             if reading.name == name:
                 return reading.value
-
-
-class MaxTracker(Tracker):
-    def __init__(self, id, *, names, on_change):
-        self.on_change = on_change
-        Tracker.__init__(self, id, **{name: max for name in names})
-
-
-class NullTracker(Tracker):
-    def __init__(self):
-        pass
-
-    def update(self, readings):
-        """
-        Does nothing.
-        """
-        return
-
-    @property
-    def values(self):
-        """
-        Returns {}.
-        """
-        return {}
