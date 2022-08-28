@@ -6,11 +6,11 @@ By default persistent storage is disabled to avoid creating files without warnin
 Storage trackers
 ================
 
-Trackers can be used to track the values of readings with specified names using persistent storage. New values are individually compared with old using a specified function e.g. ::
+Trackers can be used to keep track of values of series of :mod:`Readings <snsary.models.reading>` with specified names using persistent storage. New values for each series are individually compared with old values using the specified function for the series e.g. ::
 
     Tracker('id-for-persistent-storage', myreading=max, othername=min)
 
-Call ``update`` when new readings are available. ``on_change`` is called with kwargs ``old`` and ``new`` when one or more tracked values change - set to a different function to subscribe to changes.
+Call ``update`` when new readings are available for any of the series. ``on_change`` is then called with :mod:`Reading <snsary.models.reading>` kwargs ``old`` and ``new`` when each of the tracked series changes - set to a different function to subscribe to changes.
 
 Storage internals
 =================
