@@ -5,20 +5,20 @@ A subclass should define an ``aggregate`` method that is called each time the ag
 
 The windows are consecutive, not moving: after a window has been aggregated a new window is started using the :mod:`Reading <snsary.models.reading>` that triggered the previous window to close.
 
-Windows also act as a :mod:`Service <snsary.utils.service>` in order to persist and restore :mod:`Readings <snsary.models.reading>` when the program they are used in starts and stops. See the :mod:`storage <snsary.utils.storage>` module for more details.
+Windows also act as a :mod:`Service <snsary.system.service>` in order to persist and restore :mod:`Readings <snsary.models.reading>` when the program they are used in starts and stops. See the :mod:`storage <snsary.utils.storage>` module for more details.
 """
 
 
 from datetime import timedelta
 
-from snsary.utils import Service
+from snsary import system
 
 from .function import Function
 
 
-class Window(Function, Service):
+class Window(Function, system.Service):
     def __init__(self, **kwargs):
-        Service.__init__(self)
+        system.Service.__init__(self)
         self.__period = timedelta(**kwargs).total_seconds()
         self.__windows = dict()
 
