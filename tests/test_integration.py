@@ -18,7 +18,7 @@ def tmp_app(*, sensors=[], outputs=[]):
         yield
         system.stop()
     finally:
-        system.Service.clear()
+        system.clear_services()
 
 
 def test_system(caplog):

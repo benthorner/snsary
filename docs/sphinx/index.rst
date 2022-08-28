@@ -7,7 +7,7 @@ An app in Snsary is made up of :mod:`Sources <snsary.sources.source>` and :mod:`
     # raises NotImplementedError
     Source().subscribe(MockOutput())
 
-:mod:`PollingSensors <snsary.sources.polling_sensor>` are a type of Source that can ``start`` and ``stop`` i.e. a :mod:`Service <snsary.system.service>`. Every instance of a :mod:`Service <snsary.system.service>` is recorded in ``Service.instances``, so the following should be equivalent: ::
+:mod:`PollingSensors <snsary.sources.polling_sensor>` are a type of Source that can ``start`` and ``stop`` i.e. a :mod:`Service <snsary.system.service>`. Every instance of a :mod:`Service <snsary.system.service>` is recorded in a global registry, so the following should be equivalent: ::
 
     # assign for later use
     sensor = MockSensor()

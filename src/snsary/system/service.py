@@ -1,22 +1,16 @@
 """
-Base class for anything that needs to perform an action during the ``start`` or ``stop`` phases of a program. This could be something like spawning a thread, or storing data to disk. Each instance of a service is recorded in ``Service.instances`` for use by the :mod:`system <snsary.system>` module.
+Base class for anything that needs to perform an action during the ``start`` or ``stop`` phases of a program. This could be something like spawning a thread, or storing data to disk. Each instance of a service is recorded in a global registry so it can be managed by the :mod:`system <snsary.system>` module.
 """
 
 from snsary.utils import HasLogger, HasStore
 
+_instances = []
+
 
 class Service(HasLogger, HasStore):
-    instances = []
-
     def __init__(self):
-        Service.instances += [self]
-
-    @classmethod
-    def clear(cls):
-        """
-        Clear the global list of service instances. For testing use only.
-        """
-        cls.instances = []
+        global _instances
+        _instances += [self]
 
     def start(self):
         """
@@ -29,3 +23,18 @@ class Service(HasLogger, HasStore):
         Called asynchronously by the :mod:`system <snsary.system>` module when a program is stopping. The execution will eventually time out to ensure the overall program stops in good time.
         """
         pass
+
+
+def clear_services():
+    """
+    Clear the global list of service instances. For testing use only.
+    """
+    global _instances
+    _instances = []
+
+
+def get_services():
+    """
+    Return a list of all service instances.
+    """
+    return _instances
