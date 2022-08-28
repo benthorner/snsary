@@ -1,12 +1,13 @@
 from datetime import datetime
 from threading import Event, Thread
 
-from snsary.utils import Service, get_logger
+from snsary import system
+from snsary.utils import get_logger
 
 
-class Poller(Service):
+class Poller(system.Service):
     def __init__(self, *, period_seconds):
-        Service.__init__(self)
+        system.Service.__init__(self)
         self.__period = period_seconds
         self.__stop = Event()
         self.__thread = Thread(target=self.__loop, daemon=True)

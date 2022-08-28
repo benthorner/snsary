@@ -1,7 +1,9 @@
 import signal
 from threading import Event, Thread
 
-from snsary.utils import Service, get_logger
+from snsary.utils import get_logger
+
+from .service import Service
 
 
 def start():

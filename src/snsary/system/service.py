@@ -2,8 +2,7 @@
 Base class for anything that needs to perform an action during the ``start`` or ``stop`` phases of a program. This could be something like spawning a thread, or storing data to disk. Each instance of a service is recorded in ``Service.instances`` for use by the :mod:`system <snsary.system>` module.
 """
 
-from .logger import HasLogger
-from .storage import HasStore
+from snsary.utils import HasLogger, HasStore
 
 
 class Service(HasLogger, HasStore):

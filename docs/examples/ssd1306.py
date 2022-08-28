@@ -16,12 +16,12 @@ import board
 from snsary import system
 from snsary.outputs import Output
 from snsary.sources import MockSensor
-from snsary.utils import Service, configure_logging
+from snsary.utils import configure_logging
 
 
-class OLEDOutput(Output, Service):
+class OLEDOutput(Output, system.Service):
     def __init__(self, i2c):
-        Service.__init__(self)
+        system.Service.__init__(self)
 
         self.__display = adafruit_ssd1306.SSD1306_I2C(
             width=128, height=32, i2c=i2c, addr=0x3C

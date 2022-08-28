@@ -7,7 +7,6 @@ import time_machine
 from snsary import system
 from snsary.outputs import MockOutput
 from snsary.sources import MockSensor, MultiSource
-from snsary.utils import Service
 from tests.conftest import retry
 
 
@@ -19,7 +18,7 @@ def tmp_app(*, sensors=[], outputs=[]):
         yield
         system.stop()
     finally:
-        Service.clear()
+        system.Service.clear()
 
 
 def test_system(caplog):
