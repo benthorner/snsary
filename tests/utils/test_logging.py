@@ -2,7 +2,7 @@ import logging
 import sys
 from threading import Thread
 
-from snsary.utils import HasLogger, configure_logging, get_logger
+from snsary.utils.logging import HasLogger, configure_logging, get_logger
 from tests.conftest import retry
 
 

@@ -1,6 +1,6 @@
-from snsary.utils import HasLogger
+from snsary.utils import logging
 
 
-class Function(HasLogger):
+class Function(logging.HasLogger):
     def __call__(reading):
         raise NotImplementedError()

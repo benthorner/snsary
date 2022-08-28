@@ -2,7 +2,7 @@ from datetime import datetime
 from threading import Event, Thread
 
 from snsary import system
-from snsary.utils import get_logger
+from snsary.utils import logging
 
 
 class Poller(system.Service):
@@ -33,7 +33,7 @@ class Poller(system.Service):
             delay = int((now2 - now).total_seconds())
 
             if delay > self.period:
-                get_logger().warning(f"Took too long to get sample: {delay}s.")
+                logging.get_logger().warning(f"Took too long to get sample: {delay}s.")
             else:
                 self.__stop.wait(timeout=(self.period - delay))
 

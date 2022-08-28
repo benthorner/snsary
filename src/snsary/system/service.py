@@ -2,12 +2,12 @@
 Base class for anything that needs to perform an action during the ``start`` or ``stop`` phases of a program. This could be something like spawning a thread, or storing data to disk. Each instance of a service is recorded in a global registry so it can be managed by the :mod:`system <snsary.system>` module.
 """
 
-from snsary.utils import HasLogger, HasStore
+from snsary.utils import logging, storage
 
 _instances = []
 
 
-class Service(HasLogger, HasStore):
+class Service(logging.HasLogger, storage.HasStore):
     def __init__(self):
         global _instances
         _instances += [self]

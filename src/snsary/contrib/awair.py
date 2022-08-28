@@ -14,7 +14,7 @@ import requests
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import get_logger
+from snsary.utils import logging
 
 
 class AwairSensor(PollingSensor):
@@ -30,7 +30,7 @@ class AwairSensor(PollingSensor):
 
     @classmethod
     def discover(cls, *, token):
-        get_logger().debug(f"Request {cls.DEVICES_URL}")
+        logging.get_logger().debug(f"Request {cls.DEVICES_URL}")
         response = requests.get(
             cls.DEVICES_URL,
             headers={"Authorization": f"Bearer {token}"},
@@ -38,8 +38,8 @@ class AwairSensor(PollingSensor):
         response.raise_for_status()
         devices = response.json()["devices"]
 
-        get_logger().info(f"Discovered {len(devices)} Awair devices.")
-        get_logger().debug(f"Discovered {devices}")
+        logging.get_logger().info(f"Discovered {len(devices)} Awair devices.")
+        logging.get_logger().debug(f"Discovered {devices}")
 
         return [
             AwairSensor(

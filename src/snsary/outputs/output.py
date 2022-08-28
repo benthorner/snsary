@@ -1,6 +1,6 @@
-from snsary.utils import HasLogger
+from snsary.utils import logging
 
 
-class Output(HasLogger):
+class Output(logging.HasLogger):
     def publish(self, reading):
         raise NotImplementedError()

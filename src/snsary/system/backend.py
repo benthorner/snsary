@@ -1,7 +1,7 @@
 import signal
 from threading import Event, Thread
 
-from snsary.utils import get_logger
+from snsary.utils import logging
 
 from .service import Service, get_services
 
@@ -11,7 +11,7 @@ def start():
         service.logger.debug("Starting.")
         service.start()
 
-    get_logger().info("Started.")
+    logging.get_logger().info("Started.")
 
 
 def start_and_wait():
@@ -20,12 +20,12 @@ def start_and_wait():
 
 
 def stop(*_):
-    get_logger().info("Stopping.")
+    logging.get_logger().info("Stopping.")
 
     for service in get_services():
         __stop_service(service)
 
-    get_logger().info("Bye.")
+    logging.get_logger().info("Bye.")
 
 
 def wait(*, handle_signals=True):

@@ -42,7 +42,7 @@ Every time the SGP30 sensor is sampled, the values of both baseline :mod:`Readin
 """
 
 from snsary.outputs import BatchOutput
-from snsary.utils import MaxTracker, NullTracker
+from snsary.utils import storage
 
 from .generic import GenericSensor
 
@@ -53,13 +53,13 @@ class SGP30Sensor(GenericSensor, BatchOutput):
         GenericSensor.__init__(self, device)
 
         if persistent_baselines:
-            self.tracker = MaxTracker(
+            self.tracker = storage.MaxTracker(
                 self.name,
                 names=["baseline_TVOC", "baseline_eCO2"],
                 on_change=self.baselines_changed,
             )
         else:
-            self.tracker = NullTracker()
+            self.tracker = storage.NullTracker()
             self.logger.debug("Persistent baselines disabled, ignoring.")
 
     @property

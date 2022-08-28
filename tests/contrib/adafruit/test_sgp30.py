@@ -1,7 +1,7 @@
 import pytest
 
 from snsary.contrib.adafruit.sgp30 import SGP30Sensor
-from snsary.utils import MaxTracker, NullTracker
+from snsary.utils import storage
 from tests.conftest import create_reading
 
 
@@ -28,12 +28,12 @@ def sensor(mock_sgp30):
 
 
 def test_init(sensor):
-    assert isinstance(sensor.tracker, MaxTracker)
+    assert isinstance(sensor.tracker, storage.MaxTracker)
 
 
 def test_init_no_persist(mock_sgp30):
     sensor = SGP30Sensor(mock_sgp30, persistent_baselines=False)
-    assert isinstance(sensor.tracker, NullTracker)
+    assert isinstance(sensor.tracker, storage.NullTracker)
 
 
 def test_start(
