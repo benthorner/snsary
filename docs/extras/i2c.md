@@ -56,15 +56,11 @@ device = adafruit_scd30.SCD30(i2c, address=0x61)
 # noticeable effect on the reported CO2 readings.
 # device.ambient_pressure = 0  # original was "0"
 
-# Disable auto calibration of CO2. This relies on
-# daily, prolongued exposure to fresh air, which
-# isn't a reliable assumption for a typical home.
-device.self_calibration_enabled = False
-
-# Run this after exposing the device to fresh air
-# for 30 minutes i.e. next to an open window. May
-# need to repeat to get "400" as the average.
-device.forced_recalibration_reference = 400
+# Enable auto calibration of CO2. Setting a forced
+# calibration reference works for a while but needs
+# to be repeated after a few months. Daily exposure
+# to atmospheric CO2 is more reliable, longterm.
+device.self_calibration_enabled = True
 
 # This is a negative offset to compensate for the
 # local heating of the circuit board. I use an
