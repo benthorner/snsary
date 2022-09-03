@@ -26,7 +26,11 @@ class Poller(system.Service):
     def __loop(self):
         while not self.__stop.is_set():
             now = datetime.now().astimezone()
-            self.tick(**self.__tick_kwargs(now))
+
+            try:
+                self.tick(**self.__tick_kwargs(now))
+            except Exception as e:
+                self.logger.exception(e)
 
             now2 = datetime.now().astimezone()
             delay = int((now2 - now).total_seconds())

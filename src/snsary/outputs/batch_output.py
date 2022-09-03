@@ -9,6 +9,7 @@ from datetime import datetime
 from wrapt import synchronized
 
 from snsary import system
+from snsary.utils import tracing
 
 from .output import Output
 
@@ -21,6 +22,7 @@ class BatchOutput(Output, system.Service):
         self.__max_wait_seconds = max_wait_seconds
         self.__last_publish = datetime.utcnow().timestamp()
 
+    @tracing.capture_exceptions("snsary.outputs.batch_output")
     def flush(self):
         # in case of multiple consecutive batch/age flushes
         if not self.__readings:
