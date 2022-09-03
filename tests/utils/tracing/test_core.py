@@ -36,8 +36,8 @@ def test_capture_exceptions(
 ):
     configure(
         {
-            "*.enabled": True,
-            "*.monitors": [fake_monitor.factory()],
+            "enabled": True,
+            "monitors": [fake_monitor.factory()],
         }
     )
 

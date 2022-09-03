@@ -7,16 +7,16 @@ Tracing utility with a ``capture_exceptions`` decorator that instruments a given
 
     tracing.configure({
         # tracing is disabled by default
-        "*.enabled": True,
+        "enabled": True,
 
         # specify how to look for errors
-        "*.monitors": [
+        "monitors": [
             tracing.GapsAlert.factory(),
             tracing.LivenessAlert.factory(),
         ],
 
         # monitor each thread separately
-        "*.thread_aware": True,
+        "thread_aware": True,
     })
 
 With this config, the tracing system will create a new instance of each :mod:`Monitor <snsary.utils.tracing.monitors>` for each function being traced and each thread that calls the function. You can change this behaviour on a per-function basis. For example, customising ``some.unique.path`` looks like this: ::

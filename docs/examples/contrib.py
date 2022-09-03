@@ -28,9 +28,9 @@ logging.configure_logging()
 
 tracing.configure(
     {
-        "*.enabled": True,
-        "*.monitors": [tracing.LivenessAlert.factory(), tracing.GapAlert.factory()],
-        "*.thread_aware": True,
+        "enabled": True,
+        "monitors": [tracing.LivenessAlert.factory(), tracing.GapAlert.factory()],
+        "thread_aware": True,
     }
 )
 

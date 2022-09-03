@@ -1,78 +1,40 @@
 """
-Hierarchical key / value store with keys written using dot notation e.g. ``some.id.attribute``. Basic getting and setting of values is simple: ::
+Path-based key / value store with optional defaults.
 
-    config.set("some.id.attribute", "value")
-    config.get("some.id.attribute")  # => "value"
+Basic key / value access looks like this: ::
 
-Keys can also contain one or more ``*`` placeholders, each of which match one or more parts. This makes it possible to define "defaults" that apply to more specific keys e.g. ::
+    config = Config()
+    config.set("some.unique.path.attribute", 1)
+    config.get("some.unique.path.attribute")  # => 1
 
-    config.set("some.*.attribute", "value")
-    config.get("some.id.attribute")  # => "value"
-    config.get("some.other.attribute")  # => "value"
-    config.get("some.other.deeper.attribute")  # => "value"
+Defaults can be set for each key access: ::
+
+    config.get("some.other.path.attribute", default=2)  # => 2
+
+Attribute defaults can also be set globally: ::
+
+    config.set("attribute", 3)
+    config.get("some.other.path.attribute", default=2)  # => 3
 """
-
-import re
 
 
 class Config:
     def __init__(self):
-        self.__backend = {}
-        self.__cache = {}
+        self.reset()
 
     def get(self, path, default=None):
-        # find all patterns that match the path
-        matches = [
-            pattern
-            for pattern in self.__backend
-            if self.__match(
-                pattern,
-                path,
-            )
-        ]
+        if path in self.__backend:
+            return self.__backend[path]
 
-        if not matches and default is not None:
+        prefix, _, attribute = path.rpartition(".")
+
+        if attribute in self.__backend:
+            return self.__backend[attribute]
+
+        if default is not None:
             return default
 
-        if not matches:
-            raise KeyError(f"No config defined for '{path}'")
-
-        # sort patterns - highest priority first
-        matches = sorted(
-            matches,
-            key=self.__priority,
-            reverse=True,
-        )
-
-        return self.__backend[matches[0]]
-
-    def __match(self, pattern, path):
-        if (pattern, path) not in self.__cache:
-            regex = pattern
-
-            # match actual period characters
-            regex = regex.replace(".", r"\.")
-            # a "*" can match multiple parts
-            regex = regex.replace("*", r"\w+(.\w+)*")
-            # pattern matches the entire path
-            matcher = re.compile(f"^{regex}$")
-
-            match = matcher.match(path)
-            self.__cache[(pattern, path)] = match
-
-        return self.__cache[(pattern, path)]
-
-    def __priority(self, pattern):
-        parts = pattern.split(".")
-
-        # first sort by pattern length
-        score = len(parts)
-
-        # then score by specificity
-        ids = [part for part in parts if part != "*"]
-        score += len(ids) * 0.1
-
-        return score
+        raise KeyError(f"No config defined for '{path}'")
 
     def set(self, path, value):
         self.__backend[path] = value

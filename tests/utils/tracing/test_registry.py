@@ -32,8 +32,8 @@ def test_get_no_config():
 
 
 def test_get_thread_aware(config):
-    config.set("*.thread_aware", True)
-    config.set("*.monitors", [FakeMonitor.factory()])
+    config.set("thread_aware", True)
+    config.set("monitors", [FakeMonitor.factory()])
     registry = Registry(config)
     monitors = registry.get("some.id")
     other_monitors = None
@@ -52,7 +52,7 @@ def test_get_thread_aware(config):
 
 
 def test_get_not_thread_aware(config):
-    config.set("*.monitors", [FakeMonitor.factory()])
+    config.set("monitors", [FakeMonitor.factory()])
     registry = Registry(config)
     monitors = registry.get("some.id")
     other_monitors = None
