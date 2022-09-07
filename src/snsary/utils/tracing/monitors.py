@@ -21,7 +21,7 @@ class TimeSeriesAlert(Monitor):
     Provides a :mod:`History <snsary.utils.tracing.history>` of :mod:`Samples <snsary.utils.tracing.sample>` over time to support time series alerting. Each subclass is responsible for managing the history.
     """
 
-    MAX_HISTORY = 60
+    MAX_HISTORY = 300
 
     def __init__(self, *, history=None):
         self._history = (
@@ -64,7 +64,7 @@ class GapAlert(TimeSeriesAlert):
     The history is reset every time the monitor logs an error.
     """
 
-    MAX_GAPS = 5
+    MAX_GAPS = 30
 
     def __init__(self, *, max_gaps=MAX_GAPS, **kwargs):
         TimeSeriesAlert.__init__(self, **kwargs)
