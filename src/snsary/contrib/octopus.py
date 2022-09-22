@@ -10,10 +10,10 @@ import os
 from datetime import timedelta
 
 import pyrfc3339
-import requests
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
+from snsary.utils import request
 
 
 class OctopusSensor(PollingSensor):
@@ -52,8 +52,12 @@ class OctopusSensor(PollingSensor):
         )
 
         self.logger.debug(f"Request {url}")
-        response = requests.get(url, auth=(self.__token, ""))
+        response = request.retrying_session().get(
+            url,
+            auth=(self.__token, ""),
+        )
         response.raise_for_status()
+
         samples = response.json()["results"]
         self.logger.debug(f"Response {samples}")
 

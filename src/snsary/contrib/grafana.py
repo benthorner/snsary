@@ -8,9 +8,8 @@ import json
 import os
 import platform
 
-import requests
-
 from snsary.outputs import BatchOutput
+from snsary.utils import request
 
 
 class GraphiteOutput(BatchOutput):
@@ -30,7 +29,7 @@ class GraphiteOutput(BatchOutput):
         data = self.__format(readings)
         self.logger.debug(f"Sending {data}")
 
-        response = requests.post(
+        response = request.retrying_session().post(
             self.__url,
             data=data,
             headers={"Content-Type": "application/json"},

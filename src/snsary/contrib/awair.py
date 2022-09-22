@@ -10,11 +10,10 @@ import os
 from datetime import timedelta
 
 import pyrfc3339
-import requests
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
-from snsary.utils import logging
+from snsary.utils import logging, request
 
 
 class AwairSensor(PollingSensor):
@@ -32,7 +31,7 @@ class AwairSensor(PollingSensor):
     def discover(cls, *, token):
         logger = logging.get_logger()
         logger.debug(f"Request {cls.DEVICES_URL}")
-        response = requests.get(
+        response = request.retrying_session().get(
             cls.DEVICES_URL,
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -74,7 +73,7 @@ class AwairSensor(PollingSensor):
         )
 
         self.logger.debug(f"Request {url}")
-        response = requests.get(
+        response = request.retrying_session().get(
             url,
             headers={"Authorization": f"Bearer {self.__token}"},
         )
