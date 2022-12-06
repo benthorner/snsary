@@ -7,8 +7,7 @@ Example of creating an instance::
 """
 import dataclasses
 
-from pms.core import Sensor
-from serial import Serial
+from pms.core.reader import SensorReader
 
 from snsary.models import Reading
 from snsary.sources import PollingSensor
@@ -19,6 +18,19 @@ class PyPMSSensor(PollingSensor):
     ``warm_up_seconds`` is necessary for some sensors e.g. for the PMSA003 the first two samples always `raise an InconsistentObservation exception <https://github.com/avaldebe/PyPMS/blob/04ff8edede7d780018cd00a7fcf78ffed43c0de4/src/pms/sensors/plantower/pmsx003.py#L63>`_.
     """
 
+    class SnsaryReader(SensorReader):
+        """
+        PyPMS SensorReader customisations.
+        """
+
+        def _pre_heat(self):
+            """
+            Disable pre-heat to avoid blocking samples.
+
+            Sensors will raise an exception if they are not ready.
+            """
+            pass
+
     def __init__(
         self,
         *,
@@ -27,12 +39,13 @@ class PyPMSSensor(PollingSensor):
         warm_up_seconds=10,
         timeout=5,
     ):
-        self.__sensor = Sensor[sensor_name]
         self.warm_up_seconds = warm_up_seconds
 
-        self.__serial = Serial(
-            port,
-            baudrate=self.__sensor.baud,
+        self.__reader = self.SnsaryReader(
+            sensor=sensor_name,
+            port=port,
+            samples=1,
+            max_retries=0,
             timeout=timeout,
         )
 
@@ -43,36 +56,17 @@ class PyPMSSensor(PollingSensor):
 
     @property
     def name(self):
-        return self.__sensor.name
-
-    def __cmd(self, command):
-        cmd = self.__sensor.command(command)
-        self.logger.debug(f"Sending {command} => {cmd}")
-        # clear any stray inbound data
-        self.__serial.reset_input_buffer()
-        # no need to flush() - this can
-        # cause the execution to hang
-        self.__serial.write(cmd.command)
-        buffer = self.__serial.read(cmd.answer_length)
-
-        self.logger.debug(f"Received {buffer}")
-        return buffer
+        return self.__reader.sensor.name
 
     def start(self):
-        self.__cmd("wake")
-        buffer = self.__cmd("passive_mode")
-
-        if not self.__sensor.check(buffer, "passive_mode"):
-            raise RuntimeError("Serial port not connected.")
-
+        self.__reader.open()
         PollingSensor.start(self)
 
     def stop(self):
         PollingSensor.stop(self)
 
         try:
-            self.__cmd("sleep")
-            self.__serial.close()
+            self.__reader.close()
         except Exception as e:
             self.logger.exception(e)
 
@@ -81,8 +75,7 @@ class PyPMSSensor(PollingSensor):
             self.logger.info("Still warming up, no data yet.")
             return []
 
-        buffer = self.__cmd("passive_read")
-        obs = self.__sensor.decode(buffer)
+        obs = next(self.__reader())
 
         return [
             Reading(

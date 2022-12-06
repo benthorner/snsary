@@ -1,5 +1,6 @@
 import pms
 import pytest
+from pms.core import reader
 
 from snsary.contrib.pypms import PyPMSSensor
 
@@ -71,6 +72,12 @@ def sensor(mock_sensor):
     )
 
 
+@pytest.fixture
+def started_sensor(sensor, mock_start):
+    sensor.start()
+    return sensor
+
+
 def test_name(sensor):
     assert sensor.name == "PMSx003"
 
@@ -105,25 +112,25 @@ def test_start_bad_response(
         send_bytes=send_bytes,
     )
 
-    with pytest.raises(RuntimeError) as einfo:
+    with pytest.raises(reader.UnableToRead) as einfo:
         sensor.start()
 
-    assert str(einfo.value) == "Serial port not connected."
+    assert str(einfo.value) == "Sensor failed validation"
 
 
 def test_stop(
     mock_sensor,
-    sensor,
+    started_sensor,
     mock_stop,
 ):
-    sensor.stop()
+    started_sensor.stop()
     assert mock_sensor.stubs["sleep"].called
     mock_stop.assert_called_once()
 
 
 def test_stop_bad_response(
     mock_sensor,
-    sensor,
+    started_sensor,
     mock_stop,
 ):
     mock_sensor.stub(
@@ -132,26 +139,24 @@ def test_stop_bad_response(
         send_bytes=b"123",
     )
 
-    sensor.stop()
+    started_sensor.stop()
     assert mock_sensor.stubs["sleep"].called
     mock_stop.assert_called_once()
 
 
 def test_stop_already_closed(
-    mock_sensor,
     sensor,
     caplog,
     mock_stop,
 ):
     sensor.stop()
-    sensor.stop()
     assert "Attempting to use a port that is not open" in caplog.text
 
 
 def test_sample(
-    sensor,
+    started_sensor,
 ):
-    readings = sensor.sample(timestamp="now", elapsed_seconds=0)
+    readings = started_sensor.sample(timestamp="now", elapsed_seconds=0)
     assert len(readings) == 12
 
     pm10_reading = next(r for r in readings if r.name == "pm10")
@@ -160,23 +165,22 @@ def test_sample(
 
 
 def test_sample_warm_up(
-    sensor,
+    started_sensor,
 ):
-    sensor.warm_up_seconds = 5
-    readings = sensor.sample(timestamp="now", elapsed_seconds=0)
+    started_sensor.warm_up_seconds = 5
+    readings = started_sensor.sample(timestamp="now", elapsed_seconds=0)
     assert len(readings) == 0
 
-    readings = sensor.sample(timestamp="now", elapsed_seconds=5)
+    readings = started_sensor.sample(timestamp="now", elapsed_seconds=5)
     assert len(readings) == 12
 
     pm10_reading = next(r for r in readings if r.name == "pm10")
     assert pm10_reading.value == 11822
-    assert pm10_reading.timestamp == "now"
 
 
 def test_sample_bad_response(
     mock_sensor,
-    sensor,
+    started_sensor,
 ):
     mock_sensor.stub(
         name="passive_read",
@@ -185,16 +189,12 @@ def test_sample_bad_response(
     )
 
     with pytest.raises(pms.WrongMessageFormat):
-        sensor.sample(timestamp="now", elapsed_seconds=0)
+        started_sensor.sample(timestamp="now", elapsed_seconds=0)
 
 
 def test_sample_already_closed(
     sensor,
     mock_stop,
 ):
-    sensor.stop()
-
-    with pytest.raises(Exception) as einfo:
+    with pytest.raises(StopIteration):
         sensor.sample(timestamp="now", elapsed_seconds=0)
-
-    assert str(einfo.value) == "Attempting to use a port that is not open"
