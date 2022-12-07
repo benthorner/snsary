@@ -65,7 +65,6 @@ def sensor(mock_sensor):
     return PyPMSSensor(
         sensor_name="PMSx003",
         port=mock_sensor.port,
-        warm_up_seconds=0,
         # timeout should be low to avoid failure tests
         # hanging, high to still allow PTY to work
         timeout=0.01,
@@ -157,25 +156,14 @@ def test_sample(
     started_sensor,
 ):
     readings = started_sensor.sample(timestamp="now", elapsed_seconds=0)
+    assert len(readings) == 0  # PMSx003 has 10 second warm up
+
+    readings = started_sensor.sample(timestamp="now", elapsed_seconds=10)
     assert len(readings) == 12
 
     pm10_reading = next(r for r in readings if r.name == "pm10")
     assert pm10_reading.value == 11822
     assert pm10_reading.timestamp == "now"
-
-
-def test_sample_warm_up(
-    started_sensor,
-):
-    started_sensor.warm_up_seconds = 5
-    readings = started_sensor.sample(timestamp="now", elapsed_seconds=0)
-    assert len(readings) == 0
-
-    readings = started_sensor.sample(timestamp="now", elapsed_seconds=5)
-    assert len(readings) == 12
-
-    pm10_reading = next(r for r in readings if r.name == "pm10")
-    assert pm10_reading.value == 11822
 
 
 def test_sample_bad_response(
@@ -189,7 +177,7 @@ def test_sample_bad_response(
     )
 
     with pytest.raises(pms.WrongMessageFormat):
-        started_sensor.sample(timestamp="now", elapsed_seconds=0)
+        started_sensor.sample(timestamp="now", elapsed_seconds=30)
 
 
 def test_sample_already_closed(
@@ -197,4 +185,4 @@ def test_sample_already_closed(
     mock_stop,
 ):
     with pytest.raises(StopIteration):
-        sensor.sample(timestamp="now", elapsed_seconds=0)
+        sensor.sample(timestamp="now", elapsed_seconds=30)

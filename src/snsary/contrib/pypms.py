@@ -36,11 +36,8 @@ class PyPMSSensor(PollingSensor):
         *,
         sensor_name,
         port="/dev/ttyS0",
-        warm_up_seconds=10,
         timeout=5,
     ):
-        self.warm_up_seconds = warm_up_seconds
-
         self.__reader = self.SnsaryReader(
             sensor=sensor_name,
             port=port,
@@ -71,7 +68,7 @@ class PyPMSSensor(PollingSensor):
             self.logger.exception(e)
 
     def sample(self, timestamp, elapsed_seconds, **kwargs):
-        if elapsed_seconds < self.warm_up_seconds:
+        if elapsed_seconds < self.__reader.pre_heat:
             self.logger.info("Still warming up, no data yet.")
             return []
 
