@@ -50,6 +50,16 @@ def mock_sensor(mock_serial):
 
 
 @pytest.fixture
+def mock_start(mocker):
+    return mocker.patch("snsary.contrib.pypms.PollingSensor.start")
+
+
+@pytest.fixture
+def mock_stop(mocker):
+    return mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
+
+
+@pytest.fixture
 def sensor(mock_sensor):
     return PyPMSSensor(
         sensor_name="PMSx003",
@@ -73,13 +83,11 @@ def test_init_sensor_not_found():
 
 
 def test_start(
-    mocker,
     mock_sensor,
     sensor,
+    mock_start,
 ):
-    mock_start = mocker.patch("snsary.contrib.pypms.PollingSensor.start")
     sensor.start()
-
     assert mock_sensor.stubs["wake"].called
     assert mock_sensor.stubs["passive_mode"].called
     mock_start.assert_called_once()
@@ -104,21 +112,19 @@ def test_start_bad_response(
 
 
 def test_stop(
-    mocker,
     mock_sensor,
     sensor,
+    mock_stop,
 ):
-    mock_stop = mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
     sensor.stop()
-
     assert mock_sensor.stubs["sleep"].called
     mock_stop.assert_called_once()
 
 
 def test_stop_bad_response(
-    mocker,
     mock_sensor,
     sensor,
+    mock_stop,
 ):
     mock_sensor.stub(
         name="sleep",
@@ -126,22 +132,18 @@ def test_stop_bad_response(
         send_bytes=b"123",
     )
 
-    mock_stop = mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
     sensor.stop()
-
     assert mock_sensor.stubs["sleep"].called
     mock_stop.assert_called_once()
 
 
 def test_stop_already_closed(
-    mocker,
     mock_sensor,
     sensor,
     caplog,
+    mock_stop,
 ):
-    mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
     sensor.stop()
-
     sensor.stop()
     assert "Attempting to use a port that is not open" in caplog.text
 
@@ -187,10 +189,9 @@ def test_sample_bad_response(
 
 
 def test_sample_already_closed(
-    mocker,
     sensor,
+    mock_stop,
 ):
-    mocker.patch("snsary.contrib.pypms.PollingSensor.stop")
     sensor.stop()
 
     with pytest.raises(Exception) as einfo:
