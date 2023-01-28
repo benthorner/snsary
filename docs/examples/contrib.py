@@ -11,10 +11,8 @@ from snsary import system
 from snsary.contrib.adafruit import GenericSensor as AdafruitSensor
 from snsary.contrib.adafruit.sgp30 import SGP30Sensor
 from snsary.contrib.awair import AwairSensor
-from snsary.contrib.datastax import GraphQLOutput
 from snsary.contrib.google import BigQueryOutput
 from snsary.contrib.grafana import GraphiteOutput
-from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.contrib.octopus import OctopusSensor
 from snsary.contrib.psutil import PSUtilSensor
 from snsary.contrib.pypms import PyPMSSensor
@@ -34,15 +32,14 @@ tracing.configure(
     }
 )
 
-# summarization is necessary to minimise the amount of data stored but also
-# for GraphQL to make longterm queries practical in the absence of grouping
+# summarization is necessary to avoid exceeding BigQuery usage limits
 longterm_stream = SimpleStream()
 bigquery = BigQueryOutput.from_env()
-graphql = GraphQLOutput.from_env()
-longterm_stream.summarize(minutes=1).rename(append="/minute").into(graphql, bigquery)
-longterm_stream.summarize(hours=1).rename(append="/hour").into(graphql, bigquery)
-longterm_stream.summarize(days=1).rename(append="/day").into(graphql, bigquery)
+longterm_stream.summarize(minutes=1).rename(append="/minute").into(bigquery)
+longterm_stream.summarize(hours=1).rename(append="/hour").into(bigquery)
+longterm_stream.summarize(days=1).rename(append="/day").into(bigquery)
 
+# SGP30 uses temperature / humidity data for continuous callibration
 sgp30 = SGP30Sensor(Adafruit_SGP30(i2c))
 
 MultiSource(
@@ -53,17 +50,19 @@ MultiSource(
     AdafruitSensor(MS8607(i2c)),
     sgp30,
 ).stream.into(
-    GraphiteOutput.from_env(),  # best for short term data + configuration
+    GraphiteOutput.from_env(),
     longterm_stream,
 )
 
+# Graphite can't easily ingest this data, which is typically a day old
 OctopusSensor.from_env().stream.into(
-    InfluxDBOutput.from_env(),  # graphite can't ingest old Octopus data
+    bigquery,
     longterm_stream,
 )
 
+# System stats only have short term value so are only output to Graphite
 PSUtilSensor().stream.into(
-    GraphiteOutput.from_env(),  # best for short term data + configuration
+    GraphiteOutput.from_env(),
 )
 
 system.start_and_wait()
