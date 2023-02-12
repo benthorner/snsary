@@ -1,2 +1,2 @@
-cachetools
-wrapt
+cachetools>=5.3.0
+wrapt>=1.14.1

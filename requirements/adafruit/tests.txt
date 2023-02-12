@@ -1,1 +1,1 @@
-adafruit-circuitpython-sgp30
+adafruit-circuitpython-sgp30>=3.0.6

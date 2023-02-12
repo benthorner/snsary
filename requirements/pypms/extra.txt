@@ -1,1 +1,1 @@
-pypms
+pypms>=0.7.1

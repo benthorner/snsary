@@ -1,1 +1,1 @@
-google-cloud-bigquery-storage
+google-cloud-bigquery-storage>=2.18.1

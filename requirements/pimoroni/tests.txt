@@ -1,1 +1,1 @@
-pimoroni-mics6814
+pimoroni-mics6814>=0.0.2

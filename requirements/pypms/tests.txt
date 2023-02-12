@@ -1,1 +1,1 @@
-mock_serial
+mock_serial>=0.0.1
