@@ -1,6 +1,7 @@
 bootstrap:
 	pip install -e .
 	pip install -r requirements/tests.txt
+	pip install -r requirements/docs.txt
 
 bootstrap-contrib-%:
 	pip install -e .[$*]
