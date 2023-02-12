@@ -68,19 +68,33 @@ def test_publish_batch(
 
     # extracted using the following in a debugger session
     # pprint(json.loads(str(request.body, 'utf-8')))
-    assert json.loads(request.body) == {
-        "query": "mutation {\n"
-        "  r0: insertreading(\n"
-        "    options: {ttl: 33696000}\n"
-        '    value: {host: "snsary", sensor: "mysensor", metric: '
-        '"myreading", timestamp: "2022-04-23T20:25:46+00:00", value: 123}\n'
-        "  ) {\n"
-        "    value {\n"
-        "      metric\n"
-        "    }\n"
-        "  }\n"
-        "}"
-    }
+    expected_mutation = _remove_whitespace(
+        """
+        mutation {
+          r0: insertreading(
+            options: { ttl: 33696000 }
+            value: {
+                host: "snsary",
+                sensor: "mysensor",
+                metric: "myreading",
+                timestamp: "2022-04-23T20:25:46+00:00",
+                value: 123
+            }
+          ) {
+            value {
+              metric
+            }
+          }
+        }
+    """
+    )
+
+    assert (
+        _remove_whitespace(
+            json.loads(request.body)["query"],
+        )
+        == expected_mutation
+    )
 
 
 @httpretty.activate(allow_net_connect=False)
@@ -100,3 +114,7 @@ def test_publish_batch_error(
         graphql.publish_batch([reading])
 
     assert "Internal Server Error" in str(excinfo.value)
+
+
+def _remove_whitespace(string):
+    return string.replace("\n", "").replace(" ", "")
