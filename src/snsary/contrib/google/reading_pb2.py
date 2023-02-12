@@ -31,7 +31,6 @@ Reading = _reflection.GeneratedProtocolMessageType(
 _sym_db.RegisterMessage(Reading)
 
 if _descriptor._USE_C_DESCRIPTORS == False:
-
     DESCRIPTOR._options = None
     _READING._serialized_start = 22
     _READING._serialized_end = 111
