@@ -8,8 +8,8 @@ jobs:
         python-version: ["3.9", "3.10"]
         feature: ["", "-all"]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - run: |
@@ -23,7 +23,7 @@ jobs:
     outputs:
       extras: ${{ steps.set-matrix.outputs.extras }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - id: set-matrix
       run: |
         echo "extras=$(ls src/snsary/contrib | cut -d '/' -f 3 | grep -v '__' | cut -d '.' -f 1 | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
@@ -35,8 +35,8 @@ jobs:
       matrix:
         extra: ${{ fromJSON(needs.glob_contrib.outputs.extras) }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
     - run: |
         python -m pip install --upgrade pip
         make bootstrap
