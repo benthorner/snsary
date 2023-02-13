@@ -13,10 +13,10 @@ Some of the extra Sensors and Outputs need additional dependencies to work. To a
 
 ```bash
 # a specific extra
-pip3 install git+https://github.com/benthorner/snsary#egg=snsary[grafana]
+pip3 install snsary[grafana]
 
 # all extras
-... #egg=snsary[all]
+pip3 install snsary[all]
 ```
 
 The name of the extra is the same as the name of the module that provides it e.g. [`GraphiteOutput` is in the `grafana` module](https://snsary.readthedocs.io/en/latest/autoapi/snsary/contrib/grafana/index.html), so the extra to request dependencies for is `grafana`.

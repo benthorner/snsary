@@ -5,7 +5,7 @@ A framework for sensor metrics.
 ## Installation
 
 ```bash
-pip3 install git+https://github.com/benthorner/snsary#egg=snsary
+pip3 install snsary
 ```
 
 ## Getting started
