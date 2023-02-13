@@ -1,6 +1,39 @@
-from pathlib import Path
-
 import setuptools
+
+extras_require = {
+    "adafruit": [],
+    "awair": [
+        "requests>=2.28.2",
+        "pyrfc3339>=1.1",
+    ],
+    "datastax": [
+        "gql[requests]>=3.4.0",
+    ],
+    "google": [
+        "google-cloud-bigquery-storage>=2.18.1",
+    ],
+    "grafana": [
+        "requests>=2.28.2",
+    ],
+    "influxdb": [
+        "influxdb-client>=1.36.0",
+    ],
+    "octopus": [
+        "requests>=2.28.2",
+        "pyrfc3339>=1.1",
+    ],
+    "pimoroni": [],
+    "psutil": [
+        "psutil>=5.9.4",
+    ],
+    "pypms": [
+        "pypms>=0.7.1",
+    ],
+}
+
+extras_require["all"] = [
+    package for group in extras_require.values() for package in group
+]
 
 setuptools.setup(
     name="snsary",
@@ -21,17 +54,8 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.8",
     install_requires=[
-        *open("requirements/default.txt").read().splitlines(),
+        "cachetools>=5.3.0",
+        "wrapt>=1.14.1",
     ],
-    extras_require={
-        **{
-            path.parent.stem: open(path).read().splitlines()
-            for path in Path("requirements/").glob("*/extra.txt")
-        },
-        "all": set(
-            line
-            for path in Path("requirements/").glob("*/extra.txt")
-            for line in open(path).read().splitlines()
-        ),
-    },
+    extras_require=extras_require,
 )

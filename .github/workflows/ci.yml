@@ -27,7 +27,7 @@ jobs:
     - id: set-matrix
       run: |
         make lint-contrib
-        echo "::set-output name=extras::$(ls requirements/*/extra.txt | cut -d '/' -f 2 | jq -Rsc 'split("\n")[:-1]')"
+        echo "::set-output name=extras::$(ls requirements/*/tests.txt | cut -d '/' -f 2 | jq -Rsc 'split("\n")[:-1]')"
 
   test_contrib:
     runs-on: ubuntu-latest
