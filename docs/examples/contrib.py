@@ -13,6 +13,7 @@ from snsary.contrib.adafruit.sgp30 import SGP30Sensor
 from snsary.contrib.awair import AwairSensor
 from snsary.contrib.google import BigQueryOutput
 from snsary.contrib.grafana import GraphiteOutput
+from snsary.contrib.influxdb import InfluxDBOutput
 from snsary.contrib.octopus import OctopusSensor
 from snsary.contrib.psutil import PSUtilSensor
 from snsary.contrib.pypms import PyPMSSensor
@@ -50,19 +51,17 @@ MultiSource(
     AdafruitSensor(MS8607(i2c)),
     sgp30,
 ).stream.into(
-    GraphiteOutput.from_env(),
+    GraphiteOutput.from_env(),  # best for short term data + configuration
     longterm_stream,
 )
 
-# Graphite can't easily ingest this data, which is typically a day old
 OctopusSensor.from_env().stream.into(
-    bigquery,
+    InfluxDBOutput.from_env(),  # graphite can't ingest old Octopus data
     longterm_stream,
 )
 
-# System stats only have short term value so are only output to Graphite
 PSUtilSensor().stream.into(
-    GraphiteOutput.from_env(),
+    GraphiteOutput.from_env(),  # best for short term data + configuration
 )
 
 system.start_and_wait()
