@@ -1,1 +1,2 @@
 pimoroni-mics6814>=0.0.2
+smbus2>=0.4.2
