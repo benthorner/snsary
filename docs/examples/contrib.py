@@ -55,7 +55,10 @@ MultiSource(
     longterm_stream,
 )
 
-OctopusSensor.from_env().stream.into(
+MultiSource(
+    OctopusSensor.electricity_from_env(),
+    OctopusSensor.gas_from_env(),
+).stream.into(
     InfluxDBOutput.from_env(),  # graphite can't ingest old Octopus data
     longterm_stream,
 )

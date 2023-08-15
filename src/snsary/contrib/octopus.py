@@ -1,9 +1,16 @@
 """
-Outputs KWh consumption from a specified Smart Meter in `half hour intervals <https://developer.octopus.energy/docs/api/#consumption>`_. At the time of writing, data is only available for the previous day sometime on the following day (not sure exactly when). Create an instance with ``.from_env()``, which expects:
+Outputs KWh (electricity) or cubic meter (gas) consumption from a specified Smart Meter in `half hour intervals <https://developer.octopus.energy/docs/api/#consumption>`_. At the time of writing, data is only available for the previous day sometime on the following day (not sure exactly when). Create instances with ``.<fuel_type>_from_env()``.
 
-- OCTOPUS_MPAN
-- OCTOPUS_SERIAL
-- OCTOPUS_TOKEN
+- ``.electricity_from_env()`` expects:
+    - OCTOPUS_ELECTRICITY_MPAN
+    - OCTOPUS_ELECTRICITY_SERIAL
+    - OCTOPUS_TOKEN
+
+- ``.gas_from_env()`` expects:
+    - OCTOPUS_GAS_MPRN
+    - OCTOPUS_GAS_SERIAL
+    - OCTOPUS_TOKEN
+
 """
 
 import os
@@ -17,38 +24,50 @@ from snsary.utils import request
 
 
 class OctopusSensor(PollingSensor):
-    CONSUMPTION_URL = "https://api.octopus.energy/v1/electricity-meter-points/{mpan}/meters/{serial_number}/consumption/?period_from={period_from}&order_by=period"
+    CONSUMPTION_URL = "https://api.octopus.energy/v1/{fuel_type}-meter-points/{mpxn}/meters/{serial_number}/consumption/?period_from={period_from}&order_by=period"
 
     @classmethod
-    def from_env(cls):
+    def electricity_from_env(cls):
         return cls(
-            mpan=os.environ["OCTOPUS_MPAN"],
-            serial_number=os.environ["OCTOPUS_SERIAL"],
+            mpxn=os.environ["OCTOPUS_ELECTRICITY_MPAN"],
+            serial_number=os.environ["OCTOPUS_ELECTRICITY_SERIAL"],
             token=os.environ["OCTOPUS_TOKEN"],
+            fuel_type="electricity",
         )
 
-    def __init__(self, *, mpan, serial_number, token):
+    @classmethod
+    def gas_from_env(cls):
+        return cls(
+            mpxn=os.environ["OCTOPUS_GAS_MPRN"],
+            serial_number=os.environ["OCTOPUS_GAS_SERIAL"],
+            token=os.environ["OCTOPUS_TOKEN"],
+            fuel_type="gas",
+        )
+
+    def __init__(self, *, mpxn, serial_number, token, fuel_type):
         PollingSensor.__init__(
             self,
             period_seconds=30 * 60,  # 30 mins
         )
 
         self.__token = token
-        self.__mpan = mpan
+        self.__mpxn = mpxn
         self.__serial_number = serial_number
+        self.__fuel_type = fuel_type
 
     @property
     def name(self):
-        return "octopus"
+        return f"octopus.{self.__fuel_type}"
 
     def sample(self, now, **kwargs):
         start = now - timedelta(days=1)
         start = start.replace(hour=0, minute=0, second=0, microsecond=0)
 
         url = self.CONSUMPTION_URL.format(
-            mpan=self.__mpan,
+            mpxn=self.__mpxn,
             serial_number=self.__serial_number,
             period_from=pyrfc3339.generate(start),
+            fuel_type=self.__fuel_type,
         )
 
         self.logger.debug(f"Request {url}")

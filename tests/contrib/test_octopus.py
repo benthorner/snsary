@@ -15,18 +15,19 @@ from snsary.contrib.octopus import OctopusSensor
 @pytest.fixture
 def sensor():
     return OctopusSensor(
-        mpan="mpan",
+        mpxn="mpan",
         serial_number="serial_number",
         token="token-123",
+        fuel_type="electricity",
     )
 
 
-def test_from_env(mocker):
+def test_electricity_from_env(mocker):
     mocker.patch.dict(
         os.environ,
         {
-            "OCTOPUS_MPAN": "mpan",
-            "OCTOPUS_SERIAL": "serial",
+            "OCTOPUS_ELECTRICITY_MPAN": "mpan",
+            "OCTOPUS_ELECTRICITY_SERIAL": "serial",
             "OCTOPUS_TOKEN": "token",
         },
     )
@@ -35,12 +36,37 @@ def test_from_env(mocker):
         OctopusSensor, "__init__", return_value=None  # required to mock __init__
     )
 
-    assert isinstance(OctopusSensor.from_env(), OctopusSensor)
+    assert isinstance(OctopusSensor.electricity_from_env(), OctopusSensor)
 
     mock_init.assert_called_with(
-        mpan="mpan",
+        mpxn="mpan",
         serial_number="serial",
         token="token",
+        fuel_type="electricity",
+    )
+
+
+def test_gas_from_env(mocker):
+    mocker.patch.dict(
+        os.environ,
+        {
+            "OCTOPUS_GAS_MPRN": "mprn",
+            "OCTOPUS_GAS_SERIAL": "serial",
+            "OCTOPUS_TOKEN": "token",
+        },
+    )
+
+    mock_init = mocker.patch.object(
+        OctopusSensor, "__init__", return_value=None  # required to mock __init__
+    )
+
+    assert isinstance(OctopusSensor.gas_from_env(), OctopusSensor)
+
+    mock_init.assert_called_with(
+        mpxn="mprn",
+        serial_number="serial",
+        token="token",
+        fuel_type="gas",
     )
 
 
@@ -55,9 +81,10 @@ def test_sample(
 ):
     url = OctopusSensor.CONSUMPTION_URL.format(
         **{
-            "mpan": "mpan",
+            "mpxn": "mpan",
             "serial_number": "serial_number",
             "period_from": "2022-04-03T23:00:00Z",
+            "fuel_type": "electricity",
         }
     )
 
@@ -83,7 +110,7 @@ def test_sample(
     assert len(readings) == 1
 
     assert readings[0].value == 0.076
-    assert readings[0].sensor_name == "octopus"
+    assert readings[0].sensor_name == "octopus.electricity"
     assert readings[0].name == "consumption"
     assert datetime.fromtimestamp(readings[0].timestamp).minute == 30
 
