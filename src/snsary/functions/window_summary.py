@@ -1,5 +1,5 @@
 """
-Computes the mean, max, min and median (p50) of :mod:`Readings <snsary.models.reading>` over consecutive windows. The name of each computation is appended to the name of the :mod:`Reading <snsary.models.reading>` e.g. ``myreading--mean``.
+Computes the mean, max, min, sum and median (p50) of :mod:`Readings <snsary.models.reading>` over consecutive windows. The name of each computation is appended to the name of the :mod:`Reading <snsary.models.reading>` e.g. ``myreading--mean``.
 """
 
 from statistics import mean, median
@@ -24,4 +24,5 @@ class WindowSummary(Window):
             __dup_reading("max", max(values)),
             __dup_reading("min", min(values)),
             __dup_reading("p50", median(values)),
+            __dup_reading("sum", sum(values)),
         ]

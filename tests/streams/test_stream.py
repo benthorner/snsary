@@ -74,7 +74,7 @@ def test_summarize(stream, output):
             )
         )
 
-    assert len(output.readings) == 4
+    assert len(output.readings) == 5
     assert output.readings[0].name == "myreading--mean"
     assert output.readings[0].value == 1.5
 

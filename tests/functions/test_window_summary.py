@@ -12,7 +12,7 @@ def test_aggregate():
         ]
     )
 
-    assert len(readings) == 4
+    assert len(readings) == 5
     assert readings[0].name == "myreading--mean"
     assert readings[0].value == 1.5
     assert readings[1].name == "myreading--max"
@@ -21,3 +21,5 @@ def test_aggregate():
     assert readings[2].value == 1
     assert readings[3].name == "myreading--p50"
     assert readings[3].value == 1.5
+    assert readings[4].name == "myreading--sum"
+    assert readings[4].value == 3
